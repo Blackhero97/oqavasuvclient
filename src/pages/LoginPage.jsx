@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
-import { Eye, EyeOff, Lock, User, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Lock, User, ArrowRight, TrendingUp } from "lucide-react";
 import logo from "../assets/main-logo.png";
 
 const LoginPage = ({ onLogin }) => {
@@ -100,186 +100,135 @@ const LoginPage = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-gray-100 px-4 py-6 relative overflow-hidden">
-      {/* Snow Effect */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        {[...Array(20)].map((_, i) => {
-          const delay = Math.random() * 10;
-          const duration = 12 + Math.random() * 4;
-          const left = Math.random() * 100;
+    <div className="min-h-screen flex items-center justify-center bg-[#EDEDED] p-4 font-inter">
+      {/* Main Container - Forced horizontal layout (flex-row) */}
+      <div className="w-full max-w-[1240px] bg-white rounded-[32px] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-row min-h-[520px]">
 
-          return (
-            <div
-              key={i}
-              className="absolute text-white opacity-60"
-              style={{
-                left: `${left}%`,
-                top: "-10px",
-                animation: `snowfall ${duration}s linear ${delay}s infinite`,
-                fontSize: "1.3rem",
-                textShadow: "0 0 8px rgba(0,0,0,0.1)",
-              }}
-            >
-              ❄
-            </div>
-          );
-        })}
-      </div>
-
-      <style>{`
-        @keyframes snowfall {
-          to {
-            transform: translateY(100vh);
-            opacity: 0;
-          }
-        }
-      `}</style>
-
-      <div className="w-full max-w-sm relative z-10">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="inline-block mb-3">
-            <img src={logo} alt="BM Logo" className="w-12 h-12" />
-          </div>
-          <h1 className="text-xl font-semibold text-gray-900">BM Maktab CRM</h1>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Ta'lim Boshqaruv Tizimi
-          </p>
-        </div>
-
-        {/* Welcome Text */}
-        <div className="text-center mb-6">
-          <h2 className="text-base font-semibold text-gray-700 mb-1">
-            Tizimga kirish
-          </h2>
-          <p className="text-xs text-gray-500">
-            Tizimga kirttish uchun ma'lumotlarni kiriting
-          </p>
-        </div>
-
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-3 mb-6">
-          {/* Username */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-              Foydalanuvchi nomi
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User className="w-3.5 h-3.5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className={`w-full pl-9 pr-3 py-2.5 border rounded-lg text-sm transition-colors ${
-                  errors.username
-                    ? "border-red-300 bg-red-50 text-gray-900"
-                    : "border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:border-blue-500"
-                } focus:outline-none focus:ring-1 focus:ring-blue-500`}
-                placeholder="Username"
-              />
-            </div>
-            {errors.username && (
-              <p className="mt-0.5 text-xs text-red-600">{errors.username}</p>
-            )}
+        {/* Left Side - Information Block (Fixed 40% width) */}
+        <div className="w-[40%] relative p-8 md:p-10 flex flex-col justify-between overflow-hidden">
+          {/* Mesh Gradient Background */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[#F7EBDC]"></div>
+            <div className="absolute top-[-30%] right-[-20%] w-[120%] h-[120%] bg-[#FF8D54] rounded-full blur-[100px] opacity-45"></div>
+            <div className="absolute bottom-[-20%] left-[-20%] w-[100%] h-[100%] bg-[#FFA57D] rounded-full blur-[100px] opacity-55"></div>
+            <div className="absolute top-[20%] left-[10%] w-[70%] h-[70%] bg-[#FFD4BA] rounded-full blur-[80px] opacity-35"></div>
           </div>
 
-          {/* Password */}
-          <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
-              Parol
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="w-3.5 h-3.5 text-gray-400" />
+          {/* Logo Branding */}
+          <div className="relative z-10 flex items-center gap-2">
+            <div className="w-6 h-6 bg-[rgb(0,74,119)] rounded-lg flex items-center justify-center transform -rotate-12">
+              <img src={logo} alt="BM Logo" className="w-3.5 h-3.5 object-contain brightness-0 invert" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-[13px] text-[#1A1A1A] leading-tight tracking-tighter">BM Maktab CRM</span>
+              <span className="text-[8px] font-bold text-[#9E6F45] uppercase tracking-widest">Muvaffaqiyat sari qadam</span>
+            </div>
+          </div>
+
+          {/* Tagline */}
+          <div className="relative z-10">
+            <h1 className="text-[28px] md:text-[32px] font-[800] text-[#1A1A1A] leading-[1.05] tracking-tight">
+              Ta'limni boshqarishda zamonaviy va qulay yechim.
+            </h1>
+          </div>
+        </div>
+
+        {/* Right Side - Login Form (Remaining space) */}
+        <div className="flex-1 bg-white p-8 md:p-10 lg:p-12 flex flex-col justify-center">
+          <div className="max-w-[360px] w-full mx-auto">
+            {/* Asterisk Icon (Reference match) */}
+            <div className="text-[#FF8D54] text-5xl font-serif leading-none mb-4 select-none">*</div>
+
+            <h2 className="text-[34px] font-extrabold text-[#1A1A1A] mb-3 tracking-tighter">Tizimga kirish</h2>
+            <p className="text-[#999999] text-[14px] leading-relaxed mb-10 font-medium">
+              Barcha darslar, o'quvchilar va hisobotlarni bir joyda boshqarish uchun tizimga kiring.
+            </p>
+
+            <form onSubmit={handleSubmit} className="space-y-6 mb-8">
+              <div>
+                <label className="block text-[13px] font-bold text-[#222222] mb-2 ml-0.5">Foydalanuvchi nomi</label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3.5 bg-white border border-[#F0F0F0] rounded-xl text-[15px] transition-all outline-none placeholder:text-[#BBBBBB] ${errors.username
+                    ? "border-red-200 bg-red-50/50"
+                    : "focus:border-[#1A1A1A] hover:border-gray-300"
+                    }`}
+                  placeholder="Username kiritng"
+                />
+                {errors.username && <p className="mt-2 ml-1 text-[11px] font-bold text-red-500">{errors.username}</p>}
               </div>
-              <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={`w-full pl-9 pr-9 py-2.5 border rounded-lg text-sm transition-colors ${
-                  errors.password
-                    ? "border-red-300 bg-red-50 text-gray-900"
-                    : "border-gray-300 bg-white text-gray-900 hover:border-gray-400 focus:border-blue-500"
-                } focus:outline-none focus:ring-1 focus:ring-blue-500`}
-                placeholder="••••••••"
-              />
+
+              <div>
+                <label className="block text-[13px] font-bold text-[#222222] mb-2 ml-0.5">Parol</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-3.5 bg-white border border-[#F0F0F0] rounded-xl text-[15px] transition-all outline-none placeholder:text-[#BBBBBB] ${errors.password
+                      ? "border-red-200 bg-red-50/50"
+                      : "focus:border-[#1A1A1A] hover:border-gray-300"
+                      }`}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-[#CCCCCC] hover:text-[#1A1A1A] transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {errors.password && <p className="mt-2 ml-1 text-[11px] font-bold text-red-500">{errors.password}</p>}
+              </div>
+
               <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-[rgb(0,74,119)] text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/10 hover:bg-[rgb(0,64,103)] transition-all active:scale-[0.98] mt-2"
               >
-                {showPassword ? (
-                  <EyeOff className="w-3.5 h-3.5" />
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                    <span className="text-[15px]">Kutilmoqda...</span>
+                  </div>
                 ) : (
-                  <Eye className="w-3.5 h-3.5" />
+                  <span className="text-[15px]">Kirish</span>
                 )}
               </button>
+            </form>
+
+            <div className="relative flex items-center mb-8">
+              <div className="flex-grow border-t border-[#F2F2F2]"></div>
+              <span className="flex-shrink mx-4 text-[12px] text-[#BBBBBB] font-semibold tracking-wider uppercase">yoki rolni tanlang</span>
+              <div className="flex-grow border-t border-[#F2F2F2]"></div>
             </div>
-            {errors.password && (
-              <p className="mt-0.5 text-xs text-red-600">{errors.password}</p>
-            )}
-          </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-2.5 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm disabled:cursor-not-allowed mt-4"
-          >
-            {isLoading ? (
-              <>
-                <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Tekshirilmoqda...</span>
-              </>
-            ) : (
-              <>
-                <span>Kirish</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </>
-            )}
-          </button>
-        </form>
-
-        {/* Divider */}
-        <div className="relative mb-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300"></div>
-          </div>
-        </div>
-
-        {/* Demo Accounts */}
-        <div>
-          <p className="text-xs font-semibold text-gray-600 mb-2">
-            Test hisoblar:
-          </p>
-          <div className="space-y-1.5">
-            {demoUsers.map((user, index) => (
-              <button
-                key={index}
-                onClick={() => handleDemoLogin(user)}
-                className="w-full text-left p-2.5 bg-white border border-gray-300 hover:border-gray-400 hover:bg-gray-50 rounded-lg transition-colors text-xs"
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="font-medium text-gray-900">{user.role}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">
-                      {user.username}
-                    </div>
+            {/* Role Icons as requested (Replacing G, Github, Apple) */}
+            <div className="grid grid-cols-3 gap-3 mb-10">
+              {demoUsers.map((user, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleDemoLogin(user)}
+                  className="flex items-center justify-center py-3 bg-white border border-[#F0F0F0] rounded-xl hover:border-[#1A1A1A] hover:bg-[#FAFAFA] transition-all group group focus:ring-1 focus:ring-black/5"
+                  title={user.role}
+                >
+                  <div className="flex flex-col items-center">
+                    <User className="w-5 h-5 text-[#333333] mb-0.5" />
+                    <span className="text-[9px] font-extrabold text-[#999999] group-hover:text-black tracking-tight uppercase">{user.role.split(' ')[0]}</span>
                   </div>
-                  <ArrowRight className="w-3 h-3 text-gray-400" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
+                </button>
+              ))}
+            </div>
 
-        {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-xs text-gray-500">© 2025 BM Maktab CRM</p>
+            <p className="text-center text-[13px] font-semibold text-[#BBBBBB]">
+              Profilingiz yo'qmi? <span className="text-[#FF8D54] hover:underline cursor-pointer ml-1">Admin bilan bog'laning</span>
+            </p>
+          </div>
         </div>
       </div>
     </div>

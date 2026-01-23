@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Library, Users, Clock, Plus, Edit, Trash2, X } from "lucide-react";
+import { Library, Users, Clock, Plus, Edit, Trash2, X, BookOpen, GraduationCap, TrendingUp } from "lucide-react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -153,7 +153,7 @@ const ClassesPage = () => {
   const loadStudents = async () => {
     try {
       console.log("🏫 [CLASSES] Loading students...");
-      
+
       // GET /api/students endpoint ishlatish (attendance ma'lumotlari bilan)
       const response = await axios.get(`${API_URL}/api/students`);
       const studentsFromApi = response.data || [];
@@ -323,10 +323,10 @@ const ClassesPage = () => {
           style={
             color === "bg-blue-500"
               ? {
-                  backgroundColor: "#004A77",
-                  padding: "12px",
-                  borderRadius: "8px",
-                }
+                backgroundColor: "#004A77",
+                padding: "12px",
+                borderRadius: "8px",
+              }
               : { className: color }
           }
         >
@@ -337,137 +337,106 @@ const ClassesPage = () => {
   );
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Sinflar</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Sinflar va guruhlar boshqaruvi
-            </p>
+    <div className="px-6 py-6 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Sinflar</h1>
+          <p className="text-sm text-gray-500 mt-1">Sinflar va guruhlar boshqaruvi</p>
+        </div>
+        <button
+          onClick={() => {
+            resetForm();
+            setIsModalOpen(true);
+          }}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
+        >
+          <Plus className="w-4 h-4" />
+          Yangi Sinf
+        </button>
+      </div>
+
+      {/* Stats - Dashboard style */}
+      <div className="grid grid-cols-3 gap-5 mb-6">
+        {/* Jami Sinflar */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-blue-50 rounded-xl">
+              <BookOpen className="w-5 h-5 text-blue-600" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+              Faol
+            </span>
           </div>
-          <button
-            onClick={() => {
-              resetForm();
-              setIsModalOpen(true);
-            }}
-            className="flex items-center space-x-2 px-4 py-2 text-white rounded-lg"
-            style={{ backgroundColor: "#004A77" }}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#003A63")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "#004A77")}
+          <p className="text-2xl font-bold text-gray-900">{classes.length}</p>
+          <p className="text-sm text-gray-500 mt-1">Jami Sinflar</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Guruhlar:</span>
+            <span className="text-sm font-semibold text-blue-600">{classes.length} ta</span>
+          </div>
+        </div>
+
+        {/* Jami O'quvchilar */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-emerald-50 rounded-xl">
+              <Users className="w-5 h-5 text-emerald-600" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+              {totalStudents > 0 ? '100%' : '0%'}
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{totalStudents}</p>
+          <p className="text-sm text-gray-500 mt-1">Jami O'quvchilar</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Barcha:</span>
+            <span className="text-sm font-semibold text-emerald-600">{totalStudents} ta</span>
+          </div>
+        </div>
+
+        {/* O'rtacha */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-violet-50 rounded-xl">
+              <TrendingUp className="w-5 h-5 text-violet-600" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-full bg-violet-50 text-violet-700">
+              O'rtacha
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">
+            {classes.length > 0 ? Math.round(totalStudents / classes.length) : 0}
+          </p>
+          <p className="text-sm text-gray-500 mt-1">O'rtacha Sinf To'lishi</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Har biri:</span>
+            <span className="text-sm font-semibold text-violet-600">
+              {classes.length > 0 ? Math.round(totalStudents / classes.length) : 0} ta
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Classes Grid */}
+      <div className="grid grid-cols-3 gap-5">
+        {classes.map((classItem) => (
+          <div
+            key={classItem._id}
+            className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
           >
-            <Plus className="w-5 h-5" />
-            <span>Yangi Sinf</span>
-          </button>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-6 mb-6">
-          <StatCard
-            title="Jami Sinflar"
-            value={classes.length}
-            icon={Library}
-            color="bg-004A77"
-          />
-          <StatCard
-            title="Jami Oquvchilar"
-            value={totalStudents}
-            icon={Users}
-            color="bg-green-500"
-          />
-          <StatCard
-            title="Ortacha sinf tolishi"
-            value={
-              classes.length > 0
-                ? Math.round(totalStudents / classes.length)
-                : 0
-            }
-            icon={Clock}
-            color="bg-purple-500"
-          />
-        </div>
-
-        {/* Classes Grid */}
-        <div className="grid grid-cols-2 gap-6">
-          {classes.map((classItem) => (
-            <div
-              key={classItem._id}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">
-                    {classItem.name}
-                  </h3>
-                  <p className="text-sm text-gray-500">
-                    Xona {classItem.roomNumber || "-"}
-                  </p>
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(classItem)}
-                    className="p-2 rounded-lg"
-                    style={{ color: "#004A77", backgroundColor: "transparent" }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.backgroundColor = "#e0f2ff")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.target.style.backgroundColor = "transparent")
-                    }
-                  >
-                    <Edit className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(classItem)}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                </div>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">
+                  {classItem.name}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Xona {classItem.roomNumber || "-"}
+                </p>
               </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Sinf rahbari:</span>
-                  <span className="text-sm font-medium text-gray-900">
-                    {classItem.classTeacherName || "Belgilanmagan"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Oquvchilar:</span>
-                  <span className="text-sm font-medium text-gray-900">
-                    {classItem.studentCount || 0} /{" "}
-                    {classItem.maxStudents || 30}
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${
-                      (classItem.studentCount || 0) >=
-                      (classItem.maxStudents || 30)
-                        ? "bg-red-500"
-                        : "bg-green-500"
-                    }`}
-                    style={{
-                      width: `${Math.min(
-                        ((classItem.studentCount || 0) /
-                          (classItem.maxStudents || 30)) *
-                          100,
-                        100
-                      )}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="flex space-x-2">
                 <button
-                  onClick={() => {
-                    setSelectedClassForStudents(classItem);
-                    setIsStudentsModalOpen(true);
-                  }}
-                  className="w-full py-2 text-sm font-medium rounded-lg"
+                  onClick={() => handleEdit(classItem)}
+                  className="p-2 rounded-lg"
                   style={{ color: "#004A77", backgroundColor: "transparent" }}
                   onMouseEnter={(e) =>
                     (e.target.style.backgroundColor = "#e0f2ff")
@@ -476,223 +445,281 @@ const ClassesPage = () => {
                     (e.target.style.backgroundColor = "transparent")
                   }
                 >
-                  Oquvchilarni korish
+                  <Edit className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => handleDelete(classItem)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                >
+                  <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Add/Edit Class Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 max-w-md w-full">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                {editingId
-                  ? "Sinf Malumotlarini Tahrirlash"
-                  : "Yangi Sinf Qoshish"}
-              </h2>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500">Sinf rahbari:</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {classItem.classTeacherName || "Belgilanmagan"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500">Oquvchilar:</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {classItem.studentCount || 0} /{" "}
+                  {classItem.maxStudents || 30}
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full ${(classItem.studentCount || 0) >=
+                    (classItem.maxStudents || 30)
+                    ? "bg-red-500"
+                    : "bg-green-500"
+                    }`}
+                  style={{
+                    width: `${Math.min(
+                      ((classItem.studentCount || 0) /
+                        (classItem.maxStudents || 30)) *
+                      100,
+                      100
+                    )}%`,
+                  }}
+                />
+              </div>
+            </div>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sinf Darajasi *
-                    </label>
-                    <select
-                      name="grade"
-                      value={formData.grade}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Tanlang</option>
-                      {grades.map((g) => (
-                        <option key={g} value={g}>
-                          {g}-sinf
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Bolim *
-                    </label>
-                    <select
-                      name="section"
-                      value={formData.section}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="">Tanlang</option>
-                      {sections.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setSelectedClassForStudents(classItem);
+                  setIsStudentsModalOpen(true);
+                }}
+                className="w-full py-2 text-sm font-medium rounded-lg"
+                style={{ color: "#004A77", backgroundColor: "transparent" }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#e0f2ff")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "transparent")
+                }
+              >
+                Oquvchilarni korish
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
 
+      {/* Add/Edit Class Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 max-w-md w-full">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              {editingId
+                ? "Sinf Malumotlarini Tahrirlash"
+                : "Yangi Sinf Qoshish"}
+            </h2>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Sinf Rahbari
+                    Sinf Darajasi *
+                  </label>
+                  <select
+                    name="grade"
+                    value={formData.grade}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Tanlang</option>
+                    {grades.map((g) => (
+                      <option key={g} value={g}>
+                        {g}-sinf
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Bolim *
+                  </label>
+                  <select
+                    name="section"
+                    value={formData.section}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Tanlang</option>
+                    {sections.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Sinf Rahbari
+                </label>
+                <input
+                  type="text"
+                  name="classTeacherName"
+                  value={formData.classTeacherName}
+                  onChange={handleInputChange}
+                  placeholder="Masalan: Aziza Rahimova"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Xona Raqami
                   </label>
                   <input
                     type="text"
-                    name="classTeacherName"
-                    value={formData.classTeacherName}
+                    name="roomNumber"
+                    value={formData.roomNumber}
                     onChange={handleInputChange}
-                    placeholder="Masalan: Aziza Rahimova"
+                    placeholder="Masalan: 201"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Xona Raqami
-                    </label>
-                    <input
-                      type="text"
-                      name="roomNumber"
-                      value={formData.roomNumber}
-                      onChange={handleInputChange}
-                      placeholder="Masalan: 201"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Max Oquvchilar
-                    </label>
-                    <input
-                      type="number"
-                      name="maxStudents"
-                      value={formData.maxStudents}
-                      onChange={handleInputChange}
-                      placeholder="30"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Max Oquvchilar
+                  </label>
+                  <input
+                    type="number"
+                    name="maxStudents"
+                    value={formData.maxStudents}
+                    onChange={handleInputChange}
+                    placeholder="30"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
                 </div>
               </div>
+            </div>
 
-              <div className="mt-6 flex space-x-3">
-                <button
-                  onClick={resetForm}
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                  Bekor qilish
-                </button>
-                <button
-                  onClick={handleAddOrEdit}
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 text-white rounded-lg disabled:opacity-50"
-                  style={{ backgroundColor: "#004A77" }}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "#003A63")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = "#004A77")
-                  }
-                >
-                  {loading
-                    ? "Saqlanmoqda..."
-                    : editingId
+            <div className="mt-6 flex space-x-3">
+              <button
+                onClick={resetForm}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+              >
+                Bekor qilish
+              </button>
+              <button
+                onClick={handleAddOrEdit}
+                disabled={loading}
+                className="flex-1 px-4 py-2 text-white rounded-lg disabled:opacity-50"
+                style={{ backgroundColor: "#004A77" }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#003A63")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "#004A77")
+                }
+              >
+                {loading
+                  ? "Saqlanmoqda..."
+                  : editingId
                     ? "Saqlash"
                     : "Qoshish"}
-                </button>
-              </div>
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Students Details Modal */}
-        {isStudentsModalOpen && selectedClassForStudents && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
-              <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {selectedClassForStudents.name} - Oquvchilar
-                  </h2>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Jami:{" "}
-                    {getStudentsForClass(selectedClassForStudents.name).length}{" "}
-                    ta oquvchi
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setIsStudentsModalOpen(false);
-                    setSelectedClassForStudents(null);
-                  }}
-                  className="p-2 text-gray-400 hover:text-gray-600"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+      {/* Students Details Modal */}
+      {isStudentsModalOpen && selectedClassForStudents && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  {selectedClassForStudents.name} - Oquvchilar
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Jami:{" "}
+                  {getStudentsForClass(selectedClassForStudents.name).length}{" "}
+                  ta oquvchi
+                </p>
               </div>
+              <button
+                onClick={() => {
+                  setIsStudentsModalOpen(false);
+                  setSelectedClassForStudents(null);
+                }}
+                className="p-2 text-gray-400 hover:text-gray-600"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
 
-              <div className="p-6">
-                {getStudentsForClass(selectedClassForStudents.name).length >
+            <div className="p-6">
+              {getStudentsForClass(selectedClassForStudents.name).length >
                 0 ? (
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700">
-                          #
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700">
-                          Oquvchi
-                        </th>
-                        <th className="text-left py-3 px-4 font-semibold text-gray-700">
-                          Telefon
-                        </th>
-                        <th className="text-center py-3 px-4 font-semibold text-gray-700">
-                          Status
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {getStudentsForClass(selectedClassForStudents.name).map(
-                        (student, index) => (
-                          <tr key={student._id} className="hover:bg-gray-50">
-                            <td className="py-3 px-4 text-gray-500">
-                              {index + 1}
-                            </td>
-                            <td className="py-3 px-4 text-gray-900 font-medium">
-                              {student.name}
-                            </td>
-                            <td className="py-3 px-4 text-gray-600">
-                              {student.phone || "-"}
-                            </td>
-                            <td className="text-center py-3 px-4">
-                              <span
-                                className={`inline-flex px-2.5 py-1 rounded text-xs font-semibold ${getStatusColor(
-                                  student.status
-                                )}`}
-                              >
-                                {student.status === "active"
-                                  ? "Faol"
-                                  : "Nofaol"}
-                              </span>
-                            </td>
-                          </tr>
-                        )
-                      )}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Users className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                    <p>Bu sinfda oquvchi yoq</p>
-                  </div>
-                )}
-              </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                        #
+                      </th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                        Oquvchi
+                      </th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">
+                        Telefon
+                      </th>
+                      <th className="text-center py-3 px-4 font-semibold text-gray-700">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {getStudentsForClass(selectedClassForStudents.name).map(
+                      (student, index) => (
+                        <tr key={student._id} className="hover:bg-gray-50">
+                          <td className="py-3 px-4 text-gray-500">
+                            {index + 1}
+                          </td>
+                          <td className="py-3 px-4 text-gray-900 font-medium">
+                            {student.name}
+                          </td>
+                          <td className="py-3 px-4 text-gray-600">
+                            {student.phone || "-"}
+                          </td>
+                          <td className="text-center py-3 px-4">
+                            <span
+                              className={`inline-flex px-2.5 py-1 rounded text-xs font-semibold ${getStatusColor(
+                                student.status
+                              )}`}
+                            >
+                              {student.status === "active"
+                                ? "Faol"
+                                : "Nofaol"}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <Users className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <p>Bu sinfda oquvchi yoq</p>
+                </div>
+              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

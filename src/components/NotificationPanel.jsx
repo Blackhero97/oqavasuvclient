@@ -52,7 +52,7 @@ const NotificationPanel = ({ activities }) => {
             >
               <div
                 className={`${getIconColor(
-                  activity.type
+                  activity.type,
                 )} p-2 rounded-lg text-white flex-shrink-0`}
               >
                 {getIcon(activity.type)}

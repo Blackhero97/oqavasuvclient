@@ -48,8 +48,8 @@ const NotificationsPage = () => {
   ]);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <div className="px-4 py-5 bg-gray-50 min-h-screen">
+      <div className="w-full">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Bildirishnomalar</h1>
@@ -194,9 +194,8 @@ const NotificationsPage = () => {
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <div
-                        className={`p-2 rounded-lg ${
-                          notif.type === "sms" ? "bg-blue-100" : "bg-purple-100"
-                        }`}
+                        className={`p-2 rounded-lg ${notif.type === "sms" ? "bg-blue-100" : "bg-purple-100"
+                          }`}
                       >
                         {notif.type === "sms" ? (
                           <MessageSquare
@@ -212,11 +211,10 @@ const NotificationsPage = () => {
                       </span>
                     </div>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${
-                        notif.status === "sent"
+                      className={`text-xs px-2 py-1 rounded-full ${notif.status === "sent"
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
-                      }`}
+                        }`}
                     >
                       {notif.status === "sent" ? "Yuborildi" : "Kutilmoqda"}
                     </span>

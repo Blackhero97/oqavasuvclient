@@ -1000,47 +1000,40 @@ const AttendancePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50 px-6 py-6">
+      <div className="space-y-6">
         {/* Page Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Davomat</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Davomat</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {selectedRole === "student" &&
-                "O'quvchilar davomatini real-vaqtda kuzatish"}
-              {selectedRole === "teacher" &&
-                "O'qituvchilar davomatini real-vaqtda kuzatish"}
-              {selectedRole === "staff" &&
-                "Xodimlar davomatini real-vaqtda kuzatish"}
-              {selectedRole === "" &&
-                "Barcha xodimlar davomatini real-vaqtda kuzatish"}
+              {selectedRole === "student" && "O'quvchilar davomatini real-vaqtda kuzatish"}
+              {selectedRole === "teacher" && "O'qituvchilar davomatini real-vaqtda kuzatish"}
+              {selectedRole === "staff" && "Xodimlar davomatini real-vaqtda kuzatish"}
+              {selectedRole === "" && "Barcha xodimlar davomatini real-vaqtda kuzatish"}
             </p>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => setShowFaceScanner(!showFaceScanner)}
-              className="flex items-center space-x-2 px-4 py-2.5 text-white rounded-lg transition-colors shadow-sm"
-              style={{ backgroundColor: "#004A77" }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#003A63")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#004A77")}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
             >
               <Camera className="w-4 h-4" />
-              <span className="text-sm font-medium">Yuz Skaneri</span>
+              Yuz Skaneri
             </button>
             <button
               onClick={handleManualExport}
-              className="flex items-center space-x-2 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors"
             >
               <FileText className="w-4 h-4" />
-              <span className="text-sm font-medium">Excel Export</span>
+              Excel Export
             </button>
           </div>
         </div>
 
         {/* Face Scanner */}
         {showFaceScanner && (
-          <div className="mb-6">
+          <div>
             <RealFaceRecognition onRecognition={handleFaceRecognition} />
           </div>
         )}
@@ -1048,27 +1041,20 @@ const AttendancePage = () => {
         {/* Face Records */}
         {faceRecords.length > 0 && (
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center space-x-2 mb-4">
+            <div className="flex items-center gap-2 mb-4">
               <span className="text-lg">🎬</span>
-              <h3 className="text-sm font-semibold text-gray-700">
-                So'nggi Yuz Tanishlar
-              </h3>
+              <h3 className="text-sm font-semibold text-gray-700">So'nggi Yuz Tanishlar</h3>
             </div>
             <div className="space-y-2.5">
               {faceRecords.slice(-5).map((record) => (
                 <div
                   key={record.id}
-                  className="flex items-center justify-between p-3.5 bg-brand-50 rounded-xl hover:bg-brand-100 transition-colors"
+                  className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-800">
-                      {record.personName}
-                    </p>
+                    <p className="text-sm font-medium text-gray-800">{record.personName}</p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {record.role === "teacher"
-                        ? "👨‍🏫 O'qituvchi"
-                        : "👨‍🎓 O'quvchi"}{" "}
-                      •{" "}
+                      {record.role === "teacher" ? "👨‍🏫 O'qituvchi" : "👨‍🎓 O'quvchi"} •{" "}
                       {new Date(record.timestamp).toLocaleTimeString("uz-UZ", {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -1084,65 +1070,97 @@ const AttendancePage = () => {
           </div>
         )}
 
-        {/* Stats Cards - Compact with Percentage */}
-        <div className="grid grid-cols-5 gap-4">
-          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-500 font-medium">Jami</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {totalStudents}
-                </p>
+        {/* Stats Cards - Dashboard style */}
+        <div className="grid grid-cols-5 gap-5">
+          {/* Jami */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-gray-50 rounded-xl">
+                <Users className="w-5 h-5 text-gray-600" />
               </div>
-              <Users className="w-8 h-8 text-gray-300" />
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-50 text-gray-700">
+                100%
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{totalStudents}</p>
+            <p className="text-sm text-gray-500 mt-1">Jami</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Ro'yxat:</span>
+              <span className="text-sm font-semibold text-gray-600">{totalStudents} ta</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-green-600 font-medium">Keldi</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {presentStudents}
-                </p>
+          {/* Keldi */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-emerald-50 rounded-xl">
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
               </div>
-              <CheckCircle className="w-8 h-8 text-green-500" />
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+                {totalStudents > 0 ? Math.round((presentStudents / totalStudents) * 100) : 0}%
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{presentStudents}</p>
+            <p className="text-sm text-gray-500 mt-1">Keldi</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Hozir:</span>
+              <span className="text-sm font-semibold text-emerald-600">{presentStudents} ta</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-orange-600 font-medium">Kech</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {lateStudents}
-                </p>
+          {/* Kech */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-amber-50 rounded-xl">
+                <AlertCircle className="w-5 h-5 text-amber-600" />
               </div>
-              <AlertCircle className="w-8 h-8 text-orange-500" />
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700">
+                {totalStudents > 0 ? Math.round((lateStudents / totalStudents) * 100) : 0}%
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{lateStudents}</p>
+            <p className="text-sm text-gray-500 mt-1">Kech</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Kechikkan:</span>
+              <span className="text-sm font-semibold text-amber-600">{lateStudents} ta</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-red-600 font-medium">Yo'q</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {absentStudents}
-                </p>
+          {/* Yo'q */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-red-50 rounded-xl">
+                <XCircle className="w-5 h-5 text-red-600" />
               </div>
-              <XCircle className="w-8 h-8 text-red-500" />
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
+                {totalStudents > 0 ? Math.round((absentStudents / totalStudents) * 100) : 0}%
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{absentStudents}</p>
+            <p className="text-sm text-gray-500 mt-1">Yo'q</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Kelmagan:</span>
+              <span className="text-sm font-semibold text-red-600">{absentStudents} ta</span>
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs text-blue-600 font-medium">Davomat %</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {attendancePercentage}%
-                </p>
+          {/* Davomat % */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-blue-50 rounded-xl">
+                <CheckCircle className="w-5 h-5 text-blue-600" />
               </div>
-              <CheckCircle className="w-8 h-8 text-blue-500" />
+              <span className={`text-xs font-medium px-2 py-1 rounded-full ${attendancePercentage >= 90 ? 'bg-green-50 text-green-700' :
+                attendancePercentage >= 70 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
+                }`}>
+                {attendancePercentage >= 90 ? 'Yaxshi' : attendancePercentage >= 70 ? 'O\'rtacha' : 'Past'}
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{attendancePercentage}%</p>
+            <p className="text-sm text-gray-500 mt-1">Davomat</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Foiz:</span>
+              <span className="text-sm font-semibold text-blue-600">{attendancePercentage}%</span>
             </div>
           </div>
         </div>
@@ -1344,38 +1362,44 @@ const AttendancePage = () => {
                               });
                               dropdown.classList.toggle('hidden');
                             }}
-                            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
                             title="Amallar"
                           >
                             <MoreVertical className="w-5 h-5" />
                           </button>
 
-                          {/* Dropdown Menu */}
-                          <div className="action-dropdown hidden absolute right-0 mt-1 w-44 bg-white rounded-xl shadow-lg border border-gray-200 py-1.5 z-50">
-                            {/* Edit */}
+                          {/* Dropdown Menu - Improved */}
+                          <div className="action-dropdown hidden absolute right-0 mt-2 w-[250px] bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
+                            {/* Edit Button */}
                             <button
                               onClick={() => {
                                 handleEditEmployee(student);
                                 document.querySelectorAll('.action-dropdown').forEach(d => d.classList.add('hidden'));
                               }}
-                              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-blue-50 transition-colors"
                             >
-                              <Edit2 className="w-4 h-4 text-blue-500" />
+                              <div className="p-1.5 bg-blue-50 rounded-lg">
+                                <Edit2 className="w-4 h-4 text-blue-600" />
+                              </div>
                               Tahrirlash
                             </button>
 
-                            <div className="border-t border-gray-100 my-1"></div>
+                            <div className="border-t border-gray-100 my-2"></div>
 
                             {/* Status Options */}
                             {student.status === "present" ? (
-                              <div className="flex items-center gap-2 px-4 py-2 text-sm text-green-600">
-                                <CheckCircle className="w-4 h-4" />
-                                <span className="font-medium">Keldi ✓</span>
+                              <div className="flex items-center gap-3 px-4 py-2.5 text-sm">
+                                <div className="p-1.5 bg-emerald-50 rounded-lg">
+                                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                                </div>
+                                <span className="font-semibold text-emerald-700">Keldi deb belgilangan</span>
                               </div>
                             ) : student.status === "late" ? (
-                              <div className="flex items-center gap-2 px-4 py-2 text-sm text-orange-600">
-                                <AlertCircle className="w-4 h-4" />
-                                <span className="font-medium">Kech keldi</span>
+                              <div className="flex items-center gap-3 px-4 py-2.5 text-sm">
+                                <div className="p-1.5 bg-amber-50 rounded-lg">
+                                  <AlertCircle className="w-4 h-4 text-amber-600" />
+                                </div>
+                                <span className="font-semibold text-amber-700">Kech keldi</span>
                               </div>
                             ) : (
                               <>
@@ -1384,9 +1408,11 @@ const AttendancePage = () => {
                                     toast.success(`${student.name} - Keldi deb belgilandi`);
                                     document.querySelectorAll('.action-dropdown').forEach(d => d.classList.add('hidden'));
                                   }}
-                                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-green-600 hover:bg-green-50 transition-colors"
+                                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-emerald-700 hover:bg-emerald-50 transition-colors"
                                 >
-                                  <CheckCircle className="w-4 h-4" />
+                                  <div className="p-1.5 bg-emerald-50 rounded-lg">
+                                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                                  </div>
                                   Keldi deb belgilash
                                 </button>
                                 <button
@@ -1394,9 +1420,11 @@ const AttendancePage = () => {
                                     toast.info(`${student.name} - Sababli deb belgilandi`);
                                     document.querySelectorAll('.action-dropdown').forEach(d => d.classList.add('hidden'));
                                   }}
-                                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-amber-600 hover:bg-amber-50 transition-colors"
+                                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-amber-700 hover:bg-amber-50 transition-colors"
                                 >
-                                  <AlertCircle className="w-4 h-4" />
+                                  <div className="p-1.5 bg-amber-50 rounded-lg">
+                                    <AlertCircle className="w-4 h-4 text-amber-600" />
+                                  </div>
                                   Sababli
                                 </button>
                                 <button
@@ -1404,9 +1432,11 @@ const AttendancePage = () => {
                                     toast.error(`${student.name} - Kelmadi`);
                                     document.querySelectorAll('.action-dropdown').forEach(d => d.classList.add('hidden'));
                                   }}
-                                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                  className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-red-700 hover:bg-red-50 transition-colors"
                                 >
-                                  <XCircle className="w-4 h-4" />
+                                  <div className="p-1.5 bg-red-50 rounded-lg">
+                                    <XCircle className="w-4 h-4 text-red-600" />
+                                  </div>
                                   Kelmadi
                                 </button>
                               </>

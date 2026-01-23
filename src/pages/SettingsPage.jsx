@@ -307,8 +307,8 @@ const SettingsPage = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
+    <div className="px-4 py-5 bg-gray-50 min-h-screen">
+      <div className="w-full">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center justify-between">

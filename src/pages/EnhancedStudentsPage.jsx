@@ -9,6 +9,10 @@ import {
   Download,
   MoreVertical,
   X,
+  Users,
+  UserCheck,
+  GraduationCap,
+  CheckCircle,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { API_URL as BASE_URL } from "../config";
@@ -351,7 +355,7 @@ const StudentsPage = () => {
     try {
       // O'quvchilarni sinf bo'yicha guruhlash
       const studentsByClass = {};
-      
+
       students.forEach((student) => {
         const className = student.class || "Sinf ko'rsatilmagan";
         if (!studentsByClass[className]) {
@@ -452,7 +456,7 @@ const StudentsPage = () => {
           { wch: 8 },
           { wch: 8 },
         ];
-        
+
         // Sheet nomi uchun maxsus belgilarni olib tashlash
         const safeSheetName = className.replace(/[\\\/\?\*\[\]]/g, "-").substring(0, 31);
         XLSX.utils.book_append_sheet(workbook, classSheet, safeSheetName);
@@ -461,7 +465,7 @@ const StudentsPage = () => {
       // Faylni saqlash
       const today = new Date().toISOString().split("T")[0];
       XLSX.writeFile(workbook, `Oquvchilar_${today}.xlsx`);
-      
+
       toast.success("Excel fayl muvaffaqiyatli yuklandi!");
     } catch (error) {
       console.error("❌ Export error:", error);
@@ -481,307 +485,341 @@ const StudentsPage = () => {
     );
   }
 
+  const kelganlar = Object.values(attendanceData).filter(a => a.checkIn).length;
+  const davomat = students.length > 0 ? Math.round((kelganlar / students.length) * 100) : 0;
+
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-6">
+    <div className="px-6 py-6 bg-gray-50 min-h-screen">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <div>
           <h1 className="text-2xl font-bold text-gray-900">O'quvchilar</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            O'quvchilarni boshqarish va ro'yxatdan o'tkazish
+          <p className="text-sm text-gray-500 mt-1">O'quvchilarni boshqarish va ro'yxatdan o'tkazish</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={handleExportToExcel}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <Download className="w-4 h-4" />
+            Export
+          </button>
+          <button
+            onClick={handleAddStudent}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Yangi O'quvchi
+          </button>
+        </div>
+      </div>
+
+      {/* Statistics Cards - Dashboard style */}
+      <div className="grid grid-cols-4 gap-5 mb-6">
+        {/* Jami */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-blue-50 rounded-xl">
+              <Users className="w-5 h-5 text-blue-600" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+              100%
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{students.length}</p>
+          <p className="text-sm text-gray-500 mt-1">Jami O'quvchilar</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Ro'yxatda:</span>
+            <span className="text-sm font-semibold text-blue-600">{students.length} ta</span>
+          </div>
+        </div>
+
+        {/* Faol */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-emerald-50 rounded-xl">
+              <UserCheck className="w-5 h-5 text-emerald-600" />
+            </div>
+            <span className={`text-xs font-medium px-2 py-1 rounded-full ${davomat >= 80 ? 'bg-green-50 text-green-700' : davomat >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
+              }`}>
+              {davomat}%
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{kelganlar}</p>
+          <p className="text-sm text-gray-500 mt-1">Bugun Kelganlar</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Faol:</span>
+            <span className="text-sm font-semibold text-emerald-600">{activeCount} ta</span>
+          </div>
+        </div>
+
+        {/* 9-sinf */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-orange-50 rounded-xl">
+              <GraduationCap className="w-5 h-5 text-orange-600" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-full bg-orange-50 text-orange-700">
+              {students.length > 0 ? Math.round((students.filter(s => s.class.startsWith("9")).length / students.length) * 100) : 0}%
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">{students.filter(s => s.class.startsWith("9")).length}</p>
+          <p className="text-sm text-gray-500 mt-1">9-Sinf</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Bitiruvchi:</span>
+            <span className="text-sm font-semibold text-orange-600">2025</span>
+          </div>
+        </div>
+
+        {/* 10-11 sinf */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-violet-50 rounded-xl">
+              <GraduationCap className="w-5 h-5 text-violet-600" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded-full bg-violet-50 text-violet-700">
+              {students.length > 0 ? Math.round((students.filter(s => s.class.startsWith("10") || s.class.startsWith("11")).length / students.length) * 100) : 0}%
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900">
+            {students.filter(s => s.class.startsWith("10") || s.class.startsWith("11")).length}
           </p>
+          <p className="text-sm text-gray-500 mt-1">10-11 Sinf</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+            <span className="text-xs text-gray-500">Abiturient:</span>
+            <span className="text-sm font-semibold text-violet-600">2025-26</span>
+          </div>
         </div>
+      </div>
 
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-4 gap-6 mb-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Jami O'quvchilar</span>
+      {/* Main Table */}
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+        {/* Table Toolbar */}
+        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Qidirish..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+              />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">
-              {students.length}
-            </div>
-            <div className="text-xs text-gray-500">Ro'yxatdagilar</div>
+            <select
+              value={selectedClass}
+              onChange={(e) => setSelectedClass(e.target.value)}
+              className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {classes.map((cls) => (
+                <option key={cls} value={cls}>{cls}</option>
+              ))}
+            </select>
           </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Faol O'quvchilar</span>
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">
-              {activeCount}
-            </div>
-            <div className="text-xs text-gray-500">Darsga qatnashayotgan</div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">9-sinf</span>
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">
-              {students.filter((s) => s.class.startsWith("9")).length}
-            </div>
-            <div className="text-xs text-gray-500">O'quvchilar</div>
-          </div>
-
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">10-11 sinf</span>
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">
-              {
-                students.filter(
-                  (s) => s.class.startsWith("10") || s.class.startsWith("11")
-                ).length
-              }
-            </div>
-            <div className="text-xs text-gray-500">O'quvchilar</div>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+            {filteredStudents.length} ta o'quvchi
           </div>
         </div>
 
-        {/* Main Table */}
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-          {/* Table Toolbar */}
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-3 text-left">
                   <input
-                    type="text"
-                    placeholder="Qidirish..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    type="checkbox"
+                    className="rounded border-gray-300"
                   />
-                </div>
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelectedClass(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  O'quvchi
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Sinf
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Yosh
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Telefon
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ota-ona
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Keldi
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ketdi
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredStudents.map((student, index) => (
+                <tr
+                  key={student.id}
+                  className={index % 2 === 1 ? "bg-gray-50" : "bg-white"}
                 >
-                  {classes.map((cls) => (
-                    <option key={cls} value={cls}>
-                      {cls}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex items-center space-x-3">
-                <button 
-                  onClick={handleExportToExcel}
-                  className="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Export
-                </button>
-                <button
-                  onClick={handleAddStudent}
-                  className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-800"
-                >
-                  + Yangi O'quvchi
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left">
+                  <td className="px-6 py-4">
                     <input
                       type="checkbox"
                       className="rounded border-gray-300"
                     />
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    O'quvchi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Sinf
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Yosh
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Telefon
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ota-ona
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Keldi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ketdi
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student, index) => (
-                  <tr
-                    key={student.id}
-                    className={index % 2 === 1 ? "bg-gray-50" : "bg-white"}
-                  >
-                    <td className="px-6 py-4">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                          {student.avatar}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                        {student.avatar}
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {student.name}
                         </div>
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {student.name}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {student.email}
-                          </div>
+                        <div className="text-xs text-gray-500">
+                          {student.email}
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {student.class}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {student.age}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {student.phone}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">
-                        {student.parentName}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {student.parentPhone}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {attendanceData[student.id]?.checkIn ? (
-                        <span className="text-green-600 font-medium">
-                          {attendanceData[student.id].checkIn}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {attendanceData[student.id]?.checkOut ? (
-                        <span className="text-blue-600 font-medium">
-                          {attendanceData[student.id].checkOut}
-                        </span>
-                      ) : (
-                        <span className="text-gray-400">-</span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4">
-                      {(() => {
-                        const attendance = attendanceData[student.id];
-                        if (!attendance || attendance.status === "Kelmagan") {
-                          return (
-                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                              Kelmagan
-                            </span>
-                          );
-                        }
-                        if (attendance.status === "Maktabda") {
-                          return (
-                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                              Maktabda
-                            </span>
-                          );
-                        }
-                        if (attendance.status === "Tugagan") {
-                          return (
-                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                              Tugagan
-                            </span>
-                          );
-                        }
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {student.class}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {student.age}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {student.phone}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="text-sm text-gray-900">
+                      {student.parentName}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {student.parentPhone}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {attendanceData[student.id]?.checkIn ? (
+                      <span className="text-green-600 font-medium">
+                        {attendanceData[student.id].checkIn}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">
+                    {attendanceData[student.id]?.checkOut ? (
+                      <span className="text-blue-600 font-medium">
+                        {attendanceData[student.id].checkOut}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    {(() => {
+                      const attendance = attendanceData[student.id];
+                      if (!attendance || attendance.status === "Kelmagan") {
                         return (
-                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
-                            Ma'lumot yo'q
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                            Kelmagan
                           </span>
                         );
-                      })()}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => handleEditStudent(student)}
-                          className="text-blue-600 hover:text-blue-800"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteStudent(student.id)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
-              Showing per page:{" "}
-              <select className="border border-gray-300 rounded px-2 py-1 text-sm">
-                <option>10</option>
-                <option>25</option>
-                <option>50</option>
-              </select>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                {"<"}
-              </button>
-              <button className="px-3 py-1 bg-orange-500 text-white rounded text-sm">
-                1
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                3
-              </button>
-              <span className="px-2 text-sm text-gray-500">...</span>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                25
-              </button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-                {">"}
-              </button>
-            </div>
-          </div>
+                      }
+                      if (attendance.status === "Maktabda") {
+                        return (
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            Maktabda
+                          </span>
+                        );
+                      }
+                      if (attendance.status === "Tugagan") {
+                        return (
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            Tugagan
+                          </span>
+                        );
+                      }
+                      return (
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                          Ma'lumot yo'q
+                        </span>
+                      );
+                    })()}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => handleEditStudent(student)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteStudent(student.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {filteredStudents.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-lg border border-gray-200 mt-6">
-            <div className="text-gray-400 mb-4">
-              <Search className="w-12 h-12 mx-auto" />
-            </div>
-            <p className="text-gray-500">O'quvchi topilmadi</p>
+        {/* Pagination */}
+        <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+          <div className="text-sm text-gray-700">
+            Showing per page:{" "}
+            <select className="border border-gray-300 rounded px-2 py-1 text-sm">
+              <option>10</option>
+              <option>25</option>
+              <option>50</option>
+            </select>
           </div>
-        )}
+          <div className="flex items-center space-x-2">
+            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+              {"<"}
+            </button>
+            <button className="px-3 py-1 bg-orange-500 text-white rounded text-sm">
+              1
+            </button>
+            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+              2
+            </button>
+            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+              3
+            </button>
+            <span className="px-2 text-sm text-gray-500">...</span>
+            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+              25
+            </button>
+            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+              {">"}
+            </button>
+          </div>
+        </div>
       </div>
+
+      {filteredStudents.length === 0 && (
+        <div className="text-center py-12 bg-white rounded-lg border border-gray-200 mt-6">
+          <div className="text-gray-400 mb-4">
+            <Search className="w-12 h-12 mx-auto" />
+          </div>
+          <p className="text-gray-500">O'quvchi topilmadi</p>
+        </div>
+      )}
 
       {/* Add/Edit Modal */}
       {showModal && (

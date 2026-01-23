@@ -104,8 +104,7 @@ const StaffPage = () => {
       });
 
       toast.success(
-        `Maosh holati yangilandi: ${
-          newStatus === "paid" ? "To'landi" : "To'lanmadi"
+        `Maosh holati yangilandi: ${newStatus === "paid" ? "To'landi" : "To'lanmadi"
         }`
       );
       loadEmployees(); // Reload to update stats
@@ -201,81 +200,106 @@ const StaffPage = () => {
     setTimeout(() => loadEmployees(), 500);
   };
 
+  const paidPercentage = salaryStats && salaryStats.totalSalary > 0
+    ? Math.round((salaryStats.paidAmount / salaryStats.totalSalary) * 100)
+    : 0;
+
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      {/* Header - Minimal */}
-      <div className="mb-6">
+    <div className="min-h-screen bg-gray-50 px-6 py-6">
+      {/* Header */}
+      <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Xodimlar</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          {filteredEmployees.length} xodim topildi
-        </p>
+        <p className="text-sm text-gray-500 mt-1">{filteredEmployees.length} xodim topildi</p>
       </div>
-      {/* Salary Statistics */}
+
+      {/* Salary Statistics - Dashboard style */}
       {salaryStats && (
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Jami Maosh</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">
-                  {salaryStats.totalSalary.toLocaleString()} so'm
-                </p>
+        <div className="grid grid-cols-4 gap-5 mb-6">
+          {/* Jami Maosh */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-blue-50 rounded-xl">
+                <Wallet className="w-5 h-5 text-blue-600" />
               </div>
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                <Wallet className="w-6 h-6 text-blue-600" />
-              </div>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+                Jami
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">
+              {(salaryStats.totalSalary / 1000000).toFixed(1)}M
+            </p>
+            <p className="text-sm text-gray-500 mt-1">Jami Maosh</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">So'm:</span>
+              <span className="text-sm font-semibold text-blue-600">
+                {salaryStats.totalSalary.toLocaleString()}
+              </span>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">To'langan</p>
-                <p className="text-2xl font-bold text-green-600 mt-1">
-                  {salaryStats.paidAmount.toLocaleString()} so'm
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {salaryStats.paidCount} xodim
-                </p>
+          {/* To'langan */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-emerald-50 rounded-xl">
+                <CheckCircle className="w-5 h-5 text-emerald-600" />
               </div>
-              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-green-600" />
-              </div>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+                {paidPercentage}%
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">
+              {(salaryStats.paidAmount / 1000000).toFixed(1)}M
+            </p>
+            <p className="text-sm text-gray-500 mt-1">To'langan</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Xodimlar:</span>
+              <span className="text-sm font-semibold text-emerald-600">
+                {salaryStats.paidCount} ta
+              </span>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">To'lanmagan</p>
-                <p className="text-2xl font-bold text-red-600 mt-1">
-                  {salaryStats.unpaidAmount.toLocaleString()} so'm
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {salaryStats.unpaidCount} xodim
-                </p>
+          {/* To'lanmagan */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-red-50 rounded-xl">
+                <XCircle className="w-5 h-5 text-red-600" />
               </div>
-              <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                <XCircle className="w-6 h-6 text-red-600" />
-              </div>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
+                {100 - paidPercentage}%
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">
+              {(salaryStats.unpaidAmount / 1000000).toFixed(1)}M
+            </p>
+            <p className="text-sm text-gray-500 mt-1">To'lanmagan</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Xodimlar:</span>
+              <span className="text-sm font-semibold text-red-600">
+                {salaryStats.unpaidCount} ta
+              </span>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Foiz</p>
-                <p className="text-2xl font-bold text-blue-600 mt-1">
-                  {Math.round(
-                    (salaryStats.paidAmount / salaryStats.totalSalary) * 100
-                  )}
-                  %
-                </p>
-                <p className="text-xs text-gray-500 mt-1">To'langan</p>
+          {/* Foiz */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-violet-50 rounded-xl">
+                <TrendingUp className="w-5 h-5 text-violet-600" />
               </div>
-              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-blue-600" />
-              </div>
+              <span className={`text-xs font-medium px-2 py-1 rounded-full ${paidPercentage >= 80 ? 'bg-green-50 text-green-700' :
+                  paidPercentage >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
+                }`}>
+                {paidPercentage >= 80 ? 'Yaxshi' : paidPercentage >= 50 ? 'O\'rtacha' : 'Past'}
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{paidPercentage}%</p>
+            <p className="text-sm text-gray-500 mt-1">To'langan Foiz</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
+              <span className="text-xs text-gray-500">Status:</span>
+              <span className="text-sm font-semibold text-violet-600">
+                {paidPercentage >= 80 ? 'A\'lo' : paidPercentage >= 50 ? 'Yaxshi' : 'Qoniqarsiz'}
+              </span>
             </div>
           </div>
         </div>
@@ -386,11 +410,10 @@ const StaffPage = () => {
                         {emp.name?.charAt(0).toUpperCase()}
                       </div>
                       <div
-                        className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${
-                          emp.status === "active"
-                            ? "bg-green-500"
-                            : "bg-gray-400"
-                        }`}
+                        className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${emp.status === "active"
+                          ? "bg-green-500"
+                          : "bg-gray-400"
+                          }`}
                       ></div>
                     </div>
                     <div className="min-w-0">
@@ -454,11 +477,10 @@ const StaffPage = () => {
                   {/* Status */}
                   <div className="col-span-2">
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${
-                        emp.status === "active"
-                          ? "bg-green-50 text-green-700 border border-green-200"
-                          : "bg-gray-50 text-gray-600 border border-gray-200"
-                      }`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${emp.status === "active"
+                        ? "bg-green-50 text-green-700 border border-green-200"
+                        : "bg-gray-50 text-gray-600 border border-gray-200"
+                        }`}
                     >
                       {emp.status === "active" ? "Aktiv" : "Nofaol"}
                     </span>
@@ -473,11 +495,10 @@ const StaffPage = () => {
                           emp.salaryStatus || "unpaid"
                         )
                       }
-                      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${
-                        emp.salaryStatus === "paid"
-                          ? "bg-green-100 text-green-600 hover:bg-green-200"
-                          : "bg-red-100 text-red-600 hover:bg-red-200"
-                      }`}
+                      className={`inline-flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${emp.salaryStatus === "paid"
+                        ? "bg-green-100 text-green-600 hover:bg-green-200"
+                        : "bg-red-100 text-red-600 hover:bg-red-200"
+                        }`}
                       title={
                         emp.salaryStatus === "paid" ? "To'landi" : "To'lanmadi"
                       }
@@ -525,11 +546,10 @@ const StaffPage = () => {
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
-                    className={`min-w-[32px] h-8 px-3 rounded-lg text-sm font-medium transition-colors ${
-                      currentPage === page
-                        ? "bg-blue-600 text-white"
-                        : "border border-gray-300 hover:bg-gray-50 text-gray-700"
-                    }`}
+                    className={`min-w-[32px] h-8 px-3 rounded-lg text-sm font-medium transition-colors ${currentPage === page
+                      ? "bg-blue-600 text-white"
+                      : "border border-gray-300 hover:bg-gray-50 text-gray-700"
+                      }`}
                   >
                     {page}
                   </button>
