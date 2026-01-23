@@ -77,6 +77,15 @@ const NotificationsPage = () => {
       const token = localStorage.getItem("token");
       const url = `${API_URL}/notifications/telegram/status`;
       console.log("🔍 Fetching telegram status from:", url);
+
+      // TEST PING
+      try {
+        const pingResponse = await axios.get(`${API_URL}/notifications/ping`);
+        console.log("🏓 Ping response:", pingResponse.data);
+      } catch (e) {
+        console.warn("🏓 Ping failed:", e.message);
+      }
+
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
