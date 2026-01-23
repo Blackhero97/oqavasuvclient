@@ -75,7 +75,9 @@ const NotificationsPage = () => {
   const fetchTelegramStatus = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`${API_URL}/notifications/telegram/status`, {
+      const url = `${API_URL}/notifications/telegram/status`;
+      console.log("🔍 Fetching telegram status from:", url);
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTelegramStatus(response.data);
@@ -121,8 +123,8 @@ const NotificationsPage = () => {
 
           {/* Telegram Status Badge */}
           <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border ${telegramStatus.active
-              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-              : "bg-red-50 text-red-700 border-red-100"
+            ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+            : "bg-red-50 text-red-700 border-red-100"
             }`}>
             <div className={`w-2 h-2 rounded-full ${telegramStatus.active ? "bg-emerald-500 animate-pulse" : "bg-red-500"}`}></div>
             Telegram Bot: {telegramStatus.active ? "Ulangan" : "Ulanmagan"}
