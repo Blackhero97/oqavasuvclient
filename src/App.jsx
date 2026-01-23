@@ -14,7 +14,35 @@ import NotificationsPage from "./pages/NotificationsPage";
 import StaffPage from "./pages/StaffPage";
 import LoginPage from "./pages/LoginPage";
 import ErrorBoundary from "./components/ErrorBoundary";
+import axios from "axios";
 import "./App.css";
+
+// Set up axios interceptor for JWT authentication
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Handle 401 Unauthorized globally
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   const [user, setUser] = useState(null);
@@ -50,6 +78,7 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
     toast.success("Tizimdan muvaffaqiyatli chiqildi", {
       duration: 3000,

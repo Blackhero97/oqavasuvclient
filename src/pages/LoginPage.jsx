@@ -1,7 +1,11 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Eye, EyeOff, Lock, User, ArrowRight, TrendingUp } from "lucide-react";
 import logo from "../assets/main-logo.png";
+import { API_URL as BASE_URL } from "../config";
+
+const API_URL = `${BASE_URL}/api`;
 
 const LoginPage = ({ onLogin }) => {
   const [formData, setFormData] = useState({
@@ -59,33 +63,43 @@ const LoginPage = ({ onLogin }) => {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const user = demoUsers.find(
-        (u) =>
-          u.username === formData.username && u.password === formData.password
-      );
+    try {
+      const response = await axios.post(`${API_URL}/auth/login`, {
+        username: formData.username,
+        password: formData.password
+      });
 
-      if (user) {
+      if (response.data.success) {
+        const { token, user } = response.data;
+
+        // Save both to localStorage
+        localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
+
         toast.success("Muvaffaqiyatli kirildi!", {
           duration: 1500,
           position: "top-center",
         });
+
         setTimeout(() => {
           onLogin(user);
         }, 1000);
-      } else {
-        toast.error("Noto'g'ri foydalanuvchi nomi yoki parol", {
-          duration: 3000,
-          position: "top-center",
-        });
-        setErrors({
-          general: "Noto'g'ri foydalanuvchi nomi yoki parol",
-        });
       }
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMessage = error.response?.data?.error || "Username yoki password noto'g'ri";
 
+      toast.error(errorMessage, {
+        duration: 3000,
+        position: "top-center",
+      });
+
+      setErrors({
+        general: errorMessage,
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleDemoLogin = (demoUser) => {

@@ -28,6 +28,8 @@ const NotificationsPage = () => {
     botConfigured: false,
     chatIdSet: false,
   });
+  const [classes, setClasses] = useState([]);
+  const [selectedClass, setSelectedClass] = useState("");
 
   const [notifications] = useState([
     {
@@ -70,7 +72,19 @@ const NotificationsPage = () => {
 
   useEffect(() => {
     fetchTelegramStatus();
+    fetchClasses();
   }, []);
+
+  const fetchClasses = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/classes`);
+      // handle different response formats
+      const classData = response.data.classes || response.data;
+      setClasses(Array.isArray(classData) ? classData : []);
+    } catch (error) {
+      console.error("Error fetching classes:", error);
+    }
+  };
 
   const fetchTelegramStatus = async () => {
     try {
@@ -102,6 +116,28 @@ const NotificationsPage = () => {
       const response = await axios.post(
         `${API_URL}/notifications/telegram/attendance`,
         { role },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Xatolik yuz berdi");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendClassReport = async () => {
+    if (!selectedClass) {
+      toast.error("Iltimos, sinf tanlang");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${API_URL}/notifications/telegram/class-attendance`,
+        { className: selectedClass },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(response.data.message);
@@ -181,15 +217,33 @@ const NotificationsPage = () => {
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center gap-4 mb-4">
               <div className="p-3 bg-violet-50 rounded-xl text-violet-600">
-                <Clock className="w-6 h-6" />
+                <Building className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900">Avtomatik Jadval</h3>
+              <h3 className="font-semibold text-gray-900">Sinfboyicha Davomat</h3>
             </div>
-            <p className="text-sm text-gray-500 mb-2">• 09:00 - Ertalabki hisobot</p>
-            <p className="text-sm text-gray-500 mb-4">• 17:00 - Kunlik yakuniy hisobot</p>
-            <div className="text-xs font-semibold py-1.5 px-3 bg-violet-50 text-violet-700 rounded-lg inline-block">
-              Aktivlashtirilgan ✅
+            <p className="text-sm text-gray-500 mb-4">Tanlangan sinf uchun bugungi davomat hisobotini yuboring.</p>
+
+            <div className="flex gap-2 mb-4">
+              <select
+                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-violet-500/20"
+                onChange={(e) => setSelectedClass(e.target.value)}
+                value={selectedClass}
+              >
+                <option value="">Sinf tanlang</option>
+                {classes.map(c => (
+                  <option key={c._id} value={c.name}>{c.name}</option>
+                ))}
+              </select>
             </div>
+
+            <button
+              disabled={loading || !selectedClass}
+              onClick={() => handleSendClassReport()}
+              className="w-full py-2.5 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              <SendHorizontal className="w-4 h-4" />
+              Sinfboyicha Yuborish
+            </button>
           </div>
         </div>
 
