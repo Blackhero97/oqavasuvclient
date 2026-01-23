@@ -1,261 +1,290 @@
-import React, { useState } from "react";
-import { Bell, Send, MessageSquare, Phone, Mail, Plus } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+  Bell,
+  Send,
+  MessageSquare,
+  Phone,
+  Mail,
+  Plus,
+  SendHorizontal,
+  Users,
+  UserCheck,
+  Building,
+  CheckCircle2,
+  XCircle,
+  AlertCircle,
+  Clock,
+} from "lucide-react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { API_URL as BASE_URL } from "../config";
+
+const API_URL = `${BASE_URL}/api`;
 
 const NotificationsPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [telegramStatus, setTelegramStatus] = useState({
+    active: false,
+    botConfigured: false,
+    chatIdSet: false,
+  });
+
   const [notifications] = useState([
     {
       id: 1,
       type: "sms",
       recipient: "Ali Valiyev ota-onasi",
       message: "Bugun davomat: Kelgan",
-      date: "2024-12-16 09:30",
+      date: "2026-01-23 09:30",
       status: "sent",
     },
     {
       id: 2,
-      type: "email",
-      recipient: "10-A sinf ota-onalari",
-      message: "Yig'ilish: 18-dekabr, 16:00",
-      date: "2024-12-15 14:00",
+      type: "telegram",
+      recipient: "O'qituvchilar Guruhi",
+      message: "Ertalabki davomat hisoboti yuborildi",
+      date: "2026-01-23 09:02",
       status: "sent",
-    },
-    {
-      id: 3,
-      type: "sms",
-      recipient: "Dilnoza Karimova ota-onasi",
-      message: "To'lov eslatmasi",
-      date: "2024-12-14 10:00",
-      status: "pending",
     },
   ]);
 
   const [templates] = useState([
     {
       id: 1,
-      name: "Davomat xabarnomasi",
-      content: "Hurmatli ota-ona, bugun {student} darsga {status}",
+      name: "Davomat (Ota-onaga)",
+      content: "Hurmatli ota-ona, {student} bugun maktabga {status} vaqtda keldi.",
     },
     {
       id: 2,
-      name: "To'lov eslatmasi",
-      content: "Hurmatli ota-ona, to'lov muddati {date} gacha",
-    },
-    {
-      id: 3,
-      name: "Baho xabarnomasi",
-      content: "{student} {subject} fanidan {grade} baho oldi",
+      name: "Yig'ilish (O'qituvchilarga)",
+      content: "Hurmatli hamkasblar, bugun soat {time} da majlis bo'lib o'tadi.",
     },
   ]);
 
+  const [formData, setFormData] = useState({
+    type: "Telegram",
+    recipient: "all_students",
+    template: "",
+    message: "",
+  });
+
+  useEffect(() => {
+    fetchTelegramStatus();
+  }, []);
+
+  const fetchTelegramStatus = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API_URL}/notifications/telegram/status`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTelegramStatus(response.data);
+    } catch (error) {
+      console.error("Telegram status error:", error);
+    }
+  };
+
+  const handleSendTelegramReport = async (role) => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${API_URL}/notifications/telegram/attendance`,
+        { role },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Xatolik yuz berdi");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleManualSend = async () => {
+    if (!formData.message) {
+      toast.error("Xabar matnini kiriting");
+      return;
+    }
+    toast.success("Xabar yuborish jarayoni boshlandi (Simulyatsiya)");
+  };
+
   return (
-    <div className="px-4 py-5 bg-gray-50 min-h-screen">
-      <div className="w-full">
+    <div className="min-h-screen bg-gray-50 px-6 py-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Bildirishnomalar</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            SMS va email xabarnomalar boshqaruvi
-          </p>
-        </div>
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Bildirishnomalar</h1>
+            <p className="text-sm text-gray-500 mt-1">Avtomatik va qo'lda xabarnomalar yuborish tizimi</p>
+          </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-6 mb-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Yuborilgan</p>
-                <p className="text-3xl font-bold text-gray-900">156</p>
-              </div>
-              <div className="p-3 rounded-lg bg-green-500">
-                <Send className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Kutilmoqda</p>
-                <p className="text-3xl font-bold text-gray-900">12</p>
-              </div>
-              <div className="p-3 rounded-lg bg-yellow-500">
-                <Bell className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">SMS</p>
-                <p className="text-3xl font-bold text-gray-900">98</p>
-              </div>
-              <div
-                className="p-3 rounded-lg"
-                style={{ backgroundColor: "#004A77" }}
-              >
-                <MessageSquare className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Email</p>
-                <p className="text-3xl font-bold text-gray-900">58</p>
-              </div>
-              <div className="p-3 rounded-lg bg-purple-500">
-                <Mail className="w-6 h-6 text-white" />
-              </div>
-            </div>
+          {/* Telegram Status Badge */}
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border ${telegramStatus.active
+              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
+              : "bg-red-50 text-red-700 border-red-100"
+            }`}>
+            <div className={`w-2 h-2 rounded-full ${telegramStatus.active ? "bg-emerald-500 animate-pulse" : "bg-red-500"}`}></div>
+            Telegram Bot: {telegramStatus.active ? "Ulangan" : "Ulanmagan"}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          {/* Send New Notification */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Yangi Xabar Yuborish
-            </h2>
+        {/* Quick Actions Support */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-blue-50 rounded-xl text-blue-600">
+                <Users className="w-6 h-6" />
+              </div>
+              <h3 className="font-semibold text-gray-900">O'quvchilar Davomati</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-6">Barcha o'quvchilarning bugungi davomat hisobotini darhol yuboring.</p>
+            <button
+              disabled={loading}
+              onClick={() => handleSendTelegramReport('student')}
+              className="w-full py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <SendHorizontal className="w-4 h-4" />
+              Telegramga Yuborish
+            </button>
+          </div>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Xabar Turi
-                </label>
-                <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>SMS</option>
-                  <option>Email</option>
-                </select>
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-orange-50 rounded-xl text-orange-600">
+                <UserCheck className="w-6 h-6" />
+              </div>
+              <h3 className="font-semibold text-gray-900">O'qituvchilar Davomati</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-6">O'qituvchilarning bugungi keldi-ketdi hisobotini guruhga yuboring.</p>
+            <button
+              disabled={loading}
+              onClick={() => handleSendTelegramReport('teacher')}
+              className="w-full py-2.5 bg-orange-600 text-white rounded-xl text-sm font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <SendHorizontal className="w-4 h-4" />
+              Telegramga Yuborish
+            </button>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-violet-50 rounded-xl text-violet-600">
+                <Clock className="w-6 h-6" />
+              </div>
+              <h3 className="font-semibold text-gray-900">Avtomatik Jadval</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-2">• 09:00 - Ertalabki hisobot</p>
+            <p className="text-sm text-gray-500 mb-4">• 17:00 - Kunlik yakuniy hisobot</p>
+            <div className="text-xs font-semibold py-1.5 px-3 bg-violet-50 text-violet-700 rounded-lg inline-block">
+              Aktivlashtirilgan ✅
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* New Message Form */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">Xabar Yuborish</h2>
+              <Plus className="w-5 h-5 text-gray-400" />
+            </div>
+            <div className="p-6 space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Transport</label>
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                  >
+                    <option>Telegram</option>
+                    <option>SMS</option>
+                    <option>Email</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Qabul qiluvchi</label>
+                  <select
+                    value={formData.recipient}
+                    onChange={(e) => setFormData({ ...formData, recipient: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                  >
+                    <option value="all_students">Barcha O'quvchilar</option>
+                    <option value="all_teachers">Barcha O'qituvchilar</option>
+                    <option value="staff">Barcha Hodimlar</option>
+                  </select>
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Qabul qiluvchi
-                </label>
-                <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  <option>Barcha ota-onalar</option>
-                  <option>10-A sinf</option>
-                  <option>Alohida tanlash</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Shablon
-                </label>
-                <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Mavzu / Shablon</label>
+                <select
+                  value={formData.template}
+                  onChange={(e) => setFormData({ ...formData, template: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+                >
                   <option value="">Shablonsiz</option>
-                  {templates.map((template) => (
-                    <option key={template.id} value={template.id}>
-                      {template.name}
-                    </option>
-                  ))}
+                  {templates.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Xabar
-                </label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Xabar matni</label>
                 <textarea
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  rows="4"
-                  placeholder="Xabaringizni yozing..."
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-none"
+                  rows="5"
+                  placeholder="Xabarni shu yerda yozing..."
                 ></textarea>
               </div>
 
               <button
-                className="w-full py-3 text-white rounded-lg font-medium flex items-center justify-center space-x-2"
+                onClick={handleManualSend}
+                className="w-full py-3.5 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-all shadow-lg shadow-gray-200 flex items-center justify-center gap-2"
                 style={{ backgroundColor: "#004A77" }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#003A63")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#004A77")
-                }
               >
-                <Send className="w-5 h-5" />
-                <span>Yuborish</span>
+                <Send className="w-4 h-4" />
+                Xabar Yuborish
               </button>
             </div>
           </div>
 
-          {/* Notification History */}
-          <div className="bg-white border border-gray-200 rounded-lg p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Xabarlar Tarixi
-            </h2>
-
-            <div className="space-y-4">
+          {/* History */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm flex flex-col">
+            <div className="px-6 py-4 border-b border-gray-50 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">Oxirgi Xabarlar</h2>
+              <div className="p-1.5 bg-gray-50 rounded-lg text-gray-400">
+                <Bell className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="flex-1 p-6 space-y-4 overflow-y-auto max-h-[600px] custom-scrollbar">
               {notifications.map((notif) => (
-                <div
-                  key={notif.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
+                <div key={notif.id} className="p-4 rounded-2xl border border-gray-50 bg-gray-50/50 hover:bg-white hover:border-gray-100 hover:shadow-sm transition-all group">
                   <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div
-                        className={`p-2 rounded-lg ${notif.type === "sms" ? "bg-blue-100" : "bg-purple-100"
-                          }`}
-                      >
-                        {notif.type === "sms" ? (
-                          <MessageSquare
-                            className="w-4 h-4"
-                            style={{ color: "#004A77" }}
-                          />
-                        ) : (
-                          <Mail className="w-4 h-4 text-purple-600" />
-                        )}
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-xl border ${notif.type === 'telegram' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-orange-50 text-orange-600 border-orange-100'
+                        }`}>
+                        {notif.type === 'telegram' ? <SendHorizontal className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
                       </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        {notif.recipient}
-                      </span>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900">{notif.recipient}</h4>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] uppercase font-bold text-gray-400">{notif.type}</span>
+                          <span className="text-[10px] text-gray-300">•</span>
+                          <span className="text-[10px] text-gray-400">{notif.date}</span>
+                        </div>
+                      </div>
                     </div>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${notif.status === "sent"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
-                        }`}
-                    >
-                      {notif.status === "sent" ? "Yuborildi" : "Kutilmoqda"}
+                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg uppercase">
+                      {notif.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-700 mb-2">{notif.message}</p>
-                  <p className="text-xs text-gray-500">{notif.date}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed pl-12">{notif.message}</p>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* Templates Section */}
-        <div className="mt-6 bg-white border border-gray-200 rounded-lg p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Xabar Shablonlari
-            </h2>
-            <button
-              className="flex items-center space-x-2 px-4 py-2 text-white rounded-lg"
-              style={{ backgroundColor: "#004A77" }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#003A63")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#004A77")}
-            >
-              <Plus className="w-5 h-5" />
-              <span>Yangi Shablon</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            {templates.map((template) => (
-              <div
-                key={template.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <h3 className="font-medium text-gray-900 mb-2">
-                  {template.name}
-                </h3>
-                <p className="text-sm text-gray-600">{template.content}</p>
-              </div>
-            ))}
           </div>
         </div>
       </div>
