@@ -153,7 +153,45 @@ const NotificationsPage = () => {
       toast.error("Xabar matnini kiriting");
       return;
     }
-    toast.success("Xabar yuborish jarayoni boshlandi (Simulyatsiya)");
+
+    try {
+      setLoading(true);
+
+      // Map recipient to readable format
+      const recipientMap = {
+        'all_students': "Barcha O'quvchilar",
+        'all_teachers': "Barcha O'qituvchilar",
+        'staff': "Barcha Hodimlar"
+      };
+
+      const recipient = recipientMap[formData.recipient] || "Barcha";
+
+      // Get template name if selected
+      const selectedTemplate = templates.find(t => t.id === parseInt(formData.template));
+      const title = selectedTemplate ? selectedTemplate.name : "Xabar";
+
+      const response = await axios.post(
+        `${API_URL}/notifications/telegram/custom`,
+        {
+          title: title,
+          message: formData.message,
+          recipient: recipient
+        }
+      );
+
+      toast.success(response.data.message);
+
+      // Clear form
+      setFormData({
+        ...formData,
+        message: "",
+        template: ""
+      });
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Xatolik yuz berdi");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
