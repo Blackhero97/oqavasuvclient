@@ -215,7 +215,7 @@ const NotificationsPage = () => {
         </div>
 
         {/* Quick Actions Support */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center gap-4 mb-4">
               <div className="p-3 bg-blue-50 rounded-xl text-blue-600">
@@ -246,6 +246,24 @@ const NotificationsPage = () => {
               disabled={loading}
               onClick={() => handleSendTelegramReport('teacher')}
               className="w-full py-2.5 bg-orange-600 text-white rounded-xl text-sm font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
+            >
+              <SendHorizontal className="w-4 h-4" />
+              Telegramga Yuborish
+            </button>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex items-center gap-4 mb-4">
+              <div className="p-3 bg-purple-50 rounded-xl text-purple-600">
+                <Building className="w-6 h-6" />
+              </div>
+              <h3 className="font-semibold text-gray-900">Hodimlar Davomati</h3>
+            </div>
+            <p className="text-sm text-gray-500 mb-6">Barcha hodimlarning bugungi keldi-ketdi hisobotini guruhga yuboring.</p>
+            <button
+              disabled={loading}
+              onClick={() => handleSendTelegramReport('staff')}
+              className="w-full py-2.5 bg-purple-600 text-white rounded-xl text-sm font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
             >
               <SendHorizontal className="w-4 h-4" />
               Telegramga Yuborish
