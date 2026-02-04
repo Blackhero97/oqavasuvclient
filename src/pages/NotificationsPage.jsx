@@ -31,24 +31,7 @@ const NotificationsPage = () => {
   const [classes, setClasses] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
 
-  const [notifications] = useState([
-    {
-      id: 1,
-      type: "sms",
-      recipient: "Ali Valiyev ota-onasi",
-      message: "Bugun davomat: Kelgan",
-      date: "2026-01-23 09:30",
-      status: "sent",
-    },
-    {
-      id: 2,
-      type: "telegram",
-      recipient: "O'qituvchilar Guruhi",
-      message: "Ertalabki davomat hisoboti yuborildi",
-      date: "2026-01-23 09:02",
-      status: "sent",
-    },
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
   const [templates] = useState([
     {
@@ -73,7 +56,19 @@ const NotificationsPage = () => {
   useEffect(() => {
     fetchTelegramStatus();
     fetchClasses();
+    fetchNotificationHistory();
   }, []);
+
+  const fetchNotificationHistory = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/notifications/history?limit=10`);
+      if (response.data.success) {
+        setNotifications(response.data.notifications);
+      }
+    } catch (error) {
+      console.error("Error fetching notification history:", error);
+    }
+  };
 
   const fetchClasses = async () => {
     try {
@@ -119,6 +114,8 @@ const NotificationsPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(response.data.message);
+      // Refresh notification history
+      await fetchNotificationHistory();
     } catch (error) {
       toast.error(error.response?.data?.error || "Xatolik yuz berdi");
     } finally {
@@ -141,6 +138,8 @@ const NotificationsPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success(response.data.message);
+      // Refresh notification history
+      await fetchNotificationHistory();
     } catch (error) {
       toast.error(error.response?.data?.error || "Xatolik yuz berdi");
     } finally {
@@ -381,30 +380,53 @@ const NotificationsPage = () => {
               </div>
             </div>
             <div className="flex-1 p-6 space-y-4 overflow-y-auto max-h-[600px] custom-scrollbar">
-              {notifications.map((notif) => (
-                <div key={notif.id} className="p-4 rounded-2xl border border-gray-50 bg-gray-50/50 hover:bg-white hover:border-gray-100 hover:shadow-sm transition-all group">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-xl border ${notif.type === 'telegram' ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-orange-50 text-orange-600 border-orange-100'
-                        }`}>
-                        {notif.type === 'telegram' ? <SendHorizontal className="w-4 h-4" /> : <MessageSquare className="w-4 h-4" />}
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-bold text-gray-900">{notif.recipient}</h4>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <span className="text-[10px] uppercase font-bold text-gray-400">{notif.type}</span>
-                          <span className="text-[10px] text-gray-300">•</span>
-                          <span className="text-[10px] text-gray-400">{notif.date}</span>
+              {notifications.length === 0 ? (
+                <div className="text-center py-8 text-gray-400">
+                  <Bell className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p>Hali xabarlar yo'q</p>
+                </div>
+              ) : (
+                notifications.map((notif) => {
+                  const date = new Date(notif.sentAt);
+                  const formattedDate = `${date.toLocaleDateString('uz-UZ')} ${date.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' })}`;
+                  const targetLabels = { 'student': 'O\'quvchilar', 'teacher': 'O\'qituvchilar', 'staff': 'Hodimlar' };
+                  const targetLabel = targetLabels[notif.target] || notif.target;
+
+                  return (
+                    <div key={notif._id} className="p-4 rounded-2xl border border-gray-50 bg-gray-50/50 hover:bg-white hover:border-gray-100 hover:shadow-sm transition-all group">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-xl border bg-blue-50 text-blue-600 border-blue-100">
+                            <SendHorizontal className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-gray-900">{notif.title}</h4>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-[10px] uppercase font-bold text-gray-400">{notif.type}</span>
+                              <span className="text-[10px] text-gray-300">•</span>
+                              <span className="text-[10px] text-gray-400">{formattedDate}</span>
+                            </div>
+                          </div>
                         </div>
+                        <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg uppercase">
+                          {notif.status}
+                        </span>
+                      </div>
+                      <div className="pl-12">
+                        <p className="text-sm text-gray-600 mb-2">{targetLabel}</p>
+                        {notif.metadata && (
+                          <div className="flex gap-3 text-xs text-gray-500">
+                            <span>✅ {notif.metadata.presentCount || 0}</span>
+                            <span>❌ {notif.metadata.absentCount || 0}</span>
+                            <span>📊 {notif.metadata.attendanceRate || 0}%</span>
+                            {notif.recipients && <span>📤 {notif.recipients.sent}/{notif.recipients.total}</span>}
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-lg uppercase">
-                      {notif.status}
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 leading-relaxed pl-12">{notif.message}</p>
-                </div>
-              ))}
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
