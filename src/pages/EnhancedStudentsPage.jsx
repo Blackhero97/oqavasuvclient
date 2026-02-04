@@ -182,6 +182,8 @@ const StudentsPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add"); // 'add' or 'edit'
   const [currentStudent, setCurrentStudent] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [formData, setFormData] = useState({
     name: "",
     class: "",
@@ -227,6 +229,27 @@ const StudentsPage = () => {
 
     return matchesSearch && matchesClass;
   });
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedClass]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    setItemsPerPage(Number(e.target.value));
+    setCurrentPage(1);
+  };
 
   const handleAddStudent = () => {
     setModalMode("add");
@@ -666,7 +689,7 @@ const StudentsPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredStudents.map((student, index) => (
+              {paginatedStudents.map((student, index) => (
                 <tr
                   key={student.id}
                   className={index % 2 === 1 ? "bg-gray-50" : "bg-white"}
@@ -782,32 +805,84 @@ const StudentsPage = () => {
 
         {/* Pagination */}
         <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-sm text-gray-700">
-            Showing per page:{" "}
-            <select className="border border-gray-300 rounded px-2 py-1 text-sm">
-              <option>10</option>
-              <option>25</option>
-              <option>50</option>
-            </select>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-gray-700">
+              Sahifada ko'rsatish:{" "}
+              <select
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className="border border-gray-300 rounded px-2 py-1 text-sm ml-2"
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+                <option value={100}>100</option>
+              </select>
+            </div>
+            <div className="text-sm text-gray-500">
+              {startIndex + 1}-{Math.min(endIndex, filteredStudents.length)} / {filteredStudents.length} ta
+            </div>
           </div>
           <div className="flex items-center space-x-2">
-            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-1 border border-gray-300 rounded text-sm ${currentPage === 1
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'hover:bg-gray-50 text-gray-700'
+                }`}
+            >
               {"<"}
             </button>
-            <button className="px-3 py-1 bg-orange-500 text-white rounded text-sm">
-              1
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-              2
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-              3
-            </button>
-            <span className="px-2 text-sm text-gray-500">...</span>
-            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
-              25
-            </button>
-            <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 text-sm">
+
+            {/* Page numbers */}
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(page => {
+                // Show first page, last page, current page, and pages around current
+                if (page === 1 || page === totalPages) return true;
+                if (Math.abs(page - currentPage) <= 1) return true;
+                return false;
+              })
+              .map((page, index, array) => {
+                // Add ellipsis
+                if (index > 0 && page - array[index - 1] > 1) {
+                  return (
+                    <React.Fragment key={`ellipsis-${page}`}>
+                      <span className="px-2 text-sm text-gray-500">...</span>
+                      <button
+                        onClick={() => handlePageChange(page)}
+                        className={`px-3 py-1 rounded text-sm ${currentPage === page
+                            ? 'bg-orange-500 text-white'
+                            : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
+                          }`}
+                      >
+                        {page}
+                      </button>
+                    </React.Fragment>
+                  );
+                }
+                return (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`px-3 py-1 rounded text-sm ${currentPage === page
+                        ? 'bg-orange-500 text-white'
+                        : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
+                      }`}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1 border border-gray-300 rounded text-sm ${currentPage === totalPages
+                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'hover:bg-gray-50 text-gray-700'
+                }`}
+            >
               {">"}
             </button>
           </div>
