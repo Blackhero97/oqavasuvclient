@@ -6,7 +6,10 @@ import {
   Globe,
   Save,
   Check,
+  Lock,
+  Shield,
 } from "lucide-react";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 
 const SettingsPage = () => {
@@ -35,6 +38,7 @@ const SettingsPage = () => {
     { id: "schedule", name: "Jadval", icon: Globe },
     { id: "notifications", name: "Bildirishnomalar", icon: Bell },
     { id: "appearance", name: "Ko'rinish", icon: Palette },
+    { id: "security", name: "Xavfsizlik", icon: Lock },
   ];
 
   const handleInputChange = (key, value) => {
@@ -301,10 +305,105 @@ const SettingsPage = () => {
         return renderNotificationSettings();
       case "appearance":
         return renderAppearanceSettings();
+      case "security":
+        return renderSecuritySettings();
       default:
         return renderGeneralSettings();
     }
   };
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      toast.error("Yangi parollar mos kelmadi");
+      return;
+    }
+
+    try {
+      const response = await axios.put("/api/auth/change-password", {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
+      });
+
+      if (response.data.success) {
+        toast.success("Parol muvaffaqiyatli o'zgartirildi");
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.error || "Xatolik yuz berdi");
+    }
+  };
+
+  const renderSecuritySettings = () => (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Parolni o'zgartirish
+        </h3>
+        <form onSubmit={handlePasswordChange} className="max-w-md space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Hozirgi parol
+            </label>
+            <input
+              type="password"
+              value={passwordData.currentPassword}
+              onChange={(e) =>
+                setPasswordData({ ...passwordData, currentPassword: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Yangi parol
+            </label>
+            <input
+              type="password"
+              value={passwordData.newPassword}
+              onChange={(e) =>
+                setPasswordData({ ...passwordData, newPassword: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              minLength={6}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Yangi parolni tasdiqlang
+            </label>
+            <input
+              type="password"
+              value={passwordData.confirmPassword}
+              onChange={(e) =>
+                setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+              }
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+          >
+            Parolni yangilash
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 
   return (
     <div className="px-4 py-5 bg-gray-50 min-h-screen">

@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Calendar, Bell, Droplets } from "lucide-react";
+import { Home, Calendar, Bell, Settings, Droplets } from "lucide-react";
 
 const CleanSidebar = () => {
   const location = useLocation();
@@ -19,6 +19,12 @@ const CleanSidebar = () => {
       path: "/notifications",
       icon: Bell,
       label: "Bildirishnomalar",
+    },
+    {
+      id: "settings",
+      path: "/settings",
+      icon: Settings,
+      label: "Sozlamalar",
     },
   ];
 
