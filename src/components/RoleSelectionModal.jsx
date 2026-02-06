@@ -7,7 +7,7 @@ import { API_URL } from "../config";
 const ROLES = [
   {
     value: "student",
-    label: "O'quvchi",
+    label: "istamolchi",
   },
   {
     value: "teacher",
@@ -143,3 +143,4 @@ const RoleSelectionModal = ({ employee, isOpen, onClose, onSave }) => {
 };
 
 export default RoleSelectionModal;
+

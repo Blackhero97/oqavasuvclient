@@ -80,3 +80,4 @@ const StudentCard = ({ student }) => {
 };
 
 export default StudentCard;
+

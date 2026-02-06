@@ -12,7 +12,7 @@ import { toast } from "react-hot-toast";
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [settings, setSettings] = useState({
-    schoolName: "Boborahim Mashrab xususiy maktabi",
+    schoolName: "Boborahim Mashrab xususiy oqavai",
     address: "Namangan viloyat, Chust tumani",
     phone: "+998 69 555 12 34",
     email: "info@boborahim-mashrab.uz",
@@ -78,12 +78,12 @@ const SettingsPage = () => {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Maktab ma'lumotlari
+          oqava ma'lumotlari
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Maktab nomi
+              oqava nomi
             </label>
             <input
               type="text"
@@ -369,3 +369,4 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
+

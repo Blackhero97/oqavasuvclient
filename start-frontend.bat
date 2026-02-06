@@ -1,6 +1,6 @@
 @echo off
 echo ====================================
-echo BM CRM Frontend Starter
+echo Frontend Starter
 echo ====================================
 echo.
 

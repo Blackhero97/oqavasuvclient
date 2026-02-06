@@ -11,7 +11,7 @@ const ClassAttendanceTable = ({ data: classStats = [] }) => {
             Ma'lumotlar topilmadi
           </p>
           <p className="text-sm text-gray-500">
-            Hali sinflar bo'yicha davomat ma'lumotlari yo'q
+            Hali sinflar bo'yicha suv istamoli ma'lumotlari yo'q
           </p>
         </div>
       </div>
@@ -23,7 +23,7 @@ const ClassAttendanceTable = ({ data: classStats = [] }) => {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-900 flex items-center">
           <Users className="w-5 h-5 mr-2" />
-          Sinflar bo'yicha davomat
+          Sinflar bo'yicha suv istamoli
         </h2>
         <TrendingUp className="w-5 h-5 text-green-500" />
       </div>
@@ -165,3 +165,4 @@ const ClassAttendanceTable = ({ data: classStats = [] }) => {
 };
 
 export default ClassAttendanceTable;
+

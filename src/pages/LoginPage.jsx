@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { Eye, EyeOff, Lock, User, ArrowRight, TrendingUp } from "lucide-react";
-import logo from "../assets/main-logo.png";
+import { Eye, EyeOff, Lock, User, ArrowRight, TrendingUp, Droplets } from "lucide-react";
 import { API_URL as BASE_URL } from "../config";
 
 const API_URL = `${BASE_URL}/api`;
@@ -18,8 +17,6 @@ const LoginPage = ({ onLogin }) => {
 
   const demoUsers = [
     { username: "admin", password: "admin123", role: "Administrator" },
-    { username: "teacher", password: "teacher123", role: "O'qituvchi" },
-    { username: "director", password: "director123", role: "Direktor" },
   ];
 
   const handleInputChange = (e) => {
@@ -122,27 +119,27 @@ const LoginPage = ({ onLogin }) => {
         <div className="w-[40%] relative p-8 md:p-10 flex flex-col justify-between overflow-hidden">
           {/* Mesh Gradient Background */}
           <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-[#F7EBDC]"></div>
-            <div className="absolute top-[-30%] right-[-20%] w-[120%] h-[120%] bg-[#FF8D54] rounded-full blur-[100px] opacity-45"></div>
-            <div className="absolute bottom-[-20%] left-[-20%] w-[100%] h-[100%] bg-[#FFA57D] rounded-full blur-[100px] opacity-55"></div>
-            <div className="absolute top-[20%] left-[10%] w-[70%] h-[70%] bg-[#FFD4BA] rounded-full blur-[80px] opacity-35"></div>
+            <div className="absolute inset-0 bg-[#E0F2FE]"></div>
+            <div className="absolute top-[-30%] right-[-20%] w-[120%] h-[120%] bg-[#0EA5E9] rounded-full blur-[100px] opacity-40"></div>
+            <div className="absolute bottom-[-20%] left-[-20%] w-[100%] h-[100%] bg-[#06B6D4] rounded-full blur-[100px] opacity-50"></div>
+            <div className="absolute top-[20%] left-[10%] w-[70%] h-[70%] bg-[#7DD3FC] rounded-full blur-[80px] opacity-35"></div>
           </div>
 
           {/* Logo Branding */}
           <div className="relative z-10 flex items-center gap-2">
             <div className="w-6 h-6 bg-[rgb(0,74,119)] rounded-lg flex items-center justify-center transform -rotate-12">
-              <img src={logo} alt="BM Logo" className="w-3.5 h-3.5 object-contain brightness-0 invert" />
+              <Droplets className="w-3.5 h-3.5 text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-extrabold text-[13px] text-[#1A1A1A] leading-tight tracking-tighter">BM Maktab CRM</span>
-              <span className="text-[8px] font-bold text-[#9E6F45] uppercase tracking-widest">Muvaffaqiyat sari qadam</span>
+              <span className="font-extrabold text-[13px] text-[#1A1A1A] leading-tight tracking-tighter">Davomat Tizimi</span>
+              <span className="text-[8px] font-bold text-[#0284C7] uppercase tracking-widest">Attendance System</span>
             </div>
           </div>
 
           {/* Tagline */}
           <div className="relative z-10">
             <h1 className="text-[28px] md:text-[32px] font-[800] text-[#1A1A1A] leading-[1.05] tracking-tight">
-              Ta'limni boshqarishda zamonaviy va qulay yechim.
+              Davomat boshqaruvida zamonaviy va qulay yechim.
             </h1>
           </div>
         </div>
@@ -151,11 +148,11 @@ const LoginPage = ({ onLogin }) => {
         <div className="flex-1 bg-white p-8 md:p-10 lg:p-12 flex flex-col justify-center">
           <div className="max-w-[360px] w-full mx-auto">
             {/* Asterisk Icon (Reference match) */}
-            <div className="text-[#FF8D54] text-5xl font-serif leading-none mb-4 select-none">*</div>
+            <div className="text-[#0EA5E9] text-5xl font-serif leading-none mb-4 select-none">*</div>
 
             <h2 className="text-[34px] font-extrabold text-[#1A1A1A] mb-3 tracking-tighter">Tizimga kirish</h2>
             <p className="text-[#999999] text-[14px] leading-relaxed mb-10 font-medium">
-              Barcha darslar, o'quvchilar va hisobotlarni bir joyda boshqarish uchun tizimga kiring.
+              Xodimlar davomati va hisobotlarni bir joyda boshqarish uchun tizimga kiring.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6 mb-8">
@@ -218,29 +215,26 @@ const LoginPage = ({ onLogin }) => {
 
             <div className="relative flex items-center mb-8">
               <div className="flex-grow border-t border-[#F2F2F2]"></div>
-              <span className="flex-shrink mx-4 text-[12px] text-[#BBBBBB] font-semibold tracking-wider uppercase">yoki rolni tanlang</span>
+              <span className="flex-shrink mx-4 text-[12px] text-[#BBBBBB] font-semibold tracking-wider uppercase">yoki admin hisobidan foydalaning</span>
               <div className="flex-grow border-t border-[#F2F2F2]"></div>
             </div>
 
-            {/* Role Icons as requested (Replacing G, Github, Apple) */}
-            <div className="grid grid-cols-3 gap-3 mb-10">
-              {demoUsers.map((user, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleDemoLogin(user)}
-                  className="flex items-center justify-center py-3 bg-white border border-[#F0F0F0] rounded-xl hover:border-[#1A1A1A] hover:bg-[#FAFAFA] transition-all group group focus:ring-1 focus:ring-black/5"
-                  title={user.role}
-                >
-                  <div className="flex flex-col items-center">
-                    <User className="w-5 h-5 text-[#333333] mb-0.5" />
-                    <span className="text-[9px] font-extrabold text-[#999999] group-hover:text-black tracking-tight uppercase">{user.role.split(' ')[0]}</span>
-                  </div>
-                </button>
-              ))}
+            {/* Admin Quick Login */}
+            <div className="flex justify-center mb-10">
+              <button
+                onClick={() => handleDemoLogin(demoUsers[0])}
+                className="flex items-center justify-center px-6 py-3 bg-white border border-[#F0F0F0] rounded-xl hover:border-[#1A1A1A] hover:bg-[#FAFAFA] transition-all group group focus:ring-1 focus:ring-black/5"
+                title="Administrator"
+              >
+                <div className="flex flex-col items-center">
+                  <User className="w-5 h-5 text-[#333333] mb-0.5" />
+                  <span className="text-[9px] font-extrabold text-[#999999] group-hover:text-black tracking-tight uppercase">ADMIN</span>
+                </div>
+              </button>
             </div>
 
             <p className="text-center text-[13px] font-semibold text-[#BBBBBB]">
-              Profilingiz yo'qmi? <span className="text-[#FF8D54] hover:underline cursor-pointer ml-1">Admin bilan bog'laning</span>
+              Profilingiz yo'qmi? <span className="text-[#0EA5E9] hover:underline cursor-pointer ml-1">Admin bilan bog'laning</span>
             </p>
           </div>
         </div>

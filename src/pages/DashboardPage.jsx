@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
 import {
-  Users,
-  GraduationCap,
   Briefcase,
   TrendingUp,
   Clock,
   ArrowUpRight,
   ArrowDownRight,
   CheckCircle2,
-  AlertCircle,
   Wifi,
   Database,
   Server,
@@ -17,11 +14,7 @@ import { API_URL } from "../config";
 
 const DashboardPage = () => {
   const [stats, setStats] = useState({
-    totalStudents: 0,
-    totalTeachers: 0,
     totalStaff: 0,
-    studentsPresent: 0,
-    teachersPresent: 0,
     staffPresent: 0,
   });
 
@@ -54,35 +47,17 @@ const DashboardPage = () => {
 
       const today = new Date().toISOString().split("T")[0];
       const todayAttendance = attendance.filter(
-        (record) => record.date === today
+        (record) => record.date === today,
       );
 
-      const students = employees.filter((emp) => emp.role === "student");
-      const teachers = employees.filter((emp) => emp.role === "teacher");
       const staff = employees.filter((emp) => emp.role === "staff");
 
-      const studentsPresent = todayAttendance.filter((record) =>
-        students.some(
-          (s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId
-        )
-      ).length;
-
-      const teachersPresent = todayAttendance.filter((record) =>
-        teachers.some(
-          (t) => t.hikvisionEmployeeId === record.hikvisionEmployeeId
-        )
-      ).length;
-
       const staffPresent = todayAttendance.filter((record) =>
-        staff.some((s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId)
+        staff.some((s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId),
       ).length;
 
       setStats({
-        totalStudents: students.length,
-        totalTeachers: teachers.length,
         totalStaff: staff.length,
-        studentsPresent,
-        teachersPresent,
         staffPresent,
       });
 
@@ -91,7 +66,7 @@ const DashboardPage = () => {
         .reverse()
         .map((record) => {
           const employee = employees.find(
-            (emp) => emp.hikvisionEmployeeId === record.hikvisionEmployeeId
+            (emp) => emp.hikvisionEmployeeId === record.hikvisionEmployeeId,
           );
           return {
             id: record._id,
@@ -124,17 +99,18 @@ const DashboardPage = () => {
     weekday: "long",
   });
 
-  // Calculate percentages
-  const totalPeople = stats.totalStudents + stats.totalTeachers + stats.totalStaff;
-  const totalPresent = stats.studentsPresent + stats.teachersPresent + stats.staffPresent;
-  const attendancePercent = totalPeople > 0 ? Math.round((totalPresent / totalPeople) * 100) : 0;
+  // Calculate percentages - ONLY for staff
+  const totalPeople = stats.totalStaff;
+  const totalPresent = stats.staffPresent;
+  const attendancePercent =
+    totalPeople > 0 ? Math.round((totalPresent / totalPeople) * 100) : 0;
 
   const getRoleLabel = (role) => {
     switch (role) {
-      case "student": return "O'quvchi";
-      case "teacher": return "O'qituvchi";
-      case "staff": return "Xodim";
-      default: return role;
+      case "staff":
+        return "Xodim";
+      default:
+        return role;
     }
   };
 
@@ -145,27 +121,36 @@ const DashboardPage = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-sm text-gray-500 mt-1">{currentDay}, {currentDate}</p>
+            <p className="text-sm text-gray-500 mt-1">
+              {currentDay}, {currentDate}
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-              <span className="text-sm font-medium text-green-700">Real-time</span>
+              <span className="text-sm font-medium text-green-700">
+                Real-time
+              </span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-4 gap-5 mb-6">
+      <div className="grid grid-cols-2 gap-5 mb-6">
         {/* Overall Attendance Card */}
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="p-2.5 bg-indigo-50 rounded-xl">
               <TrendingUp className="w-5 h-5 text-indigo-600" />
             </div>
-            <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${attendancePercent > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
-              }`}>
+            <span
+              className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+                attendancePercent > 0
+                  ? "bg-green-50 text-green-700"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
               {attendancePercent}%
             </span>
           </div>
@@ -173,47 +158,9 @@ const DashboardPage = () => {
           <p className="text-sm text-gray-500 mt-1">Umumiy Davomat</p>
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
             <span className="text-xs text-gray-500">Jami:</span>
-            <span className="text-sm font-semibold text-indigo-600">{totalPeople}</span>
-          </div>
-        </div>
-
-        {/* Students */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 bg-blue-50 rounded-xl">
-              <Users className="w-5 h-5 text-blue-600" />
-            </div>
-            <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${stats.studentsPresent > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
-              }`}>
-              {stats.totalStudents > 0 ? Math.round((stats.studentsPresent / stats.totalStudents) * 100) : 0}%
-              {stats.studentsPresent > 0 && <ArrowUpRight className="w-3 h-3" />}
+            <span className="text-sm font-semibold text-indigo-600">
+              {totalPeople}
             </span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalStudents}</p>
-          <p className="text-sm text-gray-500 mt-1">O'quvchilar</p>
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-            <span className="text-xs text-gray-500">Bugun:</span>
-            <span className="text-sm font-semibold text-blue-600">{stats.studentsPresent}</span>
-          </div>
-        </div>
-
-        {/* Teachers */}
-        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 bg-emerald-50 rounded-xl">
-              <GraduationCap className="w-5 h-5 text-emerald-600" />
-            </div>
-            <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${stats.teachersPresent > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
-              }`}>
-              {stats.totalTeachers > 0 ? Math.round((stats.teachersPresent / stats.totalTeachers) * 100) : 0}%
-              {stats.teachersPresent > 0 && <ArrowUpRight className="w-3 h-3" />}
-            </span>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalTeachers}</p>
-          <p className="text-sm text-gray-500 mt-1">O'qituvchilar</p>
-          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-            <span className="text-xs text-gray-500">Bugun:</span>
-            <span className="text-sm font-semibold text-emerald-600">{stats.teachersPresent}</span>
           </div>
         </div>
 
@@ -223,17 +170,26 @@ const DashboardPage = () => {
             <div className="p-2.5 bg-violet-50 rounded-xl">
               <Briefcase className="w-5 h-5 text-violet-600" />
             </div>
-            <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${stats.staffPresent > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
-              }`}>
-              {stats.totalStaff > 0 ? Math.round((stats.staffPresent / stats.totalStaff) * 100) : 0}%
-              {stats.staffPresent > 0 && <ArrowUpRight className="w-3 h-3" />}
+            <span
+              className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+                stats.staffPresent > 0
+                  ? "bg-green-50 text-green-700"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {stats.totalStaff > 0
+                ? Math.round((stats.staffPresent / stats.totalStaff) * 100)
+                : 0}
+              %{stats.staffPresent > 0 && <ArrowUpRight className="w-3 h-3" />}
             </span>
           </div>
           <p className="text-2xl font-bold text-gray-900">{stats.totalStaff}</p>
           <p className="text-sm text-gray-500 mt-1">Xodimlar</p>
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
             <span className="text-xs text-gray-500">Bugun:</span>
-            <span className="text-sm font-semibold text-violet-600">{stats.staffPresent}</span>
+            <span className="text-sm font-semibold text-violet-600">
+              {stats.staffPresent}
+            </span>
           </div>
         </div>
       </div>
@@ -247,7 +203,9 @@ const DashboardPage = () => {
               <div className="p-2 bg-green-50 rounded-lg">
                 <Clock className="w-4 h-4 text-green-600" />
               </div>
-              <h2 className="text-base font-semibold text-gray-900">So'nggi Faollik</h2>
+              <h2 className="text-base font-semibold text-gray-900">
+                So'nggi Faollik
+              </h2>
             </div>
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
@@ -273,32 +231,31 @@ const DashboardPage = () => {
                 >
                   {/* Name */}
                   <div className="col-span-4 flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-semibold ${activity.role === 'student' ? 'bg-blue-500' :
-                        activity.role === 'teacher' ? 'bg-emerald-500' : 'bg-violet-500'
-                      }`}>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-semibold bg-violet-500">
                       {activity.avatar}
                     </div>
-                    <span className="text-sm font-medium text-gray-900 truncate">{activity.name}</span>
+                    <span className="text-sm font-medium text-gray-900 truncate">
+                      {activity.name}
+                    </span>
                   </div>
 
                   {/* Role */}
                   <div className="col-span-3">
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium ${activity.role === 'student' ? 'bg-blue-50 text-blue-700' :
-                        activity.role === 'teacher' ? 'bg-emerald-50 text-emerald-700' : 'bg-violet-50 text-violet-700'
-                      }`}>
-                      {activity.role === 'student' && <Users className="w-3 h-3" />}
-                      {activity.role === 'teacher' && <GraduationCap className="w-3 h-3" />}
-                      {activity.role === 'staff' && <Briefcase className="w-3 h-3" />}
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium bg-violet-50 text-violet-700">
+                      <Briefcase className="w-3 h-3" />
                       {getRoleLabel(activity.role)}
                     </span>
                   </div>
 
                   {/* Status */}
                   <div className="col-span-3 text-center">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${activity.action === "Kirdi"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-amber-100 text-amber-700"
-                      }`}>
+                    <span
+                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        activity.action === "Kirdi"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
                       {activity.action === "Kirdi" ? (
                         <ArrowUpRight className="w-3 h-3" />
                       ) : (
@@ -310,7 +267,9 @@ const DashboardPage = () => {
 
                   {/* Time */}
                   <div className="col-span-2 text-right">
-                    <span className="text-sm font-medium text-gray-600">{activity.time}</span>
+                    <span className="text-sm font-medium text-gray-600">
+                      {activity.time}
+                    </span>
                   </div>
                 </div>
               ))
@@ -318,7 +277,9 @@ const DashboardPage = () => {
               <div className="text-center py-16 text-gray-400">
                 <Clock className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p className="text-sm font-medium">Bugun hali faollik yo'q</p>
-                <p className="text-xs mt-1">Kirish/chiqish ma'lumotlari bu yerda ko'rinadi</p>
+                <p className="text-xs mt-1">
+                  Kirish/chiqish ma'lumotlari bu yerda ko'rinadi
+                </p>
               </div>
             )}
           </div>
@@ -327,7 +288,9 @@ const DashboardPage = () => {
         {/* System Status */}
         <div className="bg-white border border-gray-100 rounded-2xl shadow-sm">
           <div className="px-6 py-4 border-b border-gray-100">
-            <h2 className="text-base font-semibold text-gray-900">Tizim Holati</h2>
+            <h2 className="text-base font-semibold text-gray-900">
+              Tizim Holati
+            </h2>
           </div>
           <div className="p-4 space-y-3">
             {/* Status Items */}
@@ -336,7 +299,9 @@ const DashboardPage = () => {
                 <div className="p-2 bg-green-100 rounded-lg">
                   <Server className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-sm font-medium text-gray-700">Server</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Server
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -349,7 +314,9 @@ const DashboardPage = () => {
                 <div className="p-2 bg-green-100 rounded-lg">
                   <Database className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-sm font-medium text-gray-700">Database</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Database
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -362,11 +329,15 @@ const DashboardPage = () => {
                 <div className="p-2 bg-green-100 rounded-lg">
                   <Wifi className="w-4 h-4 text-green-600" />
                 </div>
-                <span className="text-sm font-medium text-gray-700">Hikvision</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Hikvision
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-green-500" />
-                <span className="text-xs font-medium text-green-600">Ulangan</span>
+                <span className="text-xs font-medium text-green-600">
+                  Ulangan
+                </span>
               </div>
             </div>
           </div>
@@ -374,19 +345,27 @@ const DashboardPage = () => {
           {/* Quick Stats */}
           <div className="px-4 pb-4">
             <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Bugungi Statistika</h3>
+              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                Bugungi Statistika
+              </h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Umumiy davomat</span>
-                  <span className="text-sm font-bold text-slate-800">{attendancePercent}%</span>
+                  <span className="text-sm font-bold text-slate-800">
+                    {attendancePercent}%
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-600">Jami hodimlar</span>
-                  <span className="text-sm font-semibold text-gray-900">{totalPeople}</span>
+                  <span className="text-sm font-semibold text-gray-900">
+                    {totalPeople}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-600">Hozir maktabda</span>
-                  <span className="text-sm font-semibold text-green-600">{totalPresent}</span>
+                  <span className="text-sm text-gray-600">Hozir o'rin</span>
+                  <span className="text-sm font-semibold text-green-600">
+                    {totalPresent}
+                  </span>
                 </div>
               </div>
             </div>

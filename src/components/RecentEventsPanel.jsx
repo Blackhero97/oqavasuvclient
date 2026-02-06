@@ -152,3 +152,4 @@ const RecentEventsPanel = () => {
 };
 
 export default RecentEventsPanel;
+

@@ -128,7 +128,7 @@ const ReportsPage = () => {
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Hisobotlar</h1>
               <p className="text-sm text-gray-500 mt-1">
-                Davomat va o'quvchilar statistikasi
+                suv istamoli va istamolchilar statistikasi
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -157,7 +157,7 @@ const ReportsPage = () => {
         <div className="grid grid-cols-4 gap-6 mb-6">
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">O'rtacha Davomat</span>
+              <span className="text-sm text-gray-500">O'rtacha suv istamoli</span>
               <TrendingUp className="w-5 h-5 text-green-600" />
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2">{stats.avgAttendance}%</div>
@@ -173,12 +173,12 @@ const ReportsPage = () => {
               <Users className="w-5 h-5 text-blue-600" />
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2 truncate" title={stats.bestClass}>{stats.bestClass}</div>
-            <div className="text-xs text-gray-500">{stats.bestClassRate}% davomat</div>
+            <div className="text-xs text-gray-500">{stats.bestClassRate}% suv istamoli</div>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-500">Jami O'quvchilar</span>
+              <span className="text-sm text-gray-500">Jami istamolchilar</span>
               <UserCheck className="w-5 h-5 text-gray-600" />
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2">{stats.totalStudents}</div>
@@ -204,7 +204,7 @@ const ReportsPage = () => {
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                Oylik Davomat Trendi
+                Oylik suv istamoli Trendi
               </h3>
               <BarChart3 className="w-5 h-5 text-gray-400" />
             </div>
@@ -215,7 +215,7 @@ const ReportsPage = () => {
                   <XAxis dataKey="month" stroke="#6b7280" fontSize={12} />
                   <YAxis stroke="#6b7280" fontSize={12} domain={[0, 100]} />
                   <Tooltip
-                    formatter={(value) => [`${value}%`, "Davomat"]}
+                    formatter={(value) => [`${value}%`, "suv istamoli"]}
                     contentStyle={{
                       backgroundColor: "#fff",
                       border: "1px solid #e5e7eb",
@@ -238,7 +238,7 @@ const ReportsPage = () => {
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                Bugungi Davomat Taqsimoti
+                Bugungi suv istamoli Taqsimoti
               </h3>
             </div>
             <div className="h-64">
@@ -257,7 +257,7 @@ const ReportsPage = () => {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(value) => [value, "O'quvchilar"]} />
+                  <Tooltip formatter={(value) => [value, "istamolchilar"]} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -319,7 +319,7 @@ const ReportsPage = () => {
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
-                Sinflar Bo'yicha Davomat
+                Sinflar Bo'yicha suv istamoli
               </h3>
               <FileText className="w-5 h-5 text-gray-400" />
             </div>
@@ -338,7 +338,7 @@ const ReportsPage = () => {
                     domain={[0, 100]}
                   />
                   <Tooltip
-                    formatter={(value) => [`${value}%`, "Davomat"]}
+                    formatter={(value) => [`${value}%`, "suv istamoli"]}
                     contentStyle={{
                       backgroundColor: "#fff",
                       border: "1px solid #e5e7eb",
@@ -360,7 +360,7 @@ const ReportsPage = () => {
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-900">
-              Eng Yaxshi O'quvchilar (Davomat Bo'yicha)
+              Eng Yaxshi istamolchilar (suv istamoli Bo'yicha)
             </h3>
           </div>
           <div className="overflow-x-auto">
@@ -371,13 +371,13 @@ const ReportsPage = () => {
                     #
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    O'quvchi
+                    istamolchi
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Sinf
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Davomat
+                    suv istamoli
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Kunlar
@@ -428,3 +428,4 @@ const ReportsPage = () => {
 };
 
 export default ReportsPage;
+

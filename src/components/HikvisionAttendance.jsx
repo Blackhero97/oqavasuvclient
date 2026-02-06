@@ -66,7 +66,7 @@ const HikvisionAttendance = () => {
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Face ID Davomat</h2>
+          <h2 className="text-xl font-bold text-gray-900">Face ID suv istamoli</h2>
           <p className="text-sm text-gray-500 mt-1">
             Real-time Hikvision qurilmasidan
           </p>
@@ -208,3 +208,4 @@ const HikvisionAttendance = () => {
 };
 
 export default HikvisionAttendance;
+

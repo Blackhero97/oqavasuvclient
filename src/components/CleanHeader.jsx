@@ -14,7 +14,7 @@ const CleanHeader = ({ user, onLogout }) => {
   const getPageTitle = () => {
     const titles = {
       "/dashboard": "Dashboard",
-      "/students": "O'quvchilar",
+      "/students": "istamolchilar",
       "/staff": "Hodimlar",
       "/attendance": "Davomat",
       "/classes": "Sinflar",
@@ -97,3 +97,4 @@ const CleanHeader = ({ user, onLogout }) => {
 };
 
 export default CleanHeader;
+

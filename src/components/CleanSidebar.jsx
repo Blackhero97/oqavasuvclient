@@ -1,16 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Home,
-  Users,
-  Calendar,
-  BarChart3,
-  Settings,
-  Bell,
-  Library,
-  UserCog,
-} from "lucide-react";
-import logo from "../assets/main-logo.png";
+import { Home, Calendar, Bell, Droplets } from "lucide-react";
 
 const CleanSidebar = () => {
   const location = useLocation();
@@ -18,13 +8,18 @@ const CleanSidebar = () => {
 
   const menuItems = [
     { id: "dashboard", path: "/dashboard", icon: Home, label: "Dashboard" },
-    { id: "students", path: "/students", icon: Users, label: "O'quvchilar" },
-    { id: "staff", path: "/staff", icon: UserCog, label: "Hodimlar" },
-    { id: "attendance", path: "/attendance", icon: Calendar, label: "Davomat" },
-    { id: "classes", path: "/classes", icon: Library, label: "Sinflar" },
-    { id: "notifications", path: "/notifications", icon: Bell, label: "Bildirishnomalar" },
-    { id: "reports", path: "/reports", icon: BarChart3, label: "Hisobotlar" },
-    { id: "settings", path: "/settings", icon: Settings, label: "Sozlamalar" },
+    {
+      id: "water-usage",
+      path: "/water-usage",
+      icon: Calendar,
+      label: "Davomat",
+    },
+    {
+      id: "notifications",
+      path: "/notifications",
+      icon: Bell,
+      label: "Bildirishnomalar",
+    },
   ];
 
   return (
@@ -32,10 +27,12 @@ const CleanSidebar = () => {
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="BM" className="w-12 h-12 object-contain" />
+          <div className="w-12 h-12 bg-[rgb(0,74,119)] rounded-lg flex items-center justify-center">
+            <Droplets className="w-6 h-6 text-white" />
+          </div>
           <div>
-            <h2 className="font-bold text-lg text-gray-900">BM Maktab</h2>
-            <p className="text-xs text-gray-500">CRM System</p>
+            <h2 className="font-bold text-lg text-gray-900">Davomat Tizimi</h2>
+            <p className="text-xs text-gray-500">Attendance System</p>
           </div>
         </div>
       </div>

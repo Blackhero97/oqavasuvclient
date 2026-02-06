@@ -27,10 +27,10 @@ const API_URL = `${BASE_URL}/api`;
 const ITEMS_PER_PAGE = 10;
 
 const DEPARTMENTS = [
-  { value: "O'qituvchi", label: "O'qituvchi (Teacher)" },
+  { value: "Manager", label: "Manager (manager)" },
   {
-    value: "Boshlangich sinf o'qituvchi",
-    label: "Boshlangich sinf o'qituvchi (Primary Teacher)",
+    value: "Boshlangich sinf Manager",
+    label: "Boshlangich sinf Manager (Primary manager)",
   },
   { value: "Qorovul", label: "Qorovul (Guard)" },
   { value: "Oshpaz", label: "Oshpaz (Cook)" },
@@ -59,11 +59,11 @@ const StaffPage = () => {
     )}`;
   });
 
-  // Load staff (teachers and staff only) from API
+  // Load staff (managers and staff only) from API
   const loadEmployees = async () => {
     try {
       setLoading(true);
-      // Use new staff endpoint that returns only teachers and staff
+      // Use new staff endpoint that returns only managers and staff
       const response = await axios.get(`${API_URL}/staff`);
 
       console.log(
@@ -598,3 +598,4 @@ const StaffPage = () => {
 };
 
 export default StaffPage;
+

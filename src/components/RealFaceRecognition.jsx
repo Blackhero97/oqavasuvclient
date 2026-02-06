@@ -64,7 +64,7 @@ const RealFaceRecognition = ({ onRecognition }) => {
     };
   }, []);
 
-  // Mock o'quvchilar ma'lumotlari
+  // Mock istamolchilar ma'lumotlari
   const mockStudents = [
     {
       id: 1,
@@ -246,7 +246,7 @@ const RealFaceRecognition = ({ onRecognition }) => {
 
   const recognizeStudent = async () => {
     try {
-      // Random o'quvchi yoki o'qituvchini tanlash
+      // Random istamolchi yoki o'qituvchini tanlash
       const isTeacher = Math.random() > 0.8;
       const persons = isTeacher ? mockTeachers : mockStudents;
       const randomPerson = persons[Math.floor(Math.random() * persons.length)];
@@ -455,3 +455,4 @@ const RealFaceRecognition = ({ onRecognition }) => {
 };
 
 export default RealFaceRecognition;
+

@@ -7,8 +7,6 @@ import {
   Mail,
   Plus,
   SendHorizontal,
-  Users,
-  UserCheck,
   Building,
   CheckCircle2,
   XCircle,
@@ -28,34 +26,25 @@ const NotificationsPage = () => {
     botConfigured: false,
     chatIdSet: false,
   });
-  const [classes, setClasses] = useState([]);
-  const [selectedClass, setSelectedClass] = useState("");
-
   const [notifications, setNotifications] = useState([]);
 
   const [templates] = useState([
     {
       id: 1,
-      name: "Davomat (Ota-onaga)",
-      content: "Hurmatli ota-ona, {student} bugun maktabga {status} vaqtda keldi.",
-    },
-    {
-      id: 2,
-      name: "Yig'ilish (O'qituvchilarga)",
-      content: "Hurmatli hamkasblar, bugun soat {time} da majlis bo'lib o'tadi.",
+      name: "Hodimlar Davomati",
+      content: "Hodimlarning bugungi davomat hisoboti: {presentCount} kelgan, {absentCount} kelmagan.",
     },
   ]);
 
   const [formData, setFormData] = useState({
     type: "Telegram",
-    recipient: "all_students",
+    recipient: "staff",
     template: "",
     message: "",
   });
 
   useEffect(() => {
     fetchTelegramStatus();
-    fetchClasses();
     fetchNotificationHistory();
   }, []);
 
@@ -67,17 +56,6 @@ const NotificationsPage = () => {
       }
     } catch (error) {
       console.error("Error fetching notification history:", error);
-    }
-  };
-
-  const fetchClasses = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/classes`);
-      // handle different response formats
-      const classData = response.data.classes || response.data;
-      setClasses(Array.isArray(classData) ? classData : []);
-    } catch (error) {
-      console.error("Error fetching classes:", error);
     }
   };
 
@@ -123,30 +101,6 @@ const NotificationsPage = () => {
     }
   };
 
-  const handleSendClassReport = async () => {
-    if (!selectedClass) {
-      toast.error("Iltimos, sinf tanlang");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${API_URL}/notifications/telegram/class-attendance`,
-        { className: selectedClass },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      toast.success(response.data.message);
-      // Refresh notification history
-      await fetchNotificationHistory();
-    } catch (error) {
-      toast.error(error.response?.data?.error || "Xatolik yuz berdi");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleManualSend = async () => {
     if (!formData.message) {
       toast.error("Xabar matnini kiriting");
@@ -158,7 +112,7 @@ const NotificationsPage = () => {
 
       // Map recipient to readable format
       const recipientMap = {
-        'all_students': "Barcha O'quvchilar",
+        'all_students': "Barcha istamolchilar",
         'all_teachers': "Barcha O'qituvchilar",
         'staff': "Barcha Hodimlar"
       };
@@ -214,51 +168,15 @@ const NotificationsPage = () => {
         </div>
 
         {/* Quick Actions Support */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-blue-50 rounded-xl text-blue-600">
-                <Users className="w-6 h-6" />
-              </div>
-              <h3 className="font-semibold text-gray-900">O'quvchilar Davomati</h3>
-            </div>
-            <p className="text-sm text-gray-500 mb-6">Barcha o'quvchilarning bugungi davomat hisobotini darhol yuboring.</p>
-            <button
-              disabled={loading}
-              onClick={() => handleSendTelegramReport('student')}
-              className="w-full py-2.5 bg-blue-600 text-white rounded-xl text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-            >
-              <SendHorizontal className="w-4 h-4" />
-              Telegramga Yuborish
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-orange-50 rounded-xl text-orange-600">
-                <UserCheck className="w-6 h-6" />
-              </div>
-              <h3 className="font-semibold text-gray-900">O'qituvchilar Davomati</h3>
-            </div>
-            <p className="text-sm text-gray-500 mb-6">O'qituvchilarning bugungi keldi-ketdi hisobotini guruhga yuboring.</p>
-            <button
-              disabled={loading}
-              onClick={() => handleSendTelegramReport('teacher')}
-              className="w-full py-2.5 bg-orange-600 text-white rounded-xl text-sm font-medium hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
-            >
-              <SendHorizontal className="w-4 h-4" />
-              Telegramga Yuborish
-            </button>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
           <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center gap-4 mb-4">
               <div className="p-3 bg-purple-50 rounded-xl text-purple-600">
                 <Building className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-gray-900">Hodimlar Davomati</h3>
+              <h3 className="font-semibold text-gray-900">Xodimlar Davomati</h3>
             </div>
-            <p className="text-sm text-gray-500 mb-6">Barcha hodimlarning bugungi keldi-ketdi hisobotini guruhga yuboring.</p>
+            <p className="text-sm text-gray-500 mb-6">Barcha xodimlarning bugungi keldi-ketdi hisobotini guruhga yuboring.</p>
             <button
               disabled={loading}
               onClick={() => handleSendTelegramReport('staff')}
@@ -266,38 +184,6 @@ const NotificationsPage = () => {
             >
               <SendHorizontal className="w-4 h-4" />
               Telegramga Yuborish
-            </button>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-3 bg-violet-50 rounded-xl text-violet-600">
-                <Building className="w-6 h-6" />
-              </div>
-              <h3 className="font-semibold text-gray-900">Sinfboyicha Davomat</h3>
-            </div>
-            <p className="text-sm text-gray-500 mb-4">Tanlangan sinf uchun bugungi davomat hisobotini yuboring.</p>
-
-            <div className="flex gap-2 mb-4">
-              <select
-                className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-violet-500/20"
-                onChange={(e) => setSelectedClass(e.target.value)}
-                value={selectedClass}
-              >
-                <option value="">Sinf tanlang</option>
-                {classes.map(c => (
-                  <option key={c._id} value={c.name}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-
-            <button
-              disabled={loading || !selectedClass}
-              onClick={() => handleSendClassReport()}
-              className="w-full py-2.5 bg-violet-600 text-white rounded-xl text-sm font-medium hover:bg-violet-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-            >
-              <SendHorizontal className="w-4 h-4" />
-              Sinfboyicha Yuborish
             </button>
           </div>
         </div>
@@ -330,9 +216,7 @@ const NotificationsPage = () => {
                     onChange={(e) => setFormData({ ...formData, recipient: e.target.value })}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   >
-                    <option value="all_students">Barcha O'quvchilar</option>
-                    <option value="all_teachers">Barcha O'qituvchilar</option>
-                    <option value="staff">Barcha Hodimlar</option>
+                    <option value="staff">Barcha Xodimlar</option>
                   </select>
                 </div>
               </div>
@@ -389,7 +273,7 @@ const NotificationsPage = () => {
                 notifications.map((notif) => {
                   const date = new Date(notif.sentAt);
                   const formattedDate = `${date.toLocaleDateString('uz-UZ')} ${date.toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' })}`;
-                  const targetLabels = { 'student': 'O\'quvchilar', 'teacher': 'O\'qituvchilar', 'staff': 'Hodimlar' };
+                  const targetLabels = { 'staff': 'Xodimlar' };
                   const targetLabel = targetLabels[notif.target] || notif.target;
 
                   return (
@@ -436,3 +320,4 @@ const NotificationsPage = () => {
 };
 
 export default NotificationsPage;
+

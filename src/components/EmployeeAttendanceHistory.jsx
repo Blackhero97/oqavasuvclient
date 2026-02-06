@@ -37,7 +37,7 @@ const EmployeeAttendanceHistory = ({ employee, isOpen, onClose }) => {
       setStats(response.data.stats);
     } catch (error) {
       console.error("History load error:", error);
-      toast.error("Davomat tarixini yuklashda xato");
+      toast.error("suv istamoli tarixini yuklashda xato");
     } finally {
       setLoading(false);
     }
@@ -127,7 +127,7 @@ const EmployeeAttendanceHistory = ({ employee, isOpen, onClose }) => {
         `Jami kunlar: ${stats?.totalDays || 0}`,
         `Kelgan kunlar: ${stats?.presentDays || 0}`,
         `Kelmagan kunlar: ${stats?.absentDays || 0}`,
-        `Davomat: ${stats?.attendanceRate || 0}%`,
+        `suv istamoli: ${stats?.attendanceRate || 0}%`,
         "",
         "",
       ];
@@ -149,7 +149,7 @@ const EmployeeAttendanceHistory = ({ employee, isOpen, onClose }) => {
 
       const link = document.createElement("a");
       const url = URL.createObjectURL(blob);
-      const fileName = `davomat_${employee?.name?.replace(
+      const fileName = `suv istamoli_${employee?.name?.replace(
         /\s+/g,
         "_"
       )}_${startDate}_${endDate}.csv`;
@@ -261,7 +261,7 @@ const EmployeeAttendanceHistory = ({ employee, isOpen, onClose }) => {
               <div className="text-2xl font-bold text-blue-600">
                 {stats.attendanceRate}%
               </div>
-              <div className="text-sm text-gray-600 mt-1">Davomat</div>
+              <div className="text-sm text-gray-600 mt-1">suv istamoli</div>
             </div>
           </div>
         )}
@@ -416,3 +416,4 @@ const EmployeeAttendanceHistory = ({ employee, isOpen, onClose }) => {
 };
 
 export default EmployeeAttendanceHistory;
+

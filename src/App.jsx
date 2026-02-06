@@ -4,14 +4,8 @@ import { Toaster, toast } from "react-hot-toast";
 import Header from "./components/CleanHeader";
 import Sidebar from "./components/CleanSidebar";
 import DashboardPage from "./pages/DashboardPage";
-import StudentsPage from "./pages/EnhancedStudentsPage";
-import AttendancePage from "./pages/AttendancePage";
-import AttendanceDashboard from "./pages/AttendanceDashboard";
-import ReportsPage from "./pages/ReportsPage";
-import SettingsPage from "./pages/SettingsPage";
-import ClassesPage from "./pages/ClassesPage";
+import AttendancePage from "./pages/WaterUsagePage";
 import NotificationsPage from "./pages/NotificationsPage";
-import StaffPage from "./pages/StaffPage";
 import LoginPage from "./pages/LoginPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import axios from "axios";
@@ -28,7 +22,7 @@ axios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Handle 401 Unauthorized globally
@@ -41,55 +35,42 @@ axios.interceptors.response.use(
       window.location.href = "/";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 function App() {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for saved user session on app load
+  const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) {
+    // Check if user is already logged in
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
+    if (storedUser && storedToken) {
       try {
-        setUser(JSON.parse(savedUser));
+        setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error("Error parsing saved user:", error);
+        console.error("Error parsing stored user:", error);
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
       }
     }
+
     setIsLoading(false);
   }, []);
 
   const handleLogin = (userData) => {
     setUser(userData);
-    toast.success(`Xush kelibsiz, ${userData.username}!`, {
-      duration: 4000,
-      position: "top-right",
-      style: {
-        background: "#10B981",
-        color: "#fff",
-        borderRadius: "8px",
-      },
-      icon: "👋",
-    });
   };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
-    toast.success("Tizimdan muvaffaqiyatli chiqildi", {
-      duration: 3000,
-      position: "top-right",
-      style: {
-        background: "#004A77",
-        color: "#fff",
-        borderRadius: "8px",
-      },
-      icon: "👋",
-    });
+    toast.success("Tizimdan chiqildi");
   };
 
   // Show loading spinner while checking authentication
@@ -107,16 +88,17 @@ function App() {
     );
   }
 
-  // Show login page if user is not authenticated
+  // Show login page if not authenticated
   if (!user) {
     return (
-      <>
+      <ErrorBoundary>
         <LoginPage onLogin={handleLogin} />
         <Toaster />
-      </>
+      </ErrorBoundary>
     );
   }
 
+  // Show main app if authenticated
   return (
     <ErrorBoundary>
       <BrowserRouter>
@@ -132,17 +114,8 @@ function App() {
                   element={<Navigate to="/dashboard" replace />}
                 />
                 <Route path="/dashboard" element={<DashboardPage />} />
-                <Route path="/students" element={<StudentsPage />} />
-                <Route path="/staff" element={<StaffPage />} />
-                <Route path="/attendance" element={<AttendancePage />} />
-                <Route
-                  path="/attendance/dashboard"
-                  element={<AttendanceDashboard />}
-                />
-                <Route path="/classes" element={<ClassesPage />} />
+                <Route path="/water-usage" element={<AttendancePage />} />
                 <Route path="/notifications" element={<NotificationsPage />} />
-                <Route path="/reports" element={<ReportsPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
                 <Route
                   path="*"
                   element={<Navigate to="/dashboard" replace />}

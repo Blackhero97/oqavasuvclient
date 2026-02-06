@@ -1,7 +1,7 @@
 Set WshShell = CreateObject("WScript.Shell")
 
 ' ====================================
-' BM CRM Frontend - Avtomatik Ishga Tushirish
+' Frontend - Avtomatik Ishga Tushirish
 ' ====================================
 '
 ' MUHIM: Quyidagi yo'lni admin kompyuteridagi 

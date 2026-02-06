@@ -131,3 +131,4 @@ const NotificationPanel = ({ activities }) => {
 };
 
 export default NotificationPanel;
+

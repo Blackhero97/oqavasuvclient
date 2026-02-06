@@ -9,7 +9,7 @@ const API_URL = `${BASE_URL}/api`;
 const ROLES = [
   {
     value: "student",
-    label: "O'quvchi",
+    label: "istamolchi",
   },
   {
     value: "teacher",
@@ -137,3 +137,4 @@ const EditEmployeeModal = ({ employee, isOpen, onClose, onSave }) => {
 };
 
 export default EditEmployeeModal;
+
