@@ -30,6 +30,8 @@ const WaterUsagePage = () => {
   const [searchQuery, setSearchQuery] = useState(""); // Xodim qidirish
   const [sortBy, setSortBy] = useState("name"); // New: sort by
   const [sortOrder, setSortOrder] = useState("asc"); // New: sort order
+  const [water_usageData, setwater_usageData] = useState([]);
+  const [faceRecords, setFaceRecords] = useState([]);
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
