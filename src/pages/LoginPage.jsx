@@ -15,9 +15,7 @@ const LoginPage = ({ onLogin }) => {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const demoUsers = [
-    { username: "admin", password: "admin123", role: "Administrator" },
-  ];
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -99,16 +97,7 @@ const LoginPage = ({ onLogin }) => {
     }
   };
 
-  const handleDemoLogin = (demoUser) => {
-    setFormData({
-      username: demoUser.username,
-      password: demoUser.password,
-    });
-    toast.success(`${demoUser.role} hisobi tanlandi`, {
-      duration: 2000,
-      position: "top-center",
-    });
-  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#EDEDED] p-4 font-inter">
@@ -213,25 +202,7 @@ const LoginPage = ({ onLogin }) => {
               </button>
             </form>
 
-            <div className="relative flex items-center mb-8">
-              <div className="flex-grow border-t border-[#F2F2F2]"></div>
-              <span className="flex-shrink mx-4 text-[12px] text-[#BBBBBB] font-semibold tracking-wider uppercase">yoki admin hisobidan foydalaning</span>
-              <div className="flex-grow border-t border-[#F2F2F2]"></div>
-            </div>
 
-            {/* Admin Quick Login */}
-            <div className="flex justify-center mb-10">
-              <button
-                onClick={() => handleDemoLogin(demoUsers[0])}
-                className="flex items-center justify-center px-6 py-3 bg-white border border-[#F0F0F0] rounded-xl hover:border-[#1A1A1A] hover:bg-[#FAFAFA] transition-all group group focus:ring-1 focus:ring-black/5"
-                title="Administrator"
-              >
-                <div className="flex flex-col items-center">
-                  <User className="w-5 h-5 text-[#333333] mb-0.5" />
-                  <span className="text-[9px] font-extrabold text-[#999999] group-hover:text-black tracking-tight uppercase">ADMIN</span>
-                </div>
-              </button>
-            </div>
 
             <p className="text-center text-[13px] font-semibold text-[#BBBBBB]">
               Profilingiz yo'qmi? <span className="text-[#0EA5E9] hover:underline cursor-pointer ml-1">Admin bilan bog'laning</span>
