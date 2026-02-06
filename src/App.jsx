@@ -6,7 +6,6 @@ import Sidebar from "./components/CleanSidebar";
 import DashboardPage from "./pages/DashboardPage";
 import AttendancePage from "./pages/WaterUsagePage";
 import NotificationsPage from "./pages/NotificationsPage";
-import SettingsPage from "./pages/SettingsPage";
 import LoginPage from "./pages/LoginPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import axios from "axios";
@@ -116,9 +115,7 @@ function App() {
                 />
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/water-usage" element={<AttendancePage />} />
-                {/* The import statement was moved to the top */}
                 <Route path="/notifications" element={<NotificationsPage />} />
-                <Route path="/settings" element={<SettingsPage />} />
                 <Route
                   path="*"
                   element={<Navigate to="/dashboard" replace />}
