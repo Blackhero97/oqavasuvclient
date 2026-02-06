@@ -14,8 +14,6 @@ import {
   FileText,
   MoreVertical,
 } from "lucide-react";
-import { io } from "socket.io-client";
-import RealFaceRecognition from "../components/RealFaceRecognition";
 import RoleSelectionModal from "../components/RoleSelectionModal.jsx"; // ✅ YANGI CHIROYLI MODAL
 import EmployeeEditModal from "../components/EmployeeEditModal.jsx"; // ✅ EMPLOYEE EDIT MODAL
 import axios from "axios";
@@ -32,9 +30,6 @@ const WaterUsagePage = () => {
   const [searchQuery, setSearchQuery] = useState(""); // Xodim qidirish
   const [sortBy, setSortBy] = useState("name"); // New: sort by
   const [sortOrder, setSortOrder] = useState("asc"); // New: sort order
-  const [water_usageData, setwater_usageData] = useState([]);
-  const [faceRecords, setFaceRecords] = useState([]);
-  const [showFaceScanner, setShowFaceScanner] = useState(false);
   const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -102,7 +97,6 @@ const WaterUsagePage = () => {
 
   useEffect(() => {
     fetchStudents();
-    fetchFaceRecords();
 
     // Socket.IO real-time updates uchun
     const socket = io(BASE_URL);
@@ -391,45 +385,9 @@ const WaterUsagePage = () => {
     }
   };
 
-  const fetchFaceRecords = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/water_usage/face-records?date=${selectedDate}`,
-      );
-      const records = response.data.records || [];
-      setFaceRecords(records);
 
-      // Update water_usage data with face records
-      updatewater_usageWithRecords(records);
-    } catch (error) {
-      console.log("Face records yuklashda xato:", error.message);
-    }
-  };
 
-  const updatewater_usageWithRecords = (records) => {
-    setwater_usageData((prev) =>
-      prev.map((student) => {
-        const record = records.find(
-          (r) => r.employeeId === student.employeeId && r.date === selectedDate,
-        );
-        if (record) {
-          return {
-            ...student,
-            checkIn: record.checkInTime,
-            checkOut: record.checkOutTime,
-            status: record.status,
-            lateMinutes: record.lateMinutes || 0,
-          };
-        }
-        return student;
-      }),
-    );
-  };
 
-  const handleFaceRecognition = (person) => {
-    console.log("Face recognized:", person);
-    fetchFaceRecords();
-  };
 
   const handleEditEmployee = (employee) => {
     // Close all dropdowns first
@@ -893,13 +851,6 @@ const WaterUsagePage = () => {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setShowFaceScanner(!showFaceScanner)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
-            >
-              <Camera className="w-4 h-4" />
-              Yuz Skaneri
-            </button>
-            <button
               onClick={handleManualExport}
               className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors"
             >
@@ -909,51 +860,9 @@ const WaterUsagePage = () => {
           </div>
         </div>
 
-        {/* Face Scanner */}
-        {showFaceScanner && (
-          <div>
-            <RealFaceRecognition onRecognition={handleFaceRecognition} />
-          </div>
-        )}
 
-        {/* Face Records */}
-        {faceRecords.length > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="text-lg">🎬</span>
-              <h3 className="text-sm font-semibold text-gray-700">
-                So'nggi Yuz Tanishlar
-              </h3>
-            </div>
-            <div className="space-y-2.5">
-              {faceRecords.slice(-5).map((record) => (
-                <div
-                  key={record.id}
-                  className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">
-                      {record.personName}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      {record.role === "teacher"
-                        ? "👨‍🏫 O'qituvchi"
-                        : "👨‍🎓 O'quvchi"}{" "}
-                      •{" "}
-                      {new Date(record.timestamp).toLocaleTimeString("uz-UZ", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  </div>
-                  <span className="text-xs font-semibold text-green-600 bg-green-100 px-2.5 py-1 rounded-lg">
-                    {record.confidence}%
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+
+
 
         {/* Stats Cards - Dashboard style */}
         <div className="grid grid-cols-5 gap-5">

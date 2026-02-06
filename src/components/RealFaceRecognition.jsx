@@ -257,7 +257,8 @@ const RealFaceRecognition = ({ onRecognition }) => {
         timestamp: new Date().toLocaleTimeString("uz-UZ"),
       });
 
-      // Servarga yuborish
+      // Servarga yuborish o'chirildi (legacy)
+      /*
       try {
         await axios.post(
           `${API_URL}/api/attendance/face-recognition`,
@@ -272,6 +273,7 @@ const RealFaceRecognition = ({ onRecognition }) => {
       } catch (err) {
         console.log("Server bilan bog'lanish xatosi (bu tabiiy):", err.message);
       }
+      */
 
       if (onRecognition) {
         onRecognition(randomPerson);
