@@ -27,8 +27,8 @@ const CleanSidebar = () => {
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-200">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-[rgb(0,74,119)] rounded-lg flex items-center justify-center">
-            <Droplets className="w-6 h-6 text-white" />
+          <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center overflow-hidden border border-gray-100">
+            <img src="/water.png" alt="O'zsuvta'minot" className="w-10 h-10 object-contain" />
           </div>
           <div>
             <h2 className="font-bold text-lg text-gray-900">Davomat Tizimi</h2>
