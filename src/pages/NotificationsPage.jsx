@@ -112,9 +112,7 @@ const NotificationsPage = () => {
 
       // Map recipient to readable format
       const recipientMap = {
-        'all_students': "Barcha istamolchilar",
-        'all_teachers': "Barcha O'qituvchilar",
-        'staff': "Barcha Hodimlar"
+        'staff': "Barcha Xodimlar"
       };
 
       const recipient = recipientMap[formData.recipient] || "Barcha";
