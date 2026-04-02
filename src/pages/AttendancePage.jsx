@@ -28,7 +28,7 @@ const AttendancePage = () => {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [selectedClass, setSelectedClass] = useState("");
+  const [selectedDept, setSelectedDept] = useState("");
   const [selectedRole, setSelectedRole] = useState(""); // New: role filter
   const [searchQuery, setSearchQuery] = useState(""); // New: search filter
   const [sortBy, setSortBy] = useState("name"); // New: sort by
@@ -37,8 +37,8 @@ const AttendancePage = () => {
   const [faceRecords, setFaceRecords] = useState([]);
   const [showFaceScanner, setShowFaceScanner] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [allClasses, setAllClasses] = useState([]);
-  const [students, setStudents] = useState([]);
+  const [allDepts, setAllDepts] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
@@ -103,7 +103,7 @@ const AttendancePage = () => {
   // Mock classes list - now fetched dynamically from students
 
   useEffect(() => {
-    fetchStudents();
+    fetchEmployees();
     fetchFaceRecords();
 
     // Socket.IO real-time updates uchun
@@ -119,7 +119,7 @@ const AttendancePage = () => {
       );
       // Ma'lumotlarni qayta yuklash
       setTimeout(() => {
-        fetchStudents();
+        fetchEmployees();
       }, 500); // Biroz kutib olish database'ga yozilishini kutish uchun
     });
 
@@ -165,9 +165,9 @@ const AttendancePage = () => {
           const recHikId = record.hikvisionEmployeeId?.toString();
           const recEmpId = record.employeeId?.toString();
 
-          // Debug logging for student role
-          if (employee.role === "student") {
-            console.log(`🔍 [ATTENDANCE] Matching student ${employee.name}:`, {
+          // Debug logging for ishchi role
+          if (employee.role === "ishchi") {
+            console.log(`🔍 [ATTENDANCE] Matching ishchi ${employee.name}:`, {
               empHikId,
               recHikId,
               recEmpId,
@@ -182,8 +182,8 @@ const AttendancePage = () => {
               employee.name &&
               record.name.toLowerCase() === employee.name.toLowerCase());
 
-          if (match && employee.role === "student") {
-            console.log(`✅ [ATTENDANCE] Match found for student ${employee.name}`);
+          if (match && employee.role === "ishchi") {
+            console.log(`✅ [ATTENDANCE] Match found for ishchi ${employee.name}`);
           }
 
           return match;
@@ -299,7 +299,7 @@ const AttendancePage = () => {
     }
   };
 
-  const fetchStudents = async () => {
+  const fetchEmployees = async () => {
     try {
       setLoading(true);
 
@@ -322,32 +322,32 @@ const AttendancePage = () => {
       }
 
       // Barcha xodimlarni use qilish - filtr yo'q
-      const students = allEmployees.filter((emp) => emp.role === "student");
-      const teachers = allEmployees.filter((emp) => emp.role === "teacher");
-      const staff = allEmployees.filter((emp) => emp.role === "staff");
+      const ishchilar = allEmployees.filter((emp) => emp.role === "ishchi");
+      const mutaxassislar = allEmployees.filter((emp) => emp.role === "mutaxassis");
+      const staffList = allEmployees.filter((emp) => emp.role === "staff");
       const unassigned = allEmployees.filter((emp) => !emp.role);
 
       console.log(
-        `📈 Roles: Students=${students.length}, Teachers=${teachers.length}, Staff=${staff.length}, Unassigned=${unassigned.length}`
+        `📈 Roles: Ishchilar=${ishchilar.length}, Mutaxassislar=${mutaxassislar.length}, Staff=${staffList.length}, Unassigned=${unassigned.length}`
       );
 
       // Ma'lumotlarni saqlash va attendance formatiga o'tkazish
       console.log("📊 Ma'lumotlar yuklandi:", {
-        students: students.length,
-        teachers: teachers.length,
-        staff: staff.length,
+        ishchilar: ishchilar.length,
+        mutaxassislar: mutaxassislar.length,
+        staff: staffList.length,
         unassigned: unassigned.length,
         total: allEmployees.length,
       });
 
       // Store all employees
-      setStudents(allEmployees);
+      setEmployees(allEmployees);
 
-      // Extract unique classes from students (class yoki className dan)
-      const classes = [
-        ...new Set(allEmployees.filter((emp) => emp.class || emp.className).map((s) => s.class || s.className)),
+      // Extract unique depts from employees
+      const depts = [
+        ...new Set(allEmployees.filter((emp) => emp.department || emp.uchastka).map((s) => s.department || s.uchastka)),
       ];
-      setAllClasses(classes.sort());
+      setAllDepts(depts.sort());
 
       // Convert ALL employees to attendance format
       const attendanceList = allEmployees.map((employee) => {
@@ -360,20 +360,16 @@ const AttendancePage = () => {
         );
 
         // Role mavjud bo'lsa, unga mos bo'lim nomini aniqlash
-        if (employee.role === "student") {
-          department = employee.class || employee.className || "Sinf belgilanmagan";
-        } else if (employee.role === "teacher") {
-          department = employee.subject || "O'qituvchi";
+        if (employee.role === "ishchi") {
+          department = employee.uchastka || "Ishchi";
+        } else if (employee.role === "mutaxassis") {
+          department = employee.specialty || "Mutaxassis";
         } else if (employee.role === "staff") {
           department = "Xodim";
         } else if (employee.role === "admin") {
           department = "Administrator";
         } else {
-          // Role belgilanmagan bo'lsa, default department yoki "Bosh"
-          department =
-            employee.department && employee.department !== "Bosh"
-              ? employee.department
-              : "Lavozim belgilanmagan";
+          department = employee.department || "Bo'limsiz";
         }
 
         console.log(`📋 ${employee.name}: Final department="${department}"`);
@@ -429,9 +425,9 @@ const AttendancePage = () => {
 
   const updateAttendanceWithRecords = (records) => {
     setAttendanceData((prev) =>
-      prev.map((student) => {
+      prev.map((employee) => {
         const record = records.find(
-          (r) => r.employeeId === student.employeeId && r.date === selectedDate
+          (r) => r.employeeId === employee.employeeId && r.date === selectedDate
         );
         if (record) {
           return {
@@ -453,8 +449,8 @@ const AttendancePage = () => {
   };
 
   const handleEditEmployee = (employee) => {
-    // Find full employee data from students list
-    const fullEmployee = students.find((s) => s._id === employee.id);
+    // Find full employee data from employees list
+    const fullEmployee = employees.find((s) => s._id === employee.id);
     if (fullEmployee) {
       setSelectedEmployee(fullEmployee);
       setEditModalOpen(true);
@@ -525,7 +521,7 @@ const AttendancePage = () => {
 
       // 3. Server'dan yangilangan ma'lumotlarni qayta yuklash
       console.log("🔄 [FRONTEND] Ma'lumotlarni qayta yuklash...");
-      await fetchStudents();
+      await fetchEmployees();
 
       setEditModalOpen(false);
       setSelectedEmployee(null);
@@ -590,19 +586,19 @@ const AttendancePage = () => {
 
   // Filter and sort attendance data
   let filteredAndSortedAttendance = attendanceData.filter((person) => {
-    // Filter by class
-    const matchesClass =
-      selectedClass === "" ||
-      selectedClass === "Barcha sinflar" ||
-      person.class === selectedClass;
+    // Filter by dept
+    const matchesDept =
+      selectedDept === "" ||
+      selectedDept === "Barcha bo'limlar" ||
+      person.class === selectedDept;
 
     // Filter by role
     let matchesRole = selectedRole === "";
     if (!matchesRole) {
-      if (selectedRole === "student") {
-        matchesRole = person.role === "student";
-      } else if (selectedRole === "teacher") {
-        matchesRole = person.role === "teacher";
+      if (selectedRole === "ishchi") {
+        matchesRole = person.role === "ishchi";
+      } else if (selectedRole === "mutaxassis") {
+        matchesRole = person.role === "mutaxassis";
       } else if (selectedRole === "staff") {
         matchesRole =
           person.role === "staff" ||
@@ -662,16 +658,16 @@ const AttendancePage = () => {
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedRole, selectedClass, searchQuery, selectedDate]);
+  }, [selectedRole, selectedDept, searchQuery, selectedDate]);
 
-  // Dynamically create class options
-  const classOptions = ["Barcha sinflar", ...allClasses];
+  // Dynamically create dept options
+  const deptOptions = ["Barcha bo'limlar", ...allDepts];
 
   // Role options
   const roleOptions = [
     { value: "", label: "Barchasi" },
-    { value: "student", label: "O'quvchilar" },
-    { value: "teacher", label: "O'qituvchilar" },
+    { value: "ishchi", label: "Ishchilar" },
+    { value: "mutaxassis", label: "Mutaxassislar" },
     { value: "staff", label: "Xodimlar" },
   ];
 
@@ -715,21 +711,21 @@ const AttendancePage = () => {
   };
 
   // Statistics based on FILTERED attendance
-  const totalStudents = filteredAttendance.length;
-  const presentStudents = filteredAttendance.filter(
+  const totalEmployeesCount = filteredAttendance.length;
+  const presentEmployeesCount = filteredAttendance.filter(
     (s) => s.status === "present"
   ).length;
-  const lateStudents = filteredAttendance.filter(
+  const lateEmployeesCount = filteredAttendance.filter(
     (s) => s.status === "late"
   ).length;
-  const absentStudents = filteredAttendance.filter(
+  const absentEmployeesCount = filteredAttendance.filter(
     (s) => s.status === "absent"
   ).length;
 
   // Calculate percentage
   const attendancePercentage =
-    totalStudents > 0
-      ? Math.round(((presentStudents + lateStudents) / totalStudents) * 100)
+    totalEmployeesCount > 0
+      ? Math.round(((presentEmployeesCount + lateEmployeesCount) / totalEmployeesCount) * 100)
       : 0;
 
   // 📊 Kechikish hisoblash funksiyasi (9:30 asosida)
@@ -770,14 +766,14 @@ const AttendancePage = () => {
         return {
           "F.I.O": record.name || "Noma'lum",
           "Lavozim":
-            record.role === "student"
-              ? "O'quvchi"
-              : record.role === "teacher"
-                ? "O'qituvchi"
+            record.role === "ishchi"
+              ? "Ishchi"
+              : record.role === "mutaxassis"
+                ? "Mutaxassis"
                 : record.role === "staff"
                   ? "Xodim"
                   : "Noma'lum",
-          "Sinf/Bo'lim": record.class || "Noma'lum",
+          "Bo'lim": record.class || "Noma'lum",
           "Kelgan vaqti": record.checkIn || "Kelmagan",
           "Ketgan vaqti": record.checkOut || "Ketmagan",
           "Status":
@@ -1007,8 +1003,8 @@ const AttendancePage = () => {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Davomat</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {selectedRole === "student" && "O'quvchilar davomatini real-vaqtda kuzatish"}
-              {selectedRole === "teacher" && "O'qituvchilar davomatini real-vaqtda kuzatish"}
+              {selectedRole === "ishchi" && "Ishchilar davomatini real-vaqtda kuzatish"}
+              {selectedRole === "mutaxassis" && "Mutaxassislar davomatini real-vaqtda kuzatish"}
               {selectedRole === "staff" && "Xodimlar davomatini real-vaqtda kuzatish"}
               {selectedRole === "" && "Barcha xodimlar davomatini real-vaqtda kuzatish"}
             </p>
@@ -1054,7 +1050,7 @@ const AttendancePage = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-800">{record.personName}</p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {record.role === "teacher" ? "👨‍🏫 O'qituvchi" : "👨‍🎓 O'quvchi"} •{" "}
+                      {record.role === "mutaxassis" ? "👨‍🔬 Mutaxassis" : "👷 Ishchi"} •{" "}
                       {new Date(record.timestamp).toLocaleTimeString("uz-UZ", {
                         hour: "2-digit",
                         minute: "2-digit",
@@ -1082,11 +1078,11 @@ const AttendancePage = () => {
                 100%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{totalStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{totalEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Jami</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Ro'yxat:</span>
-              <span className="text-sm font-semibold text-gray-600">{totalStudents} ta</span>
+              <span className="text-sm font-semibold text-gray-600">{totalEmployeesCount} ta</span>
             </div>
           </div>
 
@@ -1097,14 +1093,14 @@ const AttendancePage = () => {
                 <CheckCircle className="w-5 h-5 text-emerald-600" />
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
-                {totalStudents > 0 ? Math.round((presentStudents / totalStudents) * 100) : 0}%
+                {totalEmployeesCount > 0 ? Math.round((presentEmployeesCount / totalEmployeesCount) * 100) : 0}%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{presentStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{presentEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Keldi</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Hozir:</span>
-              <span className="text-sm font-semibold text-emerald-600">{presentStudents} ta</span>
+              <span className="text-sm font-semibold text-emerald-600">{presentEmployeesCount} ta</span>
             </div>
           </div>
 
@@ -1115,14 +1111,14 @@ const AttendancePage = () => {
                 <AlertCircle className="w-5 h-5 text-amber-600" />
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700">
-                {totalStudents > 0 ? Math.round((lateStudents / totalStudents) * 100) : 0}%
+                {totalEmployeesCount > 0 ? Math.round((lateEmployeesCount / totalEmployeesCount) * 100) : 0}%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{lateStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{lateEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Kech</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Kechikkan:</span>
-              <span className="text-sm font-semibold text-amber-600">{lateStudents} ta</span>
+              <span className="text-sm font-semibold text-amber-600">{lateEmployeesCount} ta</span>
             </div>
           </div>
 
@@ -1133,14 +1129,14 @@ const AttendancePage = () => {
                 <XCircle className="w-5 h-5 text-red-600" />
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
-                {totalStudents > 0 ? Math.round((absentStudents / totalStudents) * 100) : 0}%
+                {totalEmployeesCount > 0 ? Math.round((absentEmployeesCount / totalEmployeesCount) * 100) : 0}%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{absentStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{absentEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Yo'q</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Kelmagan:</span>
-              <span className="text-sm font-semibold text-red-600">{absentStudents} ta</span>
+              <span className="text-sm font-semibold text-red-600">{absentEmployeesCount} ta</span>
             </div>
           </div>
 
@@ -1196,14 +1192,14 @@ const AttendancePage = () => {
               ))}
             </select>
 
-            {/* Class Filter */}
+            {/* Dept Filter */}
             <select
-              value={selectedClass}
-              onChange={(e) => setSelectedClass(e.target.value)}
+              value={selectedDept}
+              onChange={(e) => setSelectedDept(e.target.value)}
               className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="">Barcha sinflar</option>
-              {allClasses.map((cls) => (
+              <option value="">Barcha bo'limlar</option>
+              {allDepts.map((cls) => (
                 <option key={cls} value={cls}>
                   {cls}
                 </option>
@@ -1218,7 +1214,7 @@ const AttendancePage = () => {
             >
               <option value="name">Ism</option>
               <option value="role">Lavozim</option>
-              <option value="class">Sinf/Bo'lim</option>
+              <option value="class">Bo'lim</option>
               <option value="status">Status</option>
             </select>
 
@@ -1245,7 +1241,7 @@ const AttendancePage = () => {
               onClick={() => {
                 setSearchQuery("");
                 setSelectedRole("");
-                setSelectedClass("");
+                setSelectedDept("");
                 setSortBy("name");
                 setSortOrder("asc");
                 setSelectedDate(new Date().toISOString().split("T")[0]);
@@ -1270,7 +1266,7 @@ const AttendancePage = () => {
                     Lavozim
                   </th>
                   <th className="text-center py-3 px-4 font-semibold text-gray-700">
-                    Sinf / Bo'lim
+                    Bo'lim
                   </th>
                   <th className="text-center py-3 px-4 font-semibold text-gray-700">
                     Kelgan
@@ -1549,7 +1545,7 @@ const AttendancePage = () => {
               Ma'lumot topilmadi
             </h3>
             <p className="text-sm text-gray-500">
-              Tanlangan sana va sinf uchun davomat ma'lumotlari mavjud emas
+              Tanlangan sana va bo'lim uchun davomat ma'lumotlari mavjud emas
             </p>
           </div>
         )}

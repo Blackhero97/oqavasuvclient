@@ -6,16 +6,16 @@ import { API_URL } from "../config";
 
 const ROLES = [
   {
-    value: "student",
-    label: "istamolchi",
+    value: "ishchi",
+    label: "Ishchi",
   },
   {
-    value: "teacher",
-    label: "O'qituvchi",
+    value: "mutaxassis",
+    label: "Mutaxassis",
   },
   {
     value: "staff",
-    label: "Xodim",
+    label: "Shtatli xodim",
   },
 ];
 

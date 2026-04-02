@@ -6,32 +6,32 @@ export const api = {
   // Health check
   health: () => fetch(`${API_BASE_URL}/health`).then((res) => res.json()),
 
-  // Students
-  getStudents: () =>
-    fetch(`${API_BASE_URL}/students`).then((res) => res.json()),
-
-  addStudent: (studentData) =>
-    fetch(`${API_BASE_URL}/students`, {
+  // Employees
+  getEmployees: () =>
+    fetch(`${API_BASE_URL}/employees`).then((res) => res.json()),
+ 
+  addEmployee: (employeeData) =>
+    fetch(`${API_BASE_URL}/employees`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(studentData),
+      body: JSON.stringify(employeeData),
     }).then((res) => res.json()),
-
-  checkInStudent: (studentId) =>
-    fetch(`${API_BASE_URL}/students/${studentId}/checkin`, {
+ 
+  checkInEmployee: (employeeId) =>
+    fetch(`${API_BASE_URL}/employees/${employeeId}/checkin`, {
       method: "POST",
     }).then((res) => res.json()),
-
-  checkOutStudent: (studentId) =>
-    fetch(`${API_BASE_URL}/students/${studentId}/checkout`, {
+ 
+  checkOutEmployee: (employeeId) =>
+    fetch(`${API_BASE_URL}/employees/${employeeId}/checkout`, {
       method: "POST",
     }).then((res) => res.json()),
-
+ 
   // Statistics
   getAttendanceStats: () =>
     fetch(`${API_BASE_URL}/attendance/stats`).then((res) => res.json()),
-  getClassStats: () =>
-    fetch(`${API_BASE_URL}/classes/stats`).then((res) => res.json()),
+  getDepartmentStats: () =>
+    fetch(`${API_BASE_URL}/departments/stats`).then((res) => res.json()),
   getWeeklyData: () =>
     fetch(`${API_BASE_URL}/attendance/weekly`).then((res) => res.json()),
 };

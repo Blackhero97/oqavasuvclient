@@ -64,52 +64,52 @@ const RealFaceRecognition = ({ onRecognition }) => {
     };
   }, []);
 
-  // Mock istamolchilar ma'lumotlari
-  const mockStudents = [
+  // Mock xodimlar ma'lumotlari
+  const mockEmployees = [
     {
       id: 1,
       name: "Ahmad Karimov",
-      class: "10-A",
-      role: "student",
+      department: "Suv Ta'minoti",
+      role: "ishchi",
       avatar: "AK",
     },
     {
       id: 2,
       name: "Malika Tosheva",
-      class: "11-B",
-      role: "student",
+      department: "Laboratoriya",
+      role: "ishchi",
       avatar: "MT",
     },
     {
       id: 3,
       name: "Bobur Rashidov",
-      class: "9-A",
-      role: "student",
+      department: "Filtrlash",
+      role: "ishchi",
       avatar: "BR",
     },
     {
       id: 4,
       name: "Nigora Saidova",
-      class: "10-C",
-      role: "student",
+      department: "Nazorat",
+      role: "ishchi",
       avatar: "NS",
     },
     {
       id: 5,
       name: "Anvar Abdullayev",
-      class: "11-A",
-      role: "student",
+      department: "Texnik Xizmat",
+      role: "ishchi",
       avatar: "AA",
     },
   ];
-
-  const mockTeachers = [
-    { id: 101, name: "Dr. Karim Hasan", subject: "Matematika", avatar: "KH" },
-    { id: 102, name: "O'ktam Mirfayazov", subject: "Fizika", avatar: "OM" },
+ 
+  const mockManagement = [
+    { id: 101, name: "Dr. Karim Hasan", position: "Bosh Muhandis", avatar: "KH" },
+    { id: 102, name: "O'ktam Mirfayazov", position: "Texnik Direktor", avatar: "OM" },
     {
       id: 103,
       name: "Gulnoza Tursunova",
-      subject: "Ingliz tili",
+      position: "Bosh Hisobchi",
       avatar: "GT",
     },
   ];
@@ -154,7 +154,7 @@ const RealFaceRecognition = ({ onRecognition }) => {
       setIsScanning(false);
       // Mock recognition qo'llash
       console.log("🎭 Mock recognition ishga tushmoqda...");
-      mockFaceDetection();
+      mockRecognitionProcess();
     }
   };
 
@@ -186,7 +186,7 @@ const RealFaceRecognition = ({ onRecognition }) => {
         // Yuz topildi - confidence ortitirish
         const newConfidence = Math.min(confidence + Math.random() * 5 + 3, 100);
         setConfidence(newConfidence);
-
+ 
         // Kanvasga chizish
         const resizedDetections = faceapi.resizeResults(
           detections,
@@ -197,17 +197,17 @@ const RealFaceRecognition = ({ onRecognition }) => {
           .clearRect(0, 0, displaySize.width, displaySize.height);
         faceapi.draw.drawDetections(canvasRef.current, resizedDetections);
         faceapi.draw.drawFaceLandmarks(canvasRef.current, resizedDetections);
-
+ 
         // 92% confidence da tanish qilish
         if (newConfidence >= 92) {
           stopScanning();
-          recognizeStudent();
+          recognizeEmployee();
           return;
         }
       } else {
         setConfidence(Math.max(confidence - 2, 0));
       }
-
+ 
       // Davom qilish
       if (isScanning) {
         setTimeout(detectFace, 100);
@@ -219,8 +219,8 @@ const RealFaceRecognition = ({ onRecognition }) => {
       }
     }
   };
-
-  const mockFaceDetection = () => {
+ 
+  const mockRecognitionProcess = () => {
     // Real kamera ishga tushmagan bo'lsa, mock detection
     setConfidence(0);
     const interval = setInterval(() => {
@@ -229,13 +229,13 @@ const RealFaceRecognition = ({ onRecognition }) => {
         if (newConfidence >= 92) {
           clearInterval(interval);
           setIsScanning(false);
-          recognizeStudent();
+          recognizeEmployee();
           return 100;
         }
         return newConfidence;
       });
     }, 300);
-
+ 
     setTimeout(() => {
       clearInterval(interval);
       if (isScanning) {
@@ -243,20 +243,20 @@ const RealFaceRecognition = ({ onRecognition }) => {
       }
     }, 7000);
   };
-
-  const recognizeStudent = async () => {
+ 
+  const recognizeEmployee = async () => {
     try {
-      // Random istamolchi yoki o'qituvchini tanlash
-      const isTeacher = Math.random() > 0.8;
-      const persons = isTeacher ? mockTeachers : mockStudents;
+      // Random xodim yoki rahbarni tanlash
+      const isManagement = Math.random() > 0.8;
+      const persons = isManagement ? mockManagement : mockEmployees;
       const randomPerson = persons[Math.floor(Math.random() * persons.length)];
-
+ 
       setScanResult({
         ...randomPerson,
-        role: isTeacher ? "teacher" : "student",
+        role: isManagement ? "mutaxassis" : "ishchi",
         timestamp: new Date().toLocaleTimeString("uz-UZ"),
       });
-
+ 
       // Servarga yuborish o'chirildi (legacy)
       /*
       try {
@@ -265,7 +265,7 @@ const RealFaceRecognition = ({ onRecognition }) => {
           {
             personId: randomPerson.id,
             personName: randomPerson.name,
-            role: isTeacher ? "teacher" : "student",
+            role: isManagement ? "mutaxassis" : "ishchi",
             confidence: 95 + Math.random() * 5,
             timestamp: new Date().toISOString(),
           }

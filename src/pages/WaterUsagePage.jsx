@@ -32,9 +32,8 @@ const WaterUsagePage = () => {
   const [sortBy, setSortBy] = useState("name"); // New: sort by
   const [sortOrder, setSortOrder] = useState("asc"); // New: sort order
   const [water_usageData, setwater_usageData] = useState([]);
-  const [faceRecords, setFaceRecords] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
@@ -99,7 +98,7 @@ const WaterUsagePage = () => {
   // Mock classes list - now fetched dynamically from students
 
   useEffect(() => {
-    fetchStudents();
+    fetchEmployees();
 
     // Socket.IO real-time updates uchun
     const socket = io(BASE_URL);
@@ -114,7 +113,7 @@ const WaterUsagePage = () => {
       );
       // Ma'lumotlarni qayta yuklash
       setTimeout(() => {
-        fetchStudents();
+        fetchEmployees();
       }, 500); // Biroz kutib olish database'ga yozilishini kutish uchun
     });
 
@@ -160,9 +159,9 @@ const WaterUsagePage = () => {
           const recHikId = record.hikvisionEmployeeId?.toString();
           const recEmpId = record.employeeId?.toString();
 
-          // Debug logging for student role
-          if (employee.role === "student") {
-            console.log(`🔍 [water_usage] Matching student ${employee.name}:`, {
+          // Debug logging for ishchi role
+          if (employee.role === "ishchi") {
+            console.log(`🔍 [water_usage] Matching ishchi ${employee.name}:`, {
               empHikId,
               recHikId,
               recEmpId,
@@ -178,9 +177,9 @@ const WaterUsagePage = () => {
               employee.name &&
               record.name.toLowerCase() === employee.name.toLowerCase());
 
-          if (match && employee.role === "student") {
+          if (match && employee.role === "ishchi") {
             console.log(
-              `✅ [water_usage] Match found for student ${employee.name}`,
+              `✅ [water_usage] Match found for ishchi ${employee.name}`,
             );
           }
 
@@ -297,7 +296,7 @@ const WaterUsagePage = () => {
     }
   };
 
-  const fetchStudents = async () => {
+  const fetchEmployees = async () => {
     try {
       setLoading(true);
 
@@ -320,20 +319,20 @@ const WaterUsagePage = () => {
       }
 
       // Barcha xodimlarni use qilish - filtr yo'q
-      const students = allEmployees.filter((emp) => emp.role === "student");
-      const teachers = allEmployees.filter((emp) => emp.role === "teacher");
-      const staff = allEmployees.filter((emp) => emp.role === "staff");
+      const ishchilar = allEmployees.filter((emp) => emp.role === "ishchi");
+      const mutaxassislar = allEmployees.filter((emp) => emp.role === "mutaxassis");
+      const staffList = allEmployees.filter((emp) => emp.role === "staff");
       const unassigned = allEmployees.filter((emp) => !emp.role);
 
       console.log(
-        `📈 Roles: Students=${students.length}, Teachers=${teachers.length}, Staff=${staff.length}, Unassigned=${unassigned.length}`,
+        `📈 Roles: Ishchilar=${ishchilar.length}, Mutaxassislar=${mutaxassislar.length}, Staff=${staffList.length}, Unassigned=${unassigned.length}`,
       );
 
       // Ma'lumotlarni saqlash va water_usage formatiga o'tkazish
       console.log("📊 Ma'lumotlar yuklandi:", {
-        students: students.length,
-        teachers: teachers.length,
-        staff: staff.length,
+        ishchilar: ishchilar.length,
+        mutaxassislar: mutaxassislar.length,
+        staff: staffList.length,
         unassigned: unassigned.length,
         total: allEmployees.length,
       });
@@ -442,7 +441,7 @@ const WaterUsagePage = () => {
 
       // 3. Server'dan yangilangan ma'lumotlarni qayta yuklash
       console.log("🔄 [FRONTEND] Ma'lumotlarni qayta yuklash...");
-      await fetchStudents();
+      await fetchEmployees();
 
       setEditModalOpen(false);
       setSelectedEmployee(null);
@@ -569,21 +568,21 @@ const WaterUsagePage = () => {
   };
 
   // Statistics based on FILTERED water_usage
-  const totalStudents = filteredwater_usage.length;
-  const presentStudents = filteredwater_usage.filter(
+  const totalEmployeesCount = filteredwater_usage.length;
+  const presentEmployeesCount = filteredwater_usage.filter(
     (s) => s.status === "present",
   ).length;
-  const lateStudents = filteredwater_usage.filter(
+  const lateEmployeesCount = filteredwater_usage.filter(
     (s) => s.status === "late",
   ).length;
-  const absentStudents = filteredwater_usage.filter(
+  const absentEmployeesCount = filteredwater_usage.filter(
     (s) => s.status === "absent",
   ).length;
 
   // Calculate percentage
   const water_usagePercentage =
-    totalStudents > 0
-      ? Math.round(((presentStudents + lateStudents) / totalStudents) * 100)
+    totalEmployeesCount > 0
+      ? Math.round(((presentEmployeesCount + lateEmployeesCount) / totalEmployeesCount) * 100)
       : 0;
 
   // 📊 Kechikish hisoblash funksiyasi (9:30 asosida)
@@ -732,9 +731,9 @@ const WaterUsagePage = () => {
           const employees = allEmployeesResponse.data.employees || [];
           const water_usageRecords = water_usageResponse.data.records || [];
 
-          // Группируем по ролям
-          const students = employees.filter((emp) => emp.role === "student");
-          const teachers = employees.filter((emp) => emp.role === "teacher");
+          // Genuinely group by roles
+          const ishchilar = employees.filter((emp) => emp.role === "ishchi");
+          const mutaxassislar = employees.filter((emp) => emp.role === "mutaxassis");
           const staff = employees.filter((emp) => emp.role === "staff");
 
           // Формируем данные с посещаемостью
@@ -753,24 +752,24 @@ const WaterUsagePage = () => {
             });
           };
 
-          const studentData = processGroup(students);
-          const teacherData = processGroup(teachers);
+          const ishchiData = processGroup(ishchilar);
+          const mutaxassisData = processGroup(mutaxassislar);
           const staffData = processGroup(staff);
 
           // Генерируем отчеты
-          if (studentData.length > 0) {
+          if (ishchiData.length > 0) {
             await generateExcelReport(
-              "О'quvchilar",
-              studentData,
-              `Oquvchilar_Hisoboti_${currentDate}.xlsx`,
+              "Ishchilar",
+              ishchiData,
+              `Ishchilar_Hisoboti_${currentDate}.xlsx`,
             );
           }
 
-          if (teacherData.length > 0) {
+          if (mutaxassisData.length > 0) {
             await generateExcelReport(
-              "O'qituvchilar",
-              teacherData,
-              `Oqituvchilar_Hisoboti_${currentDate}.xlsx`,
+              "Mutaxassislar",
+              mutaxassisData,
+              `Mutaxassislar_Hisoboti_${currentDate}.xlsx`,
             );
           }
 
@@ -782,7 +781,7 @@ const WaterUsagePage = () => {
             );
           }
 
-          toast.success("🎉 Автоматический экспорт выполнен успешно!");
+          toast.success("🎉 Avtomatik hisobot yaratildi!");
 
           // Планируем следующий экспорт
           scheduleAutoExport();
@@ -800,29 +799,29 @@ const WaterUsagePage = () => {
   const handleManualExport = async () => {
     try {
       // Группируем текущие данные по ролям
-      const students = filteredwater_usage.filter(
-        (emp) => emp.role === "student",
+      const ishchilar = filteredAndSortedwater_usage.filter(
+        (emp) => emp.role === "ishchi",
       );
-      const teachers = filteredwater_usage.filter(
-        (emp) => emp.role === "teacher",
+      const mutaxassislar = filteredAndSortedwater_usage.filter(
+        (emp) => emp.role === "mutaxassis",
       );
-      const staff = filteredwater_usage.filter((emp) => emp.role === "staff");
+      const staff = filteredAndSortedwater_usage.filter((emp) => emp.role === "staff");
 
       const currentDate = new Date().toISOString().split("T")[0];
 
-      if (students.length > 0) {
+      if (ishchilar.length > 0) {
         await generateExcelReport(
-          "О'quvchilar",
-          students,
-          `Oquvchilar_Manual_${currentDate}.xlsx`,
+          "Ishchilar",
+          ishchilar,
+          `Ishchilar_Manual_${currentDate}.xlsx`,
         );
       }
 
-      if (teachers.length > 0) {
+      if (mutaxassislar.length > 0) {
         await generateExcelReport(
-          "O'qituvchilar",
-          teachers,
-          `Oqituvchilar_Manual_${currentDate}.xlsx`,
+          "Mutaxassislar",
+          mutaxassislar,
+          `Mutaxassislar_Manual_${currentDate}.xlsx`,
         );
       }
 
@@ -834,7 +833,7 @@ const WaterUsagePage = () => {
         );
       }
 
-      toast.success("📊 Ручной экспорт выполнен!");
+      toast.success("📊 Hisobot yaratildi!");
     } catch (error) {
       console.error("Ошибка ручного экспорта:", error);
       toast.error("Ошибка ручного экспорта");
@@ -879,12 +878,12 @@ const WaterUsagePage = () => {
                 100%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{totalStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{totalEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Jami</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Ro'yxat:</span>
               <span className="text-sm font-semibold text-gray-600">
-                {totalStudents} ta
+                {totalEmployeesCount} ta
               </span>
             </div>
           </div>
@@ -896,20 +895,20 @@ const WaterUsagePage = () => {
                 <CheckCircle className="w-5 h-5 text-emerald-600" />
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
-                {totalStudents > 0
-                  ? Math.round((presentStudents / totalStudents) * 100)
+                {totalEmployeesCount > 0
+                  ? Math.round((presentEmployeesCount / totalEmployeesCount) * 100)
                   : 0}
                 %
               </span>
             </div>
             <p className="text-2xl font-bold text-gray-900">
-              {presentStudents}
+              {presentEmployeesCount}
             </p>
             <p className="text-sm text-gray-500 mt-1">Keldi</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Hozir:</span>
               <span className="text-sm font-semibold text-emerald-600">
-                {presentStudents} ta
+                {presentEmployeesCount} ta
               </span>
             </div>
           </div>
@@ -921,18 +920,18 @@ const WaterUsagePage = () => {
                 <AlertCircle className="w-5 h-5 text-amber-600" />
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700">
-                {totalStudents > 0
-                  ? Math.round((lateStudents / totalStudents) * 100)
+                {totalEmployeesCount > 0
+                  ? Math.round((lateEmployeesCount / totalEmployeesCount) * 100)
                   : 0}
                 %
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{lateStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{lateEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Kech</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Kechikkan:</span>
               <span className="text-sm font-semibold text-amber-600">
-                {lateStudents} ta
+                {lateEmployeesCount} ta
               </span>
             </div>
           </div>
@@ -944,18 +943,18 @@ const WaterUsagePage = () => {
                 <XCircle className="w-5 h-5 text-red-600" />
               </div>
               <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
-                {totalStudents > 0
-                  ? Math.round((absentStudents / totalStudents) * 100)
+                {totalEmployeesCount > 0
+                  ? Math.round((absentEmployeesCount / totalEmployeesCount) * 100)
                   : 0}
                 %
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{absentStudents}</p>
+            <p className="text-2xl font-bold text-gray-900">{absentEmployeesCount}</p>
             <p className="text-sm text-gray-500 mt-1">Yo'q</p>
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
               <span className="text-xs text-gray-500">Kelmagan:</span>
               <span className="text-sm font-semibold text-red-600">
-                {absentStudents} ta
+                {absentEmployeesCount} ta
               </span>
             </div>
           </div>
@@ -1084,11 +1083,11 @@ const WaterUsagePage = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {paginatedwater_usage.map((student) => {
-                  const lateInfo = calculateLateInfo(student.checkIn);
+                {paginatedwater_usage.map((employee) => {
+                  const lateInfo = calculateLateInfo(employee.checkIn);
                   return (
                     <tr
-                      key={student.id}
+                      key={employee.id}
                       className={`transition-colors ${lateInfo.isLate
                         ? "bg-orange-50 hover:bg-orange-100"
                         : "hover:bg-gray-50"
@@ -1100,11 +1099,11 @@ const WaterUsagePage = () => {
                             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold"
                             style={{ backgroundColor: "#004A77" }}
                           >
-                            {student.avatar}
+                            {employee.avatar}
                           </div>
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {student.name}
+                              {employee.name}
                             </div>
                             {lateInfo.isLate && (
                               <div className="text-xs text-orange-600 flex items-center mt-0.5 font-medium">
@@ -1117,32 +1116,33 @@ const WaterUsagePage = () => {
                       </td>
                       <td className="text-center py-3 px-4">
                         <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium">
-                          {student.department || "IT"}
+                          {employee.department || "IT"}
                         </span>
                       </td>
                       <td className="text-center py-3 px-4 text-gray-800 font-medium">
-                        {student.checkIn || "—"}
+                        {employee.checkIn || "—"}
                       </td>
                       <td className="text-center py-3 px-4 text-gray-800 font-medium">
-                        {student.checkOut || "—"}
+                        {employee.checkOut || "—"}
                       </td>
                       <td className="text-center py-3 px-4">
                         <span
-                          className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded text-xs font-semibold ${student.status === "present"
-                            ? "bg-green-100 text-green-800"
-                            : student.status === "late"
+                          className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded text-xs font-semibold ${
+                            employee.status === "present"
+                              ? "bg-green-100 text-green-800"
+                              : employee.status === "late"
                               ? "bg-orange-100 text-orange-800"
                               : "bg-red-100 text-red-800"
-                            }`}
+                          }`}
                         >
-                          {getStatusIcon(student.status)}
-                          <span>{getStatusText(student.status)}</span>
+                          {getStatusIcon(employee.status)}
+                          <span>{getStatusText(employee.status)}</span>
                         </span>
                       </td>
                       <td className="text-center py-3 px-4">
                         {/* Direct Edit Button */}
                         <button
-                          onClick={() => handleEditEmployee(student)}
+                          onClick={() => handleEditEmployee(employee)}
                           className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                           title="Tahrirlash"
                         >
@@ -1156,6 +1156,7 @@ const WaterUsagePage = () => {
               </tbody>
             </table>
           </div>
+        </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -1241,8 +1242,6 @@ const WaterUsagePage = () => {
               </div>
             </div>
           )}
-        </div>
-
         {/* Empty State */}
         {filteredwater_usage.length === 0 && (
           <div className="bg-white rounded-lg p-8 text-center border border-gray-200 shadow-sm">
@@ -1269,7 +1268,7 @@ const WaterUsagePage = () => {
           onSave={handleSaveEmployee}
         />
       </div>
-    </div >
+    </div>
   );
 };
 

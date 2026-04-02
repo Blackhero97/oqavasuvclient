@@ -8,16 +8,16 @@ const API_URL = `${BASE_URL}/api`;
 
 const ROLES = [
   {
-    value: "student",
-    label: "istamolchi",
+    value: "ishchi",
+    label: "Ishchi",
   },
   {
-    value: "teacher",
-    label: "O'qituvchi",
+    value: "mutaxassis",
+    label: "Mutaxassis",
   },
   {
     value: "staff",
-    label: "Xodim",
+    label: "Shtatli xodim",
   },
 ];
 

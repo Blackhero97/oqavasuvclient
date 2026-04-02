@@ -254,7 +254,7 @@ const AttendanceDashboard = () => {
     return "text-red-600";
   };
 
-  // Kechikish hisoblash funksiyasi (dars boshlanish: 9:30)
+  // Kechikish hisoblash funksiyasi (ish boshlanish: 9:30)
   const calculateLateTime = (checkInTime) => {
     if (!checkInTime) return null;
 
