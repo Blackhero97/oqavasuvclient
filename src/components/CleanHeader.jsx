@@ -37,15 +37,15 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
             <Menu className="w-6 h-6" />
           </button>
           
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg md:text-2xl font-bold text-gray-900 leading-tight truncate">
               {getPageTitle()}
             </h1>
-            <p className="hidden sm:block text-xs md:text-sm text-gray-500 mt-0.5">
+            <p className="hidden xs:block text-[10px] md:text-sm text-gray-500 mt-0.5 truncate">
             {currentTime.toLocaleDateString("uz-UZ", {
-              weekday: "long",
+              weekday: "short",
               year: "numeric",
-              month: "long",
+              month: "short",
               day: "numeric",
             })}
             {" • "}

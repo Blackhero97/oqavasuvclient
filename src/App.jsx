@@ -107,7 +107,7 @@ function App() {
           {/* Mobile Overlay */}
           {isSidebarOpen && (
             <div
-              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden transition-all duration-300 animate-in fade-in"
               onClick={() => setIsSidebarOpen(false)}
             ></div>
           )}

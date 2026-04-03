@@ -137,7 +137,7 @@ const DashboardPage = () => {
       </div>
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-5 mb-6">
         {/* Overall Attendance Card */}
         <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
@@ -222,57 +222,89 @@ const DashboardPage = () => {
           </div>
 
           {/* Table Body */}
-          <div className="divide-y divide-gray-50 max-h-80 overflow-y-auto">
+          <div className="divide-y divide-gray-50 max-h-[500px] overflow-y-auto">
             {recentActivity.length > 0 ? (
-              recentActivity.slice(0, 10).map((activity, index) => (
-                <div
-                  key={activity.id || index}
-                  className="grid grid-cols-2 sm:grid-cols-12 gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-3 hover:bg-gray-50 transition-colors items-center border-b sm:border-b-0 border-gray-50 last:border-b-0"
-                >
-                  {/* Name */}
-                  <div className="col-span-2 sm:col-span-4 flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-semibold bg-violet-500 shrink-0">
-                      {activity.avatar}
+              <div className="flex flex-col">
+                {recentActivity.slice(0, 10).map((activity, index) => (
+                  <div key={activity.id || index}>
+                    {/* Desktop View */}
+                    <div className="hidden sm:grid grid-cols-12 gap-4 px-6 py-4 hover:bg-gray-50 transition-colors items-center">
+                      <div className="col-span-4 flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-xs font-bold bg-indigo-600 shrink-0 shadow-sm">
+                          {activity.avatar}
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900 truncate">
+                          {activity.name}
+                        </span>
+                      </div>
+                      <div className="col-span-3">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                          <Briefcase className="w-3.5 h-3.5" />
+                          {getRoleLabel(activity.role)}
+                        </span>
+                      </div>
+                      <div className="col-span-3 text-center">
+                        <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
+                            activity.action === "Kirdi"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {activity.action === "Kirdi" ? (
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          ) : (
+                            <ArrowDownRight className="w-3.5 h-3.5" />
+                          )}
+                          {activity.action}
+                        </span>
+                      </div>
+                      <div className="col-span-2 text-right">
+                        <span className="text-sm font-medium text-gray-500">
+                          {activity.time}
+                        </span>
+                      </div>
                     </div>
-                    <span className="text-sm font-medium text-gray-900 truncate">
-                      {activity.name}
-                    </span>
-                  </div>
 
-                  {/* Role */}
-                  <div className="sm:col-span-3">
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-[10px] sm:text-xs font-medium bg-violet-50 text-violet-700">
-                      <Briefcase className="w-3 h-3" />
-                      {getRoleLabel(activity.role)}
-                    </span>
+                    {/* Mobile View (Card) */}
+                    <div className="sm:hidden p-4 hover:bg-gray-50 transition-colors border-b border-gray-50 last:border-b-0">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold bg-indigo-600 shrink-0 shadow-sm">
+                            {activity.avatar}
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-900">{activity.name}</p>
+                            <p className="text-[11px] text-gray-500 mt-0.5">{getRoleLabel(activity.role)}</p>
+                          </div>
+                        </div>
+                        <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-md">
+                          {activity.time}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                         <span
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm ${
+                            activity.action === "Kirdi"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-amber-100 text-amber-700"
+                          }`}
+                        >
+                          {activity.action === "Kirdi" ? (
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          ) : (
+                            <ArrowDownRight className="w-3.5 h-3.5" />
+                          )}
+                          {activity.action}
+                        </span>
+                        <div className="text-[10px] text-gray-400 italic">
+                          Bugun faollik
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  {/* Status */}
-                  <div className="sm:col-span-3 sm:text-center flex sm:block justify-start">
-                    <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                        activity.action === "Kirdi"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-amber-100 text-amber-700"
-                      }`}
-                    >
-                      {activity.action === "Kirdi" ? (
-                        <ArrowUpRight className="w-3 h-3" />
-                      ) : (
-                        <ArrowDownRight className="w-3 h-3" />
-                      )}
-                      {activity.action}
-                    </span>
-                  </div>
-
-                  {/* Time */}
-                  <div className="sm:col-span-2 text-right flex sm:block justify-end">
-                    <span className="text-xs sm:text-sm font-medium text-gray-600">
-                      {activity.time}
-                    </span>
-                  </div>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
               <div className="text-center py-16 text-gray-400">
                 <Clock className="w-12 h-12 mx-auto mb-3 opacity-50" />

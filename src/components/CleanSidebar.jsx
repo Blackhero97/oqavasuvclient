@@ -25,8 +25,8 @@ const CleanSidebar = ({ isOpen, onClose }) => {
   return (
     <aside
       className={`
-        fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col
-        transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
+        fixed inset-y-0 left-0 z-50 w-72 bg-white/80 backdrop-blur-xl border-r border-gray-200 flex flex-col
+        transform transition-all duration-300 ease-in-out lg:relative lg:translate-x-0
         ${isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full shadow-none"}
       `}
     >
