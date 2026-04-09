@@ -160,7 +160,7 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
               onClick={() => setIsPasswordModalOpen(true)}
               className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-1.5 md:py-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer border border-transparent hover:border-indigo-100 group"
             >
-              <div className="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center shadow-sm">
+              <div className="w-8 h-8 md:w-9 md:h-9 bg-indigo-600 rounded-full flex items-center justify-center shadow-md shadow-indigo-100">
                 <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
               </div>
               <div className="hidden md:block">
