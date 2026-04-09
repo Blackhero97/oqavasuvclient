@@ -100,21 +100,30 @@ const WaterUsagePage = () => {
   useEffect(() => {
     fetchEmployees();
 
-    // Socket.IO real-time updates uchun
-    const socket = io(BASE_URL);
+    // ✅ YANGI: Davomat yangilanganida (keldi/ketdi) real-time ko'rsatish
+    socket.on("attendance:updated", (data) => {
+      console.log("⚡ attendance:updated received in WaterUsagePage:", data);
+      setwater_usageData((prev) =>
+        prev.map((emp) => {
+          // hikvisionEmployeeId yoki name bo'yicha moslashtirish
+          const hikMatch =
+            emp.hikvisionEmployeeId?.toString() === data.hikvisionEmployeeId?.toString() ||
+            emp.employeeId?.toString() === data.hikvisionEmployeeId?.toString();
+          const nameMatch =
+            emp.name?.toLowerCase() === data.name?.toLowerCase();
 
-    // Employee yangilanganida ma'lumotlarni qayta yuklash
-    socket.on("employee:updated", (updatedEmployee) => {
-      console.log(
-        "🔄 Employee updated via Socket.IO:",
-        updatedEmployee.name,
-        "role:",
-        updatedEmployee.role,
+          if (hikMatch || nameMatch) {
+            console.log(`✅ Real-time update in WaterUsage: ${emp.name} → checkIn=${data.checkInTime}, checkOut=${data.checkOutTime}`);
+            return {
+              ...emp,
+              checkIn: data.checkInTime || emp.checkIn,
+              checkOut: data.checkOutTime || emp.checkOut,
+              status: data.checkInTime ? "present" : emp.status,
+            };
+          }
+          return emp;
+        })
       );
-      // Ma'lumotlarni qayta yuklash
-      setTimeout(() => {
-        fetchEmployees();
-      }, 500); // Biroz kutib olish database'ga yozilishini kutish uchun
     });
 
     // Cleanup
@@ -512,7 +521,15 @@ const WaterUsagePage = () => {
     return sortOrder === "desc" ? -comparison : comparison;
   });
 
-  const filteredwater_usage = filteredAndSortedwater_usage;
+  // ✅ DEDUPLICATION: Bir xil nomli xodimlarni birlashtirish (frontend display)
+  const seenNames = new Set();
+  const dedupedwater_usage = filteredAndSortedwater_usage.filter((emp) => {
+    const normalizedName = emp.name?.trim().toLowerCase();
+    if (!normalizedName || seenNames.has(normalizedName)) return false;
+    seenNames.add(normalizedName);
+    return true;
+  });
+  const filteredwater_usage = dedupedwater_usage;
 
   // Pagination logic
   const totalItems = filteredwater_usage.length;
