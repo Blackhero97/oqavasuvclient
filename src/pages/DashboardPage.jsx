@@ -203,22 +203,44 @@ const DashboardPage = () => {
             <div className="p-2.5 bg-blue-50 rounded-xl">
               <Database className="w-5 h-5 text-blue-600" />
             </div>
-            {stats.dbStats?.percentUsed && (
+            {stats.dbStats?.percentUsed ? (
               <span className={`text-xs font-medium px-2 py-1 rounded-full ${
                 parseFloat(stats.dbStats.percentUsed) > 80 ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
               }`}>
                 {stats.dbStats.percentUsed}% band
               </span>
+            ) : (
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+                {stats.dbStats?.objects || 0} ta ma'lumot
+              </span>
             )}
           </div>
           <p className="text-2xl font-bold text-gray-900">
-            {stats.dbStats ? `${stats.dbStats.storageSize} MB` : '...'}
+            {stats.dbStats ? `${stats.dbStats.totalUsed} MB` : '...'}
           </p>
           <p className="text-sm text-gray-500 mt-1">Ma'lumotlar bazasi</p>
+          
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-gray-500">Ma'lumotlar:</span>
+              <span className="font-medium text-gray-700">{stats.dbStats?.dataSize || 0} MB</span>
+            </div>
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-gray-500">Indekslar:</span>
+              <span className="font-medium text-gray-700">{stats.dbStats?.indexSize || 0} MB</span>
+            </div>
+            {stats.dbStats?.fsTotalSize && (
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-gray-500">Jami limit:</span>
+                <span className="font-medium text-gray-700">{stats.dbStats.fsTotalSize} MB</span>
+              </div>
+            )}
+          </div>
+
           <div className="mt-3 pt-3 border-t border-gray-100">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs text-gray-500">Holat:</span>
-              <span className="text-xs font-semibold text-green-600">Normal</span>
+              <span className="text-xs font-semibold text-green-600">Active</span>
             </div>
             <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1 overflow-hidden">
               <div 
