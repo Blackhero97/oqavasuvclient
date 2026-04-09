@@ -282,13 +282,13 @@ const AttendanceDashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 p-6 transition-colors duration-300">
       {/* Minimal Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white transition-colors">
           Davomat
           {stats && (
-            <span className="text-gray-500 text-lg ml-2">
+            <span className="text-gray-500 dark:text-slate-400 text-lg ml-2">
               ({stats.totalEmployees} xodim)
             </span>
           )}
@@ -297,27 +297,27 @@ const AttendanceDashboard = () => {
 
       {/* Stats Cards - Minimal Design */}
       {stats && (
-        <div className="grid grid-cols-4 gap-4 mb-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-1">Jami</div>
-            <div className="text-2xl font-semibold text-gray-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 transition-colors">
+            <div className="text-sm text-gray-600 dark:text-slate-400 mb-1">Jami</div>
+            <div className="text-2xl font-semibold text-gray-900 dark:text-white">
               {stats.totalEmployees}
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-1">Kelganlar</div>
-            <div className="text-2xl font-semibold text-green-600">
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 transition-colors">
+            <div className="text-sm text-gray-600 dark:text-slate-400 mb-1">Kelganlar</div>
+            <div className="text-2xl font-semibold text-green-600 dark:text-emerald-400">
               {stats.presentCount}
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-1">Kelmaganlar</div>
-            <div className="text-2xl font-semibold text-red-600">
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 transition-colors">
+            <div className="text-sm text-gray-600 dark:text-slate-400 mb-1">Kelmaganlar</div>
+            <div className="text-2xl font-semibold text-red-600 dark:text-rose-400">
               {stats.absentCount}
             </div>
           </div>
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="text-sm text-gray-600 mb-1">Davomat %</div>
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 transition-colors">
+            <div className="text-sm text-gray-600 dark:text-slate-400 mb-1">Davomat %</div>
             <div
               className={`text-2xl font-semibold ${getAttendanceColor(
                 stats.attendanceRate
@@ -330,35 +330,35 @@ const AttendanceDashboard = () => {
       )}
 
       {/* Controls Bar - All in one row */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg p-4 mb-6 transition-colors">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <input
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+              className="px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded text-sm dark:text-white focus:outline-none focus:border-blue-500 transition-colors"
             />
-            <div className="h-6 w-px bg-gray-300"></div>
+            <div className="hidden md:block h-6 w-px bg-gray-300 dark:bg-slate-700"></div>
             <input
               type="text"
               placeholder="Xodim qidirish..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 w-64"
+              className="px-3 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded text-sm dark:text-white focus:outline-none focus:border-blue-500 w-full md:w-64 transition-colors"
             />
-            <div className="h-6 w-px bg-gray-300"></div>
+            <div className="hidden md:block h-6 w-px bg-gray-300 dark:bg-slate-700"></div>
             <div className="flex items-center gap-2">
               <Wifi
                 className={`w-4 h-4 ${
                   connectionStatus === "online"
-                    ? "text-green-600"
+                    ? "text-green-600 dark:text-emerald-400"
                     : connectionStatus === "offline"
-                    ? "text-red-600"
-                    : "text-gray-400"
+                    ? "text-red-600 dark:text-rose-400"
+                    : "text-gray-400 dark:text-slate-500"
                 }`}
               />
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-slate-400">
                 {connectionStatus === "online"
                   ? "Ulangan"
                   : connectionStatus === "offline"
@@ -367,7 +367,7 @@ const AttendanceDashboard = () => {
               </span>
             </div>
             {lastSyncTime && (
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 dark:text-slate-500">
                 {new Date(lastSyncTime).toLocaleTimeString("uz-UZ")}
               </span>
             )}
@@ -377,8 +377,8 @@ const AttendanceDashboard = () => {
             disabled={syncing || connectionStatus === "offline"}
             className={`flex items-center gap-2 px-4 py-2 rounded text-sm font-medium transition-colors ${
               syncing || connectionStatus === "offline"
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700"
+                ? "bg-gray-200 dark:bg-slate-800 text-gray-500 dark:text-slate-500 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 shadow-sm shadow-blue-500/10"
             }`}
           >
             <RefreshCw className={`w-4 h-4 ${syncing ? "animate-spin" : ""}`} />
@@ -388,20 +388,20 @@ const AttendanceDashboard = () => {
       </div>
 
       {/* Main Table - Grid Layout */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg overflow-hidden transition-colors shadow-sm">
         {/* Table Header */}
         <div
-          className="grid gap-4 px-4 py-3 bg-gray-50 border-b border-gray-200 text-sm font-medium text-gray-700"
+          className="grid gap-4 px-4 py-3 bg-gray-50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 text-sm font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]"
           style={{
             gridTemplateColumns: "3fr 2fr 1.5fr 1.5fr 1.5fr 1.5fr 1fr",
           }}
         >
           <div>Xodim</div>
           <div>Bo'lim</div>
-          <div>Kelgan</div>
-          <div>Ketgan</div>
-          <div>Kechikish</div>
-          <div>Status</div>
+          <div className="text-center">Kelgan</div>
+          <div className="text-center">Ketgan</div>
+          <div className="text-center">Kechikish</div>
+          <div className="text-center">Status</div>
           <div className="text-center">Harakat</div>
         </div>
 
@@ -418,8 +418,8 @@ const AttendanceDashboard = () => {
                 return (
                   <div
                     key={emp.id}
-                    className={`grid gap-4 px-4 py-3 items-center text-sm hover:bg-gray-50 transition-colors ${
-                      highlightedEmployeeId === emp.id ? "bg-blue-50" : ""
+                    className={`grid gap-4 px-4 py-3 items-center text-sm hover:bg-gray-50 dark:hover:bg-white/5 border-b border-gray-100 dark:border-slate-800 last:border-0 transition-colors ${
+                      highlightedEmployeeId === emp.id ? "bg-blue-50 dark:bg-blue-900/20" : ""
                     }`}
                     style={{
                       gridTemplateColumns:
@@ -427,60 +427,60 @@ const AttendanceDashboard = () => {
                     }}
                   >
                     <div
-                      className="flex items-center gap-3 cursor-pointer hover:text-blue-600 transition-colors"
+                      className="flex items-center gap-3 cursor-pointer group"
                       onClick={() => {
                         setHistoryEmployee(emp);
                         setHistoryModalOpen(true);
                       }}
                       title="Davomat tarixini ko'rish"
                     >
-                      <div className="w-10 h-10 rounded bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                      <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-bold shadow-sm">
                         {emp.avatar}
                       </div>
-                      <span className="font-medium text-gray-900">
+                      <span className="font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {emp.name}
                       </span>
                     </div>
-                    <div className="text-gray-600">{emp.department}</div>
-                    <div>
+                    <div className="text-gray-600 dark:text-slate-400 font-medium">{emp.department}</div>
+                    <div className="text-center">
                       {emp.checkInTime ? (
                         <span
-                          className={`font-medium ${
-                            lateTime ? "text-orange-600" : "text-green-600"
+                          className={`font-bold px-2 py-1 rounded bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 ${
+                            lateTime ? "text-amber-600 dark:text-amber-400" : "text-emerald-600 dark:text-emerald-400"
                           }`}
                         >
                           {emp.checkInTime}
                         </span>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-gray-400 dark:text-slate-600">-</span>
                       )}
                     </div>
-                    <div>
+                    <div className="text-center">
                       {emp.checkOutTime ? (
-                        <span className="text-gray-900">
+                        <span className="text-gray-900 dark:text-slate-300 font-bold px-2 py-1 rounded bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700">
                           {emp.checkOutTime}
                         </span>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-gray-400 dark:text-slate-600">-</span>
                       )}
                     </div>
-                    <div>
+                    <div className="text-center">
                       {lateTime ? (
-                        <span className="text-red-600 font-medium text-xs">
+                        <span className="text-rose-600 dark:text-rose-400 font-bold text-xs bg-rose-50 dark:bg-rose-900/20 px-2 py-1 rounded-full">
                           {lateTime}
                         </span>
                       ) : emp.checkInTime ? (
-                        <span className="text-green-600 text-xs">Vaqtida</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-full">Vaqtida</span>
                       ) : (
-                        <span className="text-gray-400">-</span>
+                        <span className="text-gray-400 dark:text-slate-600">-</span>
                       )}
                     </div>
-                    <div>
+                    <div className="text-center">
                       <span
-                        className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm ${
                           emp.status === "present"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                            : "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400"
                         }`}
                       >
                         {emp.status === "present" ? "Keldi" : "Kelmadi"}
@@ -492,7 +492,7 @@ const AttendanceDashboard = () => {
                           setSelectedEmployee(emp);
                           setEditModalOpen(true);
                         }}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                        className="p-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white rounded-lg transition-all shadow-sm"
                         title="Tahrirlash"
                       >
                         <Edit2 className="w-4 h-4" />
@@ -510,17 +510,17 @@ const AttendanceDashboard = () => {
 
         {/* Pagination */}
         {filteredEmployees && filteredEmployees.length > itemsPerPage && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
-            <div className="text-sm text-gray-600">
+          <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-800 transition-colors">
+            <div className="text-sm text-gray-600 dark:text-slate-400">
               {(currentPage - 1) * itemsPerPage + 1}-
               {Math.min(currentPage * itemsPerPage, filteredEmployees.length)} /{" "}
-              {filteredEmployees.length}
+              {filteredEmployees.length} ta
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Orqaga
               </button>
@@ -541,14 +541,14 @@ const AttendanceDashboard = () => {
                 .map((page, idx, arr) => (
                   <React.Fragment key={page}>
                     {idx > 0 && arr[idx - 1] !== page - 1 && (
-                      <span className="px-2 py-1 text-gray-400">...</span>
+                      <span className="px-2 py-1 text-gray-400 dark:text-slate-600">...</span>
                     )}
                     <button
                       onClick={() => setCurrentPage(page)}
-                      className={`px-3 py-1 border rounded text-sm ${
+                      className={`px-3 py-1 border rounded text-sm transition-colors ${
                         currentPage === page
-                          ? "bg-blue-600 text-white border-blue-600"
-                          : "border-gray-300 hover:bg-gray-50"
+                          ? "bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/20"
+                          : "border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800"
                       }`}
                     >
                       {page}
@@ -568,7 +568,7 @@ const AttendanceDashboard = () => {
                   currentPage ===
                   Math.ceil(filteredEmployees.length / itemsPerPage)
                 }
-                className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-700 rounded text-sm text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Keyingi
               </button>

@@ -841,20 +841,20 @@ const WaterUsagePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 md:px-6 py-4 md:py-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 px-4 md:px-6 py-4 md:py-6 transition-colors duration-300">
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex flex-col sm:items-center sm:flex-row justify-between gap-4">
           <div>
-            <h1 className="text-xl md:text-2xl font-bold text-gray-900 leading-tight">Davomat</h1>
-            <p className="text-xs md:text-sm text-gray-500 mt-1">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white leading-tight transition-colors">Davomat</h1>
+            <p className="text-xs md:text-sm text-gray-500 dark:text-slate-400 mt-1">
               Xodimlar davomat qaydlarini real-vaqtda kuzatish
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={handleManualExport}
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors shadow-sm shadow-emerald-900/10"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 dark:bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 dark:hover:bg-emerald-500 transition-colors shadow-sm shadow-emerald-900/10 dark:shadow-none"
             >
               <FileText className="w-4 h-4" />
               <span>Excel Export</span>
@@ -869,108 +869,108 @@ const WaterUsagePage = () => {
         {/* Stats Cards - Dashboard style */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
           {/* Jami */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-gray-50 rounded-xl">
-                <Users className="w-5 h-5 text-gray-600" />
+              <div className="p-2.5 bg-gray-50 dark:bg-slate-800 rounded-xl transition-colors">
+                <Users className="w-5 h-5 text-gray-600 dark:text-slate-400" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-50 text-gray-700">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300 transition-colors">
                 100%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{totalEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Jami</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Ro'yxat:</span>
-              <span className="text-sm font-semibold text-gray-600">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{totalEmployeesCount}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Jami</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 transition-colors">
+              <span className="text-xs text-gray-500 dark:text-slate-500">Ro'yxat:</span>
+              <span className="text-sm font-semibold text-gray-600 dark:text-slate-400">
                 {totalEmployeesCount} ta
               </span>
             </div>
           </div>
 
           {/* Keldi */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-emerald-50 rounded-xl">
-                <CheckCircle className="w-5 h-5 text-emerald-600" />
+              <div className="p-2.5 bg-emerald-50 dark:bg-emerald-900/30 rounded-xl transition-colors">
+                <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 transition-colors">
                 {totalEmployeesCount > 0
                   ? Math.round((presentEmployeesCount / totalEmployeesCount) * 100)
                   : 0}
                 %
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">
               {presentEmployeesCount}
             </p>
-            <p className="text-sm text-gray-500 mt-1">Keldi</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Hozir:</span>
-              <span className="text-sm font-semibold text-emerald-600">
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Keldi</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 transition-colors">
+              <span className="text-xs text-gray-500 dark:text-slate-500">Hozir:</span>
+              <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                 {presentEmployeesCount} ta
               </span>
             </div>
           </div>
 
           {/* Kech */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-amber-50 rounded-xl">
-                <AlertCircle className="w-5 h-5 text-amber-600" />
+              <div className="p-2.5 bg-amber-50 dark:bg-amber-900/30 rounded-xl transition-colors">
+                <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 transition-colors">
                 {totalEmployeesCount > 0
                   ? Math.round((lateEmployeesCount / totalEmployeesCount) * 100)
                   : 0}
                 %
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{lateEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Kech</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Kechikkan:</span>
-              <span className="text-sm font-semibold text-amber-600">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{lateEmployeesCount}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Kech</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 transition-colors">
+              <span className="text-xs text-gray-500 dark:text-slate-500">Kechikkan:</span>
+              <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
                 {lateEmployeesCount} ta
               </span>
             </div>
           </div>
 
           {/* Yo'q */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-red-50 rounded-xl">
-                <XCircle className="w-5 h-5 text-red-600" />
+              <div className="p-2.5 bg-red-50 dark:bg-red-900/30 rounded-xl transition-colors">
+                <XCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-400 transition-colors">
                 {totalEmployeesCount > 0
                   ? Math.round((absentEmployeesCount / totalEmployeesCount) * 100)
                   : 0}
                 %
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{absentEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Yo'q</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Kelmagan:</span>
-              <span className="text-sm font-semibold text-red-600">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{absentEmployeesCount}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Yo'q</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 transition-colors">
+              <span className="text-xs text-gray-500 dark:text-slate-500">Kelmagan:</span>
+              <span className="text-sm font-semibold text-red-600 dark:text-red-400">
                 {absentEmployeesCount} ta
               </span>
             </div>
           </div>
 
           {/* Suv Istamoli % */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-blue-50 rounded-xl">
-                <CheckCircle className="w-5 h-5 text-blue-600" />
+              <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 rounded-xl transition-colors">
+                <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <span
-                className={`text-xs font-medium px-2 py-1 rounded-full ${water_usagePercentage >= 90
-                  ? "bg-green-50 text-green-700"
+                className={`text-xs font-medium px-2 py-1 rounded-full transition-colors ${water_usagePercentage >= 90
+                  ? "bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-400"
                   : water_usagePercentage >= 70
-                    ? "bg-amber-50 text-amber-700"
-                    : "bg-red-50 text-red-700"
+                    ? "bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"
+                    : "bg-red-50 dark:bg-red-900/40 text-red-700 dark:text-red-400"
                   }`}
               >
                 {water_usagePercentage >= 90
@@ -980,33 +980,34 @@ const WaterUsagePage = () => {
                     : "Past"}
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">
+            <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">
               {water_usagePercentage}%
             </p>
-            <p className="text-sm text-gray-500 mt-1">Davomat</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Foiz:</span>
-              <span className="text-sm font-semibold text-blue-600">
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Davomat</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 transition-colors">
+              <span className="text-xs text-gray-500 dark:text-slate-500">Foiz:</span>
+              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                 {water_usagePercentage}%
               </span>
             </div>
           </div>
         </div>
+        </div>
 
         {/* Toolbar - Optimized for mobile */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-6 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-4 mb-6 shadow-sm transition-colors">
           <div className="flex flex-col md:flex-row md:items-center gap-4">
             {/* Search */}
             <div className="relative flex-1 group">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                <Search className="w-4.5 h-4.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <Search className="w-4.5 h-4.5 text-gray-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors" />
               </div>
               <input
                 type="text"
                 placeholder="Xodimlarni qidirish..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
+                className="w-full pl-11 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
               />
             </div>
 
@@ -1015,7 +1016,7 @@ const WaterUsagePage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="flex-1 md:flex-none px-3 py-2.5 bg-white text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                className="flex-1 md:flex-none px-3 py-2.5 bg-white dark:bg-slate-900 text-sm border border-gray-200 dark:border-slate-700 rounded-xl text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
               >
                 <option value="name">Ism bo'yicha</option>
                 <option value="status">Status bo'yicha</option>
@@ -1027,7 +1028,7 @@ const WaterUsagePage = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="flex-1 md:flex-none px-3 py-2.5 bg-white text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+                className="flex-1 md:flex-none px-3 py-2.5 bg-white dark:bg-slate-900 text-sm border border-gray-200 dark:border-slate-700 rounded-xl text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
               />
 
               {/* Reset Button */}
@@ -1038,7 +1039,7 @@ const WaterUsagePage = () => {
                   setSortOrder("asc");
                   setSelectedDate(new Date().toISOString().split("T")[0]);
                 }}
-                className="p-2.5 text-gray-500 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
+                className="p-2.5 text-gray-500 dark:text-slate-400 bg-gray-100 dark:bg-slate-800 rounded-xl hover:bg-gray-200 dark:hover:bg-slate-700 transition-all"
                 title="Tozalash"
               >
                 <XCircle className="w-5 h-5" />
@@ -1048,33 +1049,33 @@ const WaterUsagePage = () => {
         </div>
 
         {/* Content Section - Responsive Table/Cards */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50/50 border-b border-gray-200">
-                  <th className="text-left py-4 px-6 font-bold text-gray-700 uppercase tracking-wider text-[11px]">
+                <tr className="bg-gray-50/50 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800">
+                  <th className="text-left py-4 px-6 font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]">
                     Xodim Ismi
                   </th>
-                  <th className="text-center py-4 px-6 font-bold text-gray-700 uppercase tracking-wider text-[11px]">
+                  <th className="text-center py-4 px-6 font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]">
                     Bo'lim
                   </th>
-                  <th className="text-center py-4 px-6 font-bold text-gray-700 uppercase tracking-wider text-[11px]">
+                  <th className="text-center py-4 px-6 font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]">
                     Kelgan
                   </th>
-                  <th className="text-center py-4 px-6 font-bold text-gray-700 uppercase tracking-wider text-[11px]">
+                  <th className="text-center py-4 px-6 font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]">
                     Ketgan
                   </th>
-                  <th className="text-center py-4 px-6 font-bold text-gray-700 uppercase tracking-wider text-[11px]">
+                  <th className="text-center py-4 px-6 font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]">
                     Status
                   </th>
-                  <th className="text-right py-4 px-6 font-bold text-gray-700 uppercase tracking-wider text-[11px]">
+                  <th className="text-right py-4 px-6 font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider text-[11px]">
                     Amallar
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                 {paginatedwater_usage.map((employee) => {
                   const lateInfo = calculateLateInfo(employee.checkIn);
                   return (
@@ -1082,8 +1083,8 @@ const WaterUsagePage = () => {
                       key={employee.id}
                       className={`group transition-all duration-200 ${
                         lateInfo.isLate
-                          ? "bg-amber-50/30 hover:bg-amber-50/60"
-                          : "hover:bg-gray-50/80"
+                          ? "bg-amber-50/30 dark:bg-amber-900/10 hover:bg-amber-50/60 dark:hover:bg-amber-900/20"
+                          : "hover:bg-gray-50/80 dark:hover:bg-white/5"
                       }`}
                     >
                       <td className="py-4 px-6">
@@ -1095,11 +1096,11 @@ const WaterUsagePage = () => {
                             {employee.avatar}
                           </div>
                           <div>
-                            <div className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
+                            <div className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                               {employee.name}
                             </div>
                             {lateInfo.isLate && (
-                              <div className="text-[11px] text-amber-600 flex items-center mt-1 font-bold">
+                              <div className="text-[11px] text-amber-600 dark:text-amber-400 flex items-center mt-1 font-bold">
                                 <Clock className="w-3 h-3 mr-1" />
                                 {lateInfo.lateText} kech
                               </div>
@@ -1108,17 +1109,17 @@ const WaterUsagePage = () => {
                         </div>
                       </td>
                       <td className="text-center py-4 px-6">
-                        <span className="inline-flex px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-[11px] font-bold border border-blue-100">
+                        <span className="inline-flex px-2.5 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-lg text-[11px] font-bold border border-blue-100 dark:border-blue-900/30">
                           {employee.department || "IT"}
                         </span>
                       </td>
                       <td className="text-center py-4 px-6">
-                        <span className="text-sm font-bold text-gray-700 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                        <span className="text-sm font-bold text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-slate-800/50 px-2 py-1 rounded-md border border-gray-100 dark:border-slate-800">
                           {employee.checkIn || "—:—"}
                         </span>
                       </td>
                       <td className="text-center py-4 px-6">
-                        <span className="text-sm font-bold text-gray-700 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                        <span className="text-sm font-bold text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-slate-800/50 px-2 py-1 rounded-md border border-gray-100 dark:border-slate-800">
                           {employee.checkOut || "—:—"}
                         </span>
                       </td>
@@ -1126,10 +1127,10 @@ const WaterUsagePage = () => {
                         <span
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm ${
                             employee.status === "present"
-                              ? "bg-emerald-100 text-emerald-700"
+                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
                               : employee.status === "late"
-                              ? "bg-amber-100 text-amber-700"
-                              : "bg-rose-100 text-rose-700"
+                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                              : "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400"
                           }`}
                         >
                           {getStatusIcon(employee.status)}
@@ -1139,7 +1140,7 @@ const WaterUsagePage = () => {
                       <td className="text-right py-4 px-6">
                         <button
                           onClick={() => handleEditEmployee(employee)}
-                          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-xl transition-all shadow-sm"
+                          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-600 dark:hover:bg-blue-500 hover:text-white rounded-xl transition-all shadow-sm"
                         >
                           <Edit2 className="w-3.5 h-3.5" />
                           <span>Tahrirlash</span>
@@ -1153,11 +1154,11 @@ const WaterUsagePage = () => {
           </div>
 
           {/* Mobile Card View */}
-          <div className="md:hidden divide-y divide-gray-100">
+          <div className="md:hidden divide-y divide-gray-100 dark:divide-slate-800">
             {paginatedwater_usage.map((employee) => {
               const lateInfo = calculateLateInfo(employee.checkIn);
               return (
-                <div key={employee.id} className="p-4 bg-white hover:bg-gray-50 transition-colors">
+                <div key={employee.id} className="p-4 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div
@@ -1167,9 +1168,9 @@ const WaterUsagePage = () => {
                         {employee.avatar}
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-gray-900">{employee.name}</h4>
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-white transition-colors">{employee.name}</h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                          <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-full border border-blue-100 dark:border-blue-900/30">
                              {employee.department || "IT"}
                           </span>
                         </div>
@@ -1177,20 +1178,20 @@ const WaterUsagePage = () => {
                     </div>
                     <button
                       onClick={() => handleEditEmployee(employee)}
-                      className="p-2 text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all"
+                      className="p-2 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Kelgan</p>
-                      <p className="text-sm font-bold text-gray-900">{employee.checkIn || "—"}</p>
+                    <div className="bg-gray-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800">
+                      <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">Kelgan</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-slate-200">{employee.checkIn || "—"}</p>
                     </div>
-                    <div className="bg-gray-50 p-2.5 rounded-xl border border-gray-100">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Ketgan</p>
-                      <p className="text-sm font-bold text-gray-900">{employee.checkOut || "—"}</p>
+                    <div className="bg-gray-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800">
+                      <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">Ketgan</p>
+                      <p className="text-sm font-bold text-gray-900 dark:text-slate-200">{employee.checkOut || "—"}</p>
                     </div>
                   </div>
 
@@ -1198,10 +1199,10 @@ const WaterUsagePage = () => {
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm ${
                         employee.status === "present"
-                          ? "bg-emerald-100 text-emerald-700"
+                          ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
                           : employee.status === "late"
-                          ? "bg-amber-100 text-amber-700"
-                          : "bg-rose-100 text-rose-700"
+                          ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                          : "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400"
                       }`}
                     >
                       {getStatusIcon(employee.status)}
@@ -1209,7 +1210,7 @@ const WaterUsagePage = () => {
                     </span>
 
                     {lateInfo.isLate && (
-                      <span className="text-[11px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-lg flex items-center">
+                      <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2 py-1 rounded-lg flex items-center">
                         <Clock className="w-3.5 h-3.5 mr-1" />
                         {lateInfo.lateText} kech
                       </span>
@@ -1223,16 +1224,16 @@ const WaterUsagePage = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200">
+            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-800 transition-colors">
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-700">Ko'rsatish:</span>
+                <span className="text-sm text-gray-700 dark:text-slate-400">Ko'rsatish:</span>
                 <select
                   value={itemsPerPage}
                   onChange={(e) => {
                     setItemsPerPage(Number(e.target.value));
                     setCurrentPage(1);
                   }}
-                  className="border border-gray-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 dark:border-slate-700 rounded-md px-2 py-1 text-sm bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value={10}>10</option>
                   <option value={15}>15</option>
@@ -1240,7 +1241,7 @@ const WaterUsagePage = () => {
                   <option value={50}>50</option>
                   <option value={100}>100</option>
                 </select>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 dark:text-slate-500">
                   {startIndex + 1}-{Math.min(endIndex, totalItems)} /{" "}
                   {totalItems} ta
                 </span>
@@ -1250,14 +1251,14 @@ const WaterUsagePage = () => {
                 <button
                   onClick={() => setCurrentPage(1)}
                   disabled={currentPage === 1}
-                  className="px-2 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   ««
                 </button>
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   ‹
                 </button>
@@ -1278,9 +1279,9 @@ const WaterUsagePage = () => {
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`px-3 py-1 text-sm border rounded-md ${currentPage === pageNum
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "border-gray-300 hover:bg-gray-50"
+                      className={`px-3 py-1 text-sm border rounded-md transition-colors ${currentPage === pageNum
+                        ? "bg-blue-600 text-white border-blue-600 shadow-sm shadow-blue-500/20"
+                        : "border-gray-300 dark:border-slate-700 text-gray-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800"
                         }`}
                     >
                       {pageNum}
@@ -1291,14 +1292,14 @@ const WaterUsagePage = () => {
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   ›
                 </button>
                 <button
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={currentPage === totalPages}
-                  className="px-2 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   »»
                 </button>
@@ -1307,15 +1308,15 @@ const WaterUsagePage = () => {
           )}
         {/* Empty State */}
         {filteredwater_usage.length === 0 && (
-          <div className="bg-white rounded-lg p-8 text-center border border-gray-200 shadow-sm">
-            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Calendar className="w-6 h-6 text-gray-400" />
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-gray-200 dark:border-slate-800 shadow-sm transition-colors">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-4 transition-colors">
+              <Calendar className="w-8 h-8 text-gray-400 dark:text-slate-500" />
             </div>
-            <h3 className="text-base font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 transition-colors">
               Ma'lumot topilmadi
             </h3>
-            <p className="text-sm text-gray-500">
-              Tanlangan sana uchun davomat ma'lumotlari mavjud emas
+            <p className="text-sm text-gray-500 dark:text-slate-400 max-w-xs mx-auto transition-colors">
+              Tanlangan sana uchun davomat ma'lumotlari mavjud emas yoki qidiruv natijasi bo'sh
             </p>
           </div>
         )}

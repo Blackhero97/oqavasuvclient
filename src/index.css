@@ -1,6 +1,13 @@
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply transition-colors duration-300;
+  }
+}
 
 /* Staff Page Animations */
 @keyframes fade-in {
@@ -377,5 +384,12 @@
     --gradient-green: linear-gradient(135deg, #0cebeb 0%, #20e3b2 100%);
     --gradient-orange: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --gradient-purple: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+
+  .dark {
+    --brand-primary: #005a91;
+    --brand-primary-dark: #004a77;
+    --brand-primary-light: #006eb1;
+    --brand-primary-pale: #1a2c38;
   }
 }

@@ -77,13 +77,13 @@ function App() {
   // Show loading spinner while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-slate-950 flex items-center justify-center transition-colors duration-300">
         <div className="flex items-center space-x-3">
           <div
             className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
             style={{ borderColor: "#004A7733", borderTopColor: "#004A77" }}
           ></div>
-          <span className="text-gray-600">Yuklanmoqda...</span>
+          <span className="text-gray-600 dark:text-slate-400">Yuklanmoqda...</span>
         </div>
       </div>
     );
@@ -103,7 +103,7 @@ function App() {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <div className="flex h-screen bg-gray-50 overflow-hidden relative">
+        <div className="flex h-screen bg-gray-50 dark:bg-slate-900 overflow-hidden relative transition-colors duration-300">
           {/* Mobile Overlay */}
           {isSidebarOpen && (
             <div
