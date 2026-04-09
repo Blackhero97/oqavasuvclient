@@ -29,18 +29,18 @@ const DashboardPage = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [employeesRes, attendanceRes, dbRes] = await Promise.all([
-        fetch(`${API_URL}/api/all-staff`),
-        fetch(`${API_URL}/api/attendance`),
-        fetch(`${API_URL}/api/system/db-stats`),
-      ]);
+      // Fetch data from multiple endpoints
+      const endpoints = [
+        fetch(`${API_URL}/api/all-staff`).catch(e => ({ ok: false, error: e })),
+        fetch(`${API_URL}/api/attendance`).catch(e => ({ ok: false, error: e })),
+        fetch(`${API_URL}/api/system/db-stats`).catch(e => ({ ok: false, error: e })),
+      ];
 
-      if (!employeesRes.ok || !attendanceRes.ok) {
-        throw new Error("Network response was not ok");
-      }
+      const [employeesRes, attendanceRes, dbRes] = await Promise.all(endpoints);
 
-      const employeesData = await employeesRes.json();
-      const attendanceData = await attendanceRes.json();
+      // Handle raw responses
+      const employeesData = employeesRes.ok ? await employeesRes.json() : { employees: [] };
+      const attendanceData = attendanceRes.ok ? await attendanceRes.json() : { records: [] };
       const dbStatsData = dbRes.ok ? await dbRes.json() : null;
 
       const employees =

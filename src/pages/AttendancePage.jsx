@@ -996,13 +996,13 @@ const AttendancePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-6">
-      <div className="space-y-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-950 px-6 py-8 transition-colors duration-300">
+      <div className="max-w-7xl mx-auto space-y-8">
         {/* Page Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Davomat</h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors tracking-tight">Davomat</h1>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 transition-colors">
               {selectedRole === "ishchi" && "Ishchilar davomatini real-vaqtda kuzatish"}
               {selectedRole === "mutaxassis" && "Mutaxassislar davomatini real-vaqtda kuzatish"}
               {selectedRole === "staff" && "Xodimlar davomatini real-vaqtda kuzatish"}
@@ -1012,16 +1012,16 @@ const AttendancePage = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowFaceScanner(!showFaceScanner)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-xl text-sm font-medium hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-slate-800 dark:hover:bg-indigo-500 transition-all shadow-sm shadow-indigo-500/20"
             >
-              <Camera className="w-4 h-4" />
+              <Camera className="w-4.5 h-4.5" />
               Yuz Skaneri
             </button>
             <button
               onClick={handleManualExport}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-sm font-medium hover:bg-emerald-700 transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold hover:bg-emerald-700 dark:hover:bg-emerald-500 transition-all shadow-sm shadow-emerald-500/20"
             >
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4.5 h-4.5" />
               Excel Export
             </button>
           </div>
@@ -1036,20 +1036,20 @@ const AttendancePage = () => {
 
         {/* Face Records */}
         {faceRecords.length > 0 && (
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-slate-800 transition-colors">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-lg">🎬</span>
-              <h3 className="text-sm font-semibold text-gray-700">So'nggi Yuz Tanishlar</h3>
+              <h3 className="text-sm font-bold text-gray-700 dark:text-slate-300">So'nggi Yuz Tanishlar</h3>
             </div>
-            <div className="space-y-2.5">
+            <div className="space-y-3">
               {faceRecords.slice(-5).map((record) => (
                 <div
                   key={record.id}
-                  className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-all border border-transparent dark:border-slate-800"
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-800">{record.personName}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-sm font-bold text-gray-800 dark:text-white">{record.personName}</p>
+                    <p className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">
                       {record.role === "mutaxassis" ? "👨‍🔬 Mutaxassis" : "👷 Ishchi"} •{" "}
                       {new Date(record.timestamp).toLocaleTimeString("uz-UZ", {
                         hour: "2-digit",
@@ -1057,7 +1057,7 @@ const AttendancePage = () => {
                       })}
                     </p>
                   </div>
-                  <span className="text-xs font-semibold text-green-600 bg-green-100 px-2.5 py-1 rounded-lg">
+                  <span className="text-xs font-bold text-green-600 dark:text-emerald-400 bg-green-100 dark:bg-emerald-900/30 px-3 py-1.5 rounded-lg">
                     {record.confidence}%
                   </span>
                 </div>
@@ -1067,96 +1067,106 @@ const AttendancePage = () => {
         )}
 
         {/* Stats Cards - Dashboard style */}
-        <div className="grid grid-cols-5 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {/* Jami */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-gray-50 rounded-xl">
-                <Users className="w-5 h-5 text-gray-600" />
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col transition-colors">
+            <div className="flex items-center justify-between mb-5">
+              <div className="p-3 bg-gray-50 dark:bg-slate-800 rounded-xl text-gray-600 dark:text-slate-400">
+                <Users className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-gray-50 text-gray-700">
+              <span className="text-[11px] font-bold px-2 py-1 rounded-lg bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-slate-300">
                 100%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{totalEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Jami</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Ro'yxat:</span>
-              <span className="text-sm font-semibold text-gray-600">{totalEmployeesCount} ta</span>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{totalEmployeesCount}</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">Jami</p>
+            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 dark:text-slate-500">Ro'yxat:</span>
+                <span className="text-xs font-bold text-gray-700 dark:text-slate-300">{totalEmployeesCount} ta</span>
+              </div>
             </div>
           </div>
 
           {/* Keldi */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-emerald-50 rounded-xl">
-                <CheckCircle className="w-5 h-5 text-emerald-600" />
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col transition-colors">
+            <div className="flex items-center justify-between mb-5">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl text-emerald-600 dark:text-emerald-400">
+                <CheckCircle className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-emerald-50 text-emerald-700">
+              <span className="text-[11px] font-bold px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
                 {totalEmployeesCount > 0 ? Math.round((presentEmployeesCount / totalEmployeesCount) * 100) : 0}%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{presentEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Keldi</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Hozir:</span>
-              <span className="text-sm font-semibold text-emerald-600">{presentEmployeesCount} ta</span>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{presentEmployeesCount}</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">Keldi</p>
+            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 dark:text-slate-500">Hozir:</span>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">{presentEmployeesCount} ta</span>
+              </div>
             </div>
           </div>
 
           {/* Kech */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-amber-50 rounded-xl">
-                <AlertCircle className="w-5 h-5 text-amber-600" />
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col transition-colors">
+            <div className="flex items-center justify-between mb-5">
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl text-amber-600 dark:text-amber-400">
+                <AlertCircle className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700">
+              <span className="text-[11px] font-bold px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
                 {totalEmployeesCount > 0 ? Math.round((lateEmployeesCount / totalEmployeesCount) * 100) : 0}%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{lateEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Kech</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Kechikkan:</span>
-              <span className="text-sm font-semibold text-amber-600">{lateEmployeesCount} ta</span>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{lateEmployeesCount}</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">Kech</p>
+            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 dark:text-slate-500">Kechikkan:</span>
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-400">{lateEmployeesCount} ta</span>
+              </div>
             </div>
           </div>
 
           {/* Yo'q */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-red-50 rounded-xl">
-                <XCircle className="w-5 h-5 text-red-600" />
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col transition-colors">
+            <div className="flex items-center justify-between mb-5">
+              <div className="p-3 bg-red-50 dark:bg-rose-900/20 rounded-xl text-red-600 dark:text-rose-400">
+                <XCircle className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium px-2 py-1 rounded-full bg-red-50 text-red-700">
+              <span className="text-[11px] font-bold px-2 py-1 rounded-lg bg-red-50 dark:bg-rose-900/30 text-red-700 dark:text-rose-400">
                 {totalEmployeesCount > 0 ? Math.round((absentEmployeesCount / totalEmployeesCount) * 100) : 0}%
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{absentEmployeesCount}</p>
-            <p className="text-sm text-gray-500 mt-1">Yo'q</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Kelmagan:</span>
-              <span className="text-sm font-semibold text-red-600">{absentEmployeesCount} ta</span>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{absentEmployeesCount}</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">Yo'q</p>
+            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 dark:text-slate-500">Kelmagan:</span>
+                <span className="text-xs font-bold text-rose-600 dark:text-rose-400">{absentEmployeesCount} ta</span>
+              </div>
             </div>
           </div>
 
           {/* Davomat % */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2.5 bg-blue-50 rounded-xl">
-                <CheckCircle className="w-5 h-5 text-blue-600" />
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col transition-colors">
+            <div className="flex items-center justify-between mb-5">
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl text-blue-600 dark:text-blue-400">
+                <CheckCircle className="w-5 h-5" />
               </div>
-              <span className={`text-xs font-medium px-2 py-1 rounded-full ${attendancePercentage >= 90 ? 'bg-green-50 text-green-700' :
-                attendancePercentage >= 70 ? 'bg-amber-50 text-amber-700' : 'bg-red-50 text-red-700'
+              <span className={`text-[11px] font-bold px-2 py-1 rounded-lg shadow-sm transition-colors ${attendancePercentage >= 90 ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' :
+                attendancePercentage >= 70 ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' : 'bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400'
                 }`}>
                 {attendancePercentage >= 90 ? 'Yaxshi' : attendancePercentage >= 70 ? 'O\'rtacha' : 'Past'}
               </span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{attendancePercentage}%</p>
-            <p className="text-sm text-gray-500 mt-1">Davomat</p>
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-              <span className="text-xs text-gray-500">Foiz:</span>
-              <span className="text-sm font-semibold text-blue-600">{attendancePercentage}%</span>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white">{attendancePercentage}%</p>
+            <p className="text-sm font-medium text-gray-500 dark:text-slate-400 mt-1">Davomat</p>
+            <div className="mt-auto pt-4 border-t border-gray-100 dark:border-slate-800">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-400 dark:text-slate-500">Foiz:</span>
+                <span className="text-xs font-bold text-blue-600 dark:text-blue-400">{attendancePercentage}%</span>
+              </div>
             </div>
           </div>
         </div>

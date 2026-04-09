@@ -57,10 +57,10 @@ const SettingsPage = () => {
   };
 
   const ToggleSwitch = ({ checked, onChange, label, description }) => (
-    <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+    <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-slate-800 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors group">
       <div>
-        <h4 className="font-medium text-gray-900">{label}</h4>
-        <p className="text-sm text-gray-500">{description}</p>
+        <h4 className="font-semibold text-gray-900 dark:text-white transition-colors">{label}</h4>
+        <p className="text-sm text-gray-500 dark:text-slate-400 transition-colors">{description}</p>
       </div>
       <label className="relative inline-flex items-center cursor-pointer">
         <input
@@ -69,9 +69,9 @@ const SettingsPage = () => {
           onChange={(e) => onChange(e.target.checked)}
           className="sr-only peer"
         />
-        <div className={`w-11 h-6 rounded-full transition-all duration-300 ${checked ? "bg-blue-600" : "bg-gray-300"
+        <div className={`w-11 h-6 rounded-full transition-all duration-300 ${checked ? "bg-blue-600 shadow-sm shadow-blue-500/20" : "bg-gray-300 dark:bg-slate-700"
           }`}>
-          <div className={`w-5 h-5 bg-white rounded-full shadow transition-all duration-300 transform ${checked ? "translate-x-5" : "translate-x-0.5"
+          <div className={`w-5 h-5 bg-white rounded-full shadow-sm transition-all duration-300 transform ${checked ? "translate-x-5" : "translate-x-0.5"
             } mt-0.5`}></div>
         </div>
       </label>
@@ -81,64 +81,64 @@ const SettingsPage = () => {
   const renderGeneralSettings = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          oqava ma'lumotlari
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 transition-colors">
+          Oqava ma'lumotlari
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              oqava nomi
+            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
+              Oqava nomi
             </label>
             <input
               type="text"
               value={settings.schoolName}
               onChange={(e) => handleInputChange("schoolName", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
               Telefon raqam
             </label>
             <input
               type="tel"
               value={settings.phone}
               onChange={(e) => handleInputChange("phone", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
               Email manzil
             </label>
             <input
               type="email"
               value={settings.email}
               onChange={(e) => handleInputChange("email", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
               Veb-sayt
             </label>
             <input
               type="url"
               value={settings.website}
               onChange={(e) => handleInputChange("website", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
             />
           </div>
         </div>
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="mt-5">
+          <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
             Manzil
           </label>
           <textarea
             value={settings.address}
             onChange={(e) => handleInputChange("address", e.target.value)}
-            rows={3}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
+            className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
           />
         </div>
       </div>
@@ -231,18 +231,18 @@ const SettingsPage = () => {
   const renderAppearanceSettings = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 transition-colors">
           Ko'rinish va til
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-bold text-gray-700 dark:text-slate-300 mb-2">
               Mavzu
             </label>
             <select
               value={settings.theme}
               onChange={(e) => handleInputChange("theme", e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-xl dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
             >
               <option value="light">Yorug'</option>
               <option value="dark">Qorong'u</option>
@@ -406,45 +406,45 @@ const SettingsPage = () => {
   );
 
   return (
-    <div className="px-4 py-5 bg-gray-50 min-h-screen">
-      <div className="w-full">
+    <div className="px-4 py-8 bg-gray-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Sozlamalar</h1>
-              <p className="text-sm text-gray-500 mt-1">
-                Tizim sozlamalarini boshqaring
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Sozlamalar</h1>
+              <p className="text-sm text-gray-500 dark:text-slate-400 mt-1 transition-colors">
+                Tizim sozlamalari va xavfsizligini boshqaring
               </p>
             </div>
             <button
               onClick={handleSave}
-              className="flex items-center space-x-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+              className="flex items-center space-x-2 px-5 py-2.5 bg-indigo-600 dark:bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-500 transition-all shadow-sm shadow-indigo-500/20"
             >
-              <Save className="w-4 h-4" />
-              <span>Saqlash</span>
+              <Save className="w-4.5 h-4.5" />
+              <span className="font-bold text-sm">Saqlash</span>
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar */}
-          <div className="lg:w-64">
-            <div className="bg-white rounded-lg border border-gray-200 p-2">
-              <nav className="space-y-1">
+          <div className="lg:w-72">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-2.5 shadow-sm transition-colors">
+              <nav className="space-y-1.5">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-150 ${activeTab === tab.id
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "text-gray-700 hover:bg-gray-100"
+                      className={`w-full flex items-center space-x-3.5 px-4 py-3 rounded-xl text-left transition-all duration-200 ${activeTab === tab.id
+                        ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                        : "text-gray-600 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-800"
                         }`}
                     >
-                      <Icon className="w-5 h-5" strokeWidth={2} />
-                      <span className="font-medium text-sm">{tab.name}</span>
+                      <Icon className="w-5 h-5" strokeWidth={activeTab === tab.id ? 2.5 : 2} />
+                      <span className="font-bold text-sm">{tab.name}</span>
                       {activeTab === tab.id && (
                         <Check className="w-4 h-4 ml-auto" />
                       )}
@@ -457,7 +457,7 @@ const SettingsPage = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 shadow-sm transition-colors min-h-[500px]">
               {renderContent()}
             </div>
           </div>

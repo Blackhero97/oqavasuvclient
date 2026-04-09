@@ -1,3 +1,5 @@
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Bell, Search, User, LogOut, Menu, Key, Sun, Cloud, CloudRain, CloudSun, Wind, Clock, Moon } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";

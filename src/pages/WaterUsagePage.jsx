@@ -992,7 +992,6 @@ const WaterUsagePage = () => {
             </div>
           </div>
         </div>
-        </div>
 
         {/* Toolbar - Optimized for mobile */}
         <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-4 mb-6 shadow-sm transition-colors">
@@ -1242,7 +1241,7 @@ const WaterUsagePage = () => {
                   <option value={100}>100</option>
                 </select>
                 <span className="text-sm text-gray-500 dark:text-slate-500">
-                  {startIndex + 1}-{Math.min(endIndex, totalItems)} /{" "}
+                  {startIndex + 1}-{Math.min(endIndex, totalItems)} {" / "}
                   {totalItems} ta
                 </span>
               </div>
