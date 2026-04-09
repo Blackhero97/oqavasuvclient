@@ -100,6 +100,9 @@ const WaterUsagePage = () => {
   useEffect(() => {
     fetchEmployees();
 
+    // Socket.IO real-time updates uchun
+    const socket = io(BASE_URL);
+
     // ✅ YANGI: Davomat yangilanganida (keldi/ketdi) real-time ko'rsatish
     socket.on("attendance:updated", (data) => {
       console.log("⚡ attendance:updated received in WaterUsagePage:", data);
