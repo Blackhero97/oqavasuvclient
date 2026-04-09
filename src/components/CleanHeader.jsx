@@ -1,15 +1,52 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Bell, Search, User, LogOut, Menu } from "lucide-react";
+import { Bell, Search, User, LogOut, Menu, Key } from "lucide-react";
+import toast from "react-hot-toast";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
   const location = useLocation();
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  const handleLogoutClick = () => {
+    toast((t) => (
+      <div className="flex flex-col gap-3 p-1">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-red-100 rounded-lg">
+            <LogOut className="w-4 h-4 text-red-600" />
+          </div>
+          <p className="font-bold text-gray-900 text-sm">Tizimdan chiqmoqchimisiz?</p>
+        </div>
+        <div className="flex gap-2 ml-auto">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              onLogout();
+            }}
+            className="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl hover:bg-red-700 transition-all shadow-sm"
+          >
+            Ha, chiqish
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-bold rounded-xl hover:bg-gray-200 transition-all"
+          >
+            Bekor qilish
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 6000,
+      position: 'top-center',
+      className: 'border-2 border-red-50/50 shadow-2xl rounded-2xl',
+    });
+  };
 
   const getPageTitle = () => {
     const titles = {
@@ -79,23 +116,29 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
 
           {/* User */}
           <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-3 border-l border-gray-200">
-            <div className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-1.5 md:py-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer">
-              <div className="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+            <div 
+              onClick={() => setIsPasswordModalOpen(true)}
+              className="flex items-center gap-2 md:gap-3 px-2 md:px-3 py-1.5 md:py-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all cursor-pointer border border-transparent hover:border-indigo-100 group"
+            >
+              <div className="w-8 h-8 md:w-9 md:h-9 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-full flex items-center justify-center shadow-sm">
                 <User className="w-4 h-4 md:w-5 md:h-5 text-white" />
               </div>
               <div className="hidden md:block">
-                <p className="text-sm font-semibold text-gray-900">
+                <p className="text-sm font-bold text-gray-900">
                   {user?.username || "Admin"}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-[10px] font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded-md inline-block uppercase tracking-wider">
                   {user?.role || "Administrator"}
-                </p>
+              </p>
+              </div>
+              <div className="hidden lg:flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all ml-1" title="Parolni o'zgartirish">
+                <Key className="w-4 h-4" />
               </div>
             </div>
 
             <button
-              onClick={onLogout}
-              className="p-2 md:p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-all"
+              onClick={handleLogoutClick}
+              className="p-2 md:p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-200"
               title="Chiqish"
             >
               <LogOut className="w-4.5 h-4.5 md:w-5 md:h-5" />
@@ -103,6 +146,11 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
           </div>
         </div>
       </div>
+
+      <ChangePasswordModal 
+        isOpen={isPasswordModalOpen} 
+        onClose={() => setIsPasswordModalOpen(false)} 
+      />
     </header>
   );
 };
