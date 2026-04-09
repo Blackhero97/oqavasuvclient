@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { Bell, Search, User, LogOut, Menu, Key } from "lucide-react";
+import { Bell, Search, User, LogOut, Menu, Key, Sun, Cloud, CloudRain, CloudSun, Wind, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import ChangePasswordModal from "./ChangePasswordModal";
 
@@ -8,6 +8,39 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
   const location = useLocation();
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
+  const [weather, setWeather] = useState({ temp: 24, code: 0 });
+
+  useEffect(() => {
+    const fetchWeather = async () => {
+      try {
+        // Tashkent coordinates
+        const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=41.2995&longitude=69.2401&current_weather=true");
+        const data = await res.json();
+        if (data && data.current_weather) {
+          setWeather({ 
+            temp: Math.round(data.current_weather.temperature), 
+            code: data.current_weather.weathercode 
+          });
+        }
+      } catch (e) {
+        console.error("Weather fetch error", e);
+      }
+    };
+    
+    fetchWeather();
+    const weatherInterval = setInterval(fetchWeather, 600000); // Har 10 daqiqada yangilash
+    return () => clearInterval(weatherInterval);
+  }, []);
+
+  const getWeatherIcon = (code) => {
+    if (code === 0) return <Sun className="w-5 h-5 text-amber-500" />;
+    if (code >= 1 && code <= 3) return <CloudSun className="w-5 h-5 text-amber-400" />;
+    if (code >= 45 && code <= 48) return <Cloud className="w-5 h-5 text-gray-400" />;
+    if (code >= 51 && code <= 67) return <CloudRain className="w-5 h-5 text-blue-400" />;
+    if (code >= 71 && code <= 77) return <CloudRain className="w-5 h-5 text-slate-300" />;
+    if (code >= 80 && code <= 82) return <CloudRain className="w-5 h-5 text-blue-500" />;
+    return <Sun className="w-5 h-5 text-amber-500" />;
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -96,17 +129,24 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
-          {/* Search */}
-          <div className="relative hidden md:block group">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <Search className="w-4.5 h-4.5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-            </div>
-            <input
-              type="text"
-              placeholder="Qidirish..."
-              className="pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
-            />
+        {/* Clock & Weather (Minimalist) */}
+        <div className="flex items-center gap-4 px-4 py-2 bg-gray-50/80 rounded-2xl border border-gray-100/50 backdrop-blur-sm hidden md:flex">
+          <div className="flex items-center gap-2 pr-4 border-r border-gray-200">
+            <Clock className="w-4.5 h-4.5 text-indigo-500" />
+            <span className="text-sm font-bold text-gray-800 tracking-tight">
+              {currentTime.toLocaleTimeString("uz-UZ", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
           </div>
+          <div className="flex items-center gap-2">
+            {getWeatherIcon(weather.code)}
+            <span className="text-sm font-bold text-gray-800">
+              {weather.temp > 0 ? `+${weather.temp}` : weather.temp}°C
+            </span>
+          </div>
+        </div>
 
           {/* Notifications */}
           <button className="relative p-2.5 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all">
