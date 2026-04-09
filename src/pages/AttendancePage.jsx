@@ -123,6 +123,33 @@ const AttendancePage = () => {
       }, 500); // Biroz kutib olish database'ga yozilishini kutish uchun
     });
 
+    // ✅ YANGI: Davomat yangilanganida (keldi/ketdi) real-time ko'rsatish
+    socket.on("attendance:updated", (data) => {
+      console.log("⚡ attendance:updated received:", data);
+      setAttendanceData((prev) =>
+        prev.map((emp) => {
+          // hikvisionEmployeeId yoki name bo'yicha moslashtirish
+          const hikMatch =
+            emp.hikvisionEmployeeId?.toString() === data.hikvisionEmployeeId?.toString() ||
+            emp.employeeId?.toString() === data.hikvisionEmployeeId?.toString() ||
+            emp.employeeId?.toString() === data.employeeId?.toString();
+          const nameMatch =
+            emp.name?.toLowerCase() === data.name?.toLowerCase();
+
+          if (hikMatch || nameMatch) {
+            console.log(`✅ Real-time update: ${emp.name} → checkIn=${data.checkInTime}, checkOut=${data.checkOutTime}`);
+            return {
+              ...emp,
+              checkIn: data.checkInTime || emp.checkIn,
+              checkOut: data.checkOutTime || emp.checkOut,
+              status: data.checkInTime ? "present" : emp.status,
+            };
+          }
+          return emp;
+        })
+      );
+    });
+
     // Cleanup
     return () => {
       socket.disconnect();
@@ -144,7 +171,7 @@ const AttendancePage = () => {
         `${API_URL}/api/attendance?date=${selectedDate}`
       );
 
-      const attendanceRecords = response.data.records || [];
+      const attendanceRecords = response.data.data || [];
       console.log(`📋 Found ${attendanceRecords.length} attendance records`);
       console.log(`👥 Employees list has ${employeesList.length} employees`);
 
@@ -613,7 +640,7 @@ const AttendancePage = () => {
       person.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       person.employeeNo?.toString().includes(searchQuery);
 
-    return matchesClass && matchesRole && matchesSearch;
+    return matchesDept && matchesRole && matchesSearch;
   });
 
   // Sort the filtered data
@@ -646,7 +673,15 @@ const AttendancePage = () => {
     return sortOrder === "desc" ? -comparison : comparison;
   });
 
-  const filteredAttendance = filteredAndSortedAttendance;
+  // ✅ DEDUPLICATION: Bir xil nomli xodimlarni birlashtirish (frontend display)
+  const seenNames = new Set();
+  const dedupedAttendance = filteredAndSortedAttendance.filter((emp) => {
+    const normalizedName = emp.name?.trim().toLowerCase();
+    if (!normalizedName || seenNames.has(normalizedName)) return false;
+    seenNames.add(normalizedName);
+    return true;
+  });
+  const filteredAttendance = dedupedAttendance;
 
   // Pagination logic
   const totalItems = filteredAttendance.length;
