@@ -16,6 +16,7 @@ const DashboardPage = () => {
   const [stats, setStats] = useState({
     totalStaff: 0,
     staffPresent: 0,
+    dbStats: null,
   });
 
   const [recentActivity, setRecentActivity] = useState([]);
@@ -28,9 +29,10 @@ const DashboardPage = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [employeesRes, attendanceRes] = await Promise.all([
+      const [employeesRes, attendanceRes, dbRes] = await Promise.all([
         fetch(`${API_URL}/api/all-staff`),
         fetch(`${API_URL}/api/attendance`),
+        fetch(`${API_URL}/api/system/db-stats`),
       ]);
 
       if (!employeesRes.ok || !attendanceRes.ok) {
@@ -39,6 +41,7 @@ const DashboardPage = () => {
 
       const employeesData = await employeesRes.json();
       const attendanceData = await attendanceRes.json();
+      const dbStatsData = dbRes.ok ? await dbRes.json() : null;
 
       const employees =
         employeesData.employees || employeesData.data || employeesData || [];
@@ -59,6 +62,7 @@ const DashboardPage = () => {
       setStats({
         totalStaff: staff.length,
         staffPresent,
+        dbStats: dbStatsData?.success ? dbStatsData.data : null,
       });
 
       const recentRecords = todayAttendance
@@ -190,6 +194,38 @@ const DashboardPage = () => {
             <span className="text-sm font-semibold text-violet-600">
               {stats.staffPresent}
             </span>
+          </div>
+        </div>
+
+        {/* Database Storage Card */}
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-blue-50 rounded-xl">
+              <Database className="w-5 h-5 text-blue-600" />
+            </div>
+            {stats.dbStats?.percentUsed && (
+              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                parseFloat(stats.dbStats.percentUsed) > 80 ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-700'
+              }`}>
+                {stats.dbStats.percentUsed}% band
+              </span>
+            )}
+          </div>
+          <p className="text-2xl font-bold text-gray-900">
+            {stats.dbStats ? `${stats.dbStats.storageSize} MB` : '...'}
+          </p>
+          <p className="text-sm text-gray-500 mt-1">Ma'lumotlar bazasi</p>
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-500">Holat:</span>
+              <span className="text-xs font-semibold text-green-600">Normal</span>
+            </div>
+            <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1 overflow-hidden">
+              <div 
+                className={`h-full rounded-full ${parseFloat(stats.dbStats?.percentUsed || 0) > 80 ? 'bg-red-500' : 'bg-blue-500'}`}
+                style={{ width: `${stats.dbStats?.percentUsed || 0}%` }}
+              ></div>
+            </div>
           </div>
         </div>
       </div>
