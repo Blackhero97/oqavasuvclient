@@ -30,6 +30,7 @@ const AttendancePage = () => {
   );
   const [selectedDept, setSelectedDept] = useState("");
   const [selectedRole, setSelectedRole] = useState(""); // New: role filter
+  const [selectedStatus, setSelectedStatus] = useState(""); // New: status filter
   const [searchQuery, setSearchQuery] = useState(""); // New: search filter
   const [sortBy, setSortBy] = useState("name"); // New: sort by
   const [sortOrder, setSortOrder] = useState("asc"); // New: sort order
@@ -45,6 +46,35 @@ const AttendancePage = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15);
+
+  // 📊 Kechikish hisoblash funksiyasi (9:30 asosida)
+  const calculateLateInfo = (checkInTime) => {
+    if (!checkInTime) return { isLate: false, lateMinutes: 0, lateText: "" };
+
+    const LATE_THRESHOLD_HOUR = 9;
+    const LATE_THRESHOLD_MINUTE = 30;
+
+    const [hours, minutes] = checkInTime.split(":").map(Number);
+    const checkInMinutes = hours * 60 + minutes;
+    const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
+
+    if (checkInMinutes > thresholdMinutes) {
+      const lateMinutes = checkInMinutes - thresholdMinutes;
+      const lateHours = Math.floor(lateMinutes / 60);
+      const remainingMinutes = lateMinutes % 60;
+
+      let lateText = "";
+      if (lateHours > 0) {
+        lateText = `${lateHours} soat ${remainingMinutes} daq`;
+      } else {
+        lateText = `${lateMinutes} daqiqa`;
+      }
+
+      return { isLate: true, lateMinutes, lateText };
+    }
+
+    return { isLate: false, lateMinutes: 0, lateText: "" };
+  };
 
   // Mock data
   const mockAttendanceData = [
@@ -142,7 +172,9 @@ const AttendancePage = () => {
               ...emp,
               checkIn: data.checkInTime || emp.checkIn,
               checkOut: data.checkOutTime || emp.checkOut,
-              status: data.checkInTime ? "present" : emp.status,
+              status: data.checkInTime 
+                ? (calculateLateInfo(data.checkInTime).isLate ? "late" : "present") 
+                : emp.status,
             };
           }
           return emp;
@@ -224,7 +256,9 @@ const AttendancePage = () => {
             ...employee,
             checkIn: attendance.firstCheckIn || null,
             checkOut: attendance.lastCheckOut || null,
-            status: attendance.firstCheckIn ? "present" : "absent",
+            status: attendance.firstCheckIn 
+              ? (calculateLateInfo(attendance.firstCheckIn).isLate ? "late" : "present") 
+              : "absent",
             lateMinutes: attendance.lateMinutes || 0,
           };
         }
@@ -305,7 +339,9 @@ const AttendancePage = () => {
                     });
                 })()
                 : null,
-              status: attendance.firstCheckIn ? "present" : "absent",
+              status: attendance.firstCheckIn 
+                ? (calculateLateInfo(attendance.firstCheckIn).isLate ? "late" : "present") 
+                : "absent",
               lateMinutes: attendance.lateMinutes || 0,
             };
           }
@@ -458,14 +494,16 @@ const AttendancePage = () => {
         );
         if (record) {
           return {
-            ...student,
+            ...employee,
             checkIn: record.checkInTime,
             checkOut: record.checkOutTime,
-            status: record.status,
+            status: record.checkInTime 
+              ? (calculateLateInfo(record.checkInTime).isLate ? "late" : "present") 
+              : record.status || "absent",
             lateMinutes: record.lateMinutes || 0,
           };
         }
-        return student;
+        return employee;
       })
     );
   };
@@ -640,7 +678,12 @@ const AttendancePage = () => {
       person.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       person.employeeNo?.toString().includes(searchQuery);
 
-    return matchesDept && matchesRole && matchesSearch;
+    // Filter by status
+    const matchesStatus = 
+      selectedStatus === "" || 
+      person.status === selectedStatus;
+
+    return matchesDept && matchesRole && matchesSearch && matchesStatus;
   });
 
   // Sort the filtered data
@@ -693,7 +736,7 @@ const AttendancePage = () => {
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedRole, selectedDept, searchQuery, selectedDate]);
+  }, [selectedRole, selectedStatus, selectedDept, searchQuery, selectedDate]);
 
   // Dynamically create dept options
   const deptOptions = ["Barcha bo'limlar", ...allDepts];
@@ -763,34 +806,6 @@ const AttendancePage = () => {
       ? Math.round(((presentEmployeesCount + lateEmployeesCount) / totalEmployeesCount) * 100)
       : 0;
 
-  // 📊 Kechikish hisoblash funksiyasi (9:30 asosida)
-  const calculateLateInfo = (checkInTime) => {
-    if (!checkInTime) return { isLate: false, lateMinutes: 0, lateText: "" };
-
-    const LATE_THRESHOLD_HOUR = 9;
-    const LATE_THRESHOLD_MINUTE = 30;
-
-    const [hours, minutes] = checkInTime.split(":").map(Number);
-    const checkInMinutes = hours * 60 + minutes;
-    const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
-
-    if (checkInMinutes > thresholdMinutes) {
-      const lateMinutes = checkInMinutes - thresholdMinutes;
-      const lateHours = Math.floor(lateMinutes / 60);
-      const remainingMinutes = lateMinutes % 60;
-
-      let lateText = "";
-      if (lateHours > 0) {
-        lateText = `${lateHours} soat ${remainingMinutes} daq`;
-      } else {
-        lateText = `${lateMinutes} daqiqa`;
-      }
-
-      return { isLate: true, lateMinutes, lateText };
-    }
-
-    return { isLate: false, lateMinutes: 0, lateText: "" };
-  };
 
   // 📊 Excel hisobotini yaratish
   const generateExcelReport = async (reportType, data, filename) => {
@@ -1237,6 +1252,18 @@ const AttendancePage = () => {
               ))}
             </select>
 
+            {/* Status Filter */}
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">Barcha holatlar</option>
+              <option value="present">Kelganlar</option>
+              <option value="late">Kech qolganlar</option>
+              <option value="absent">Kelmaganlar</option>
+            </select>
+
             {/* Dept Filter */}
             <select
               value={selectedDept}
@@ -1286,6 +1313,7 @@ const AttendancePage = () => {
               onClick={() => {
                 setSearchQuery("");
                 setSelectedRole("");
+                setSelectedStatus("");
                 setSelectedDept("");
                 setSortBy("name");
                 setSortOrder("asc");
