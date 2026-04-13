@@ -589,14 +589,15 @@ const WaterUsagePage = () => {
 
   // Statistics based on FILTERED water_usage
   const totalEmployeesCount = filteredwater_usage.length;
-  const presentEmployeesCount = filteredwater_usage.filter(
-    (s) => s.status === "present",
-  ).length;
+  // Kechikish to'g'ridan-to'g'ri calculateLateInfo orqali hisoblanadi (status maydoniga bog'liq emas)
   const lateEmployeesCount = filteredwater_usage.filter(
-    (s) => s.status === "late",
+    (s) => s.checkIn && calculateLateInfo(s.checkIn).isLate
+  ).length;
+  const presentEmployeesCount = filteredwater_usage.filter(
+    (s) => s.checkIn && !calculateLateInfo(s.checkIn).isLate
   ).length;
   const absentEmployeesCount = filteredwater_usage.filter(
-    (s) => s.status === "absent",
+    (s) => !s.checkIn
   ).length;
 
   // Calculate percentage
@@ -612,7 +613,26 @@ const WaterUsagePage = () => {
     const LATE_THRESHOLD_HOUR = 9;
     const LATE_THRESHOLD_MINUTE = 30;
 
-    const [hours, minutes] = checkInTime.split(":").map(Number);
+    let hours, minutes;
+
+    // ISO date string ni parse qilish ("2026-04-13T07:42:00.000Z" yoki "07:42" format)
+    if (checkInTime.includes && checkInTime.includes("T")) {
+      // ISO format - local vaqtga o'girish
+      const date = new Date(checkInTime);
+      if (isNaN(date.getTime())) return { isLate: false, lateMinutes: 0, lateText: "" };
+      hours = date.getHours();
+      minutes = date.getMinutes();
+    } else if (typeof checkInTime === 'string') {
+      // Oddiy "HH:MM" format
+      const parts = checkInTime.split(":");
+      hours = parseInt(parts[0], 10);
+      minutes = parseInt(parts[1], 10);
+    } else {
+        return { isLate: false, lateMinutes: 0, lateText: "" };
+    }
+
+    if (isNaN(hours) || isNaN(minutes)) return { isLate: false, lateMinutes: 0, lateText: "" };
+
     const checkInMinutes = hours * 60 + minutes;
     const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
 
