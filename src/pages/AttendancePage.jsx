@@ -57,23 +57,27 @@ const AttendancePage = () => {
     let hours, minutes;
 
     // ISO date string ni parse qilish ("2026-04-13T07:42:00.000Z" yoki "07:42" format)
-    if (checkInTime.includes("T") || checkInTime.length > 5) {
+    if (checkInTime.includes && checkInTime.includes("T")) {
       // ISO format - local vaqtga o'girish
       const date = new Date(checkInTime);
       if (isNaN(date.getTime())) return { isLate: false, lateMinutes: 0, lateText: "" };
       hours = date.getHours();
       minutes = date.getMinutes();
-    } else {
+    } else if (typeof checkInTime === 'string') {
       // Oddiy "HH:MM" format
-      const parts = checkInTime.split(":").map(Number);
-      hours = parts[0];
-      minutes = parts[1];
+      const parts = checkInTime.split(":");
+      hours = parseInt(parts[0], 10);
+      minutes = parseInt(parts[1], 10);
+    } else {
+        return { isLate: false, lateMinutes: 0, lateText: "" };
     }
 
     if (isNaN(hours) || isNaN(minutes)) return { isLate: false, lateMinutes: 0, lateText: "" };
 
     const checkInMinutes = hours * 60 + minutes;
     const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
+    
+    // console.log(`[LATE CHECK] Time: ${checkInTime}, Minutes: ${checkInMinutes}, Threshold: ${thresholdMinutes}`);
 
     if (checkInMinutes > thresholdMinutes) {
       const lateMinutes = checkInMinutes - thresholdMinutes;
