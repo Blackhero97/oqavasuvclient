@@ -29,6 +29,7 @@ const WaterUsagePage = () => {
     new Date().toISOString().split("T")[0],
   );
   const [searchQuery, setSearchQuery] = useState(""); // Xodim qidirish
+  const [selectedStatus, setSelectedStatus] = useState(""); // Status filter
   const [sortBy, setSortBy] = useState("name"); // New: sort by
   const [sortOrder, setSortOrder] = useState("asc"); // New: sort order
   const [water_usageData, setwater_usageData] = useState([]);
@@ -534,7 +535,19 @@ const WaterUsagePage = () => {
       person.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       person.employeeNo?.toString().includes(searchQuery);
 
-    return matchesSearch;
+    // Filter by status (calculateLateInfo orqali - status maydoniga bog'liq emas)
+    let matchesStatus = selectedStatus === "";
+    if (!matchesStatus) {
+      if (selectedStatus === "late") {
+        matchesStatus = !!person.checkIn && calculateLateInfo(person.checkIn).isLate;
+      } else if (selectedStatus === "present") {
+        matchesStatus = !!person.checkIn && !calculateLateInfo(person.checkIn).isLate;
+      } else if (selectedStatus === "absent") {
+        matchesStatus = !person.checkIn;
+      }
+    }
+
+    return matchesSearch && matchesStatus;
   });
 
   // Sort the filtered data
@@ -592,7 +605,7 @@ const WaterUsagePage = () => {
   // Reset to first page when filter changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedDate]);
+  }, [searchQuery, selectedStatus, selectedDate]);
 
   // Faqat staff (hodim) bilan ishlash
 
@@ -1051,6 +1064,18 @@ const WaterUsagePage = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
+              {/* Status Filter */}
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="flex-1 md:flex-none px-3 py-2.5 bg-white dark:bg-slate-900 text-sm border border-gray-200 dark:border-slate-700 rounded-xl text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
+              >
+                <option value="">Barcha holatlar</option>
+                <option value="present">Kelganlar</option>
+                <option value="late">Kech qolganlar</option>
+                <option value="absent">Kelmaganlar</option>
+              </select>
+
               {/* Sort By */}
               <select
                 value={sortBy}
@@ -1074,6 +1099,7 @@ const WaterUsagePage = () => {
               <button
                 onClick={() => {
                   setSearchQuery("");
+                  setSelectedStatus("");
                   setSortBy("name");
                   setSortOrder("asc");
                   setSelectedDate(new Date().toISOString().split("T")[0]);
