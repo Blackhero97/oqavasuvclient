@@ -695,10 +695,17 @@ const AttendancePage = () => {
       person.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       person.employeeNo?.toString().includes(searchQuery);
 
-    // Filter by status
-    const matchesStatus = 
-      selectedStatus === "" || 
-      person.status === selectedStatus;
+    // Filter by status (calculateLateInfo orqali - status maydoniga bog'liq emas)
+    let matchesStatus = selectedStatus === "";
+    if (!matchesStatus) {
+      if (selectedStatus === "late") {
+        matchesStatus = !!person.checkIn && calculateLateInfo(person.checkIn).isLate;
+      } else if (selectedStatus === "present") {
+        matchesStatus = !!person.checkIn && !calculateLateInfo(person.checkIn).isLate;
+      } else if (selectedStatus === "absent") {
+        matchesStatus = !person.checkIn;
+      }
+    }
 
     return matchesDept && matchesRole && matchesSearch && matchesStatus;
   });
@@ -807,14 +814,15 @@ const AttendancePage = () => {
 
   // Statistics based on FILTERED attendance
   const totalEmployeesCount = filteredAttendance.length;
-  const presentEmployeesCount = filteredAttendance.filter(
-    (s) => s.status === "present"
-  ).length;
+  // Kechikish to'g'ridan-to'g'ri calculateLateInfo orqali hisoblanadi (status maydoniga bog'liq emas)
   const lateEmployeesCount = filteredAttendance.filter(
-    (s) => s.status === "late"
+    (s) => s.checkIn && calculateLateInfo(s.checkIn).isLate
+  ).length;
+  const presentEmployeesCount = filteredAttendance.filter(
+    (s) => s.checkIn && !calculateLateInfo(s.checkIn).isLate
   ).length;
   const absentEmployeesCount = filteredAttendance.filter(
-    (s) => s.status === "absent"
+    (s) => !s.checkIn
   ).length;
 
   // Calculate percentage
