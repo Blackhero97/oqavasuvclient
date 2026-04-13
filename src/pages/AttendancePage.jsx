@@ -54,7 +54,24 @@ const AttendancePage = () => {
     const LATE_THRESHOLD_HOUR = 9;
     const LATE_THRESHOLD_MINUTE = 30;
 
-    const [hours, minutes] = checkInTime.split(":").map(Number);
+    let hours, minutes;
+
+    // ISO date string ni parse qilish ("2026-04-13T07:42:00.000Z" yoki "07:42" format)
+    if (checkInTime.includes("T") || checkInTime.length > 5) {
+      // ISO format - local vaqtga o'girish
+      const date = new Date(checkInTime);
+      if (isNaN(date.getTime())) return { isLate: false, lateMinutes: 0, lateText: "" };
+      hours = date.getHours();
+      minutes = date.getMinutes();
+    } else {
+      // Oddiy "HH:MM" format
+      const parts = checkInTime.split(":").map(Number);
+      hours = parts[0];
+      minutes = parts[1];
+    }
+
+    if (isNaN(hours) || isNaN(minutes)) return { isLate: false, lateMinutes: 0, lateText: "" };
+
     const checkInMinutes = hours * 60 + minutes;
     const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
 
