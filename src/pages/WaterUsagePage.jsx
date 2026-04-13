@@ -41,6 +41,54 @@ const WaterUsagePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15);
 
+  // 📊 Kechikish hisoblash funksiyasi (9:30 asosida)
+  const calculateLateInfo = (checkInTime) => {
+    if (!checkInTime) return { isLate: false, lateMinutes: 0, lateText: "" };
+
+    const LATE_THRESHOLD_HOUR = 9;
+    const LATE_THRESHOLD_MINUTE = 30;
+
+    let hours, minutes;
+
+    // ISO date string ni parse qilish ("2026-04-13T07:42:00.000Z" yoki "07:42" format)
+    if (checkInTime.includes && checkInTime.includes("T")) {
+      // ISO format - local vaqtga o'girish
+      const date = new Date(checkInTime);
+      if (isNaN(date.getTime())) return { isLate: false, lateMinutes: 0, lateText: "" };
+      hours = date.getHours();
+      minutes = date.getMinutes();
+    } else if (typeof checkInTime === 'string') {
+      // Oddiy "HH:MM" format
+      const parts = checkInTime.split(":");
+      hours = parseInt(parts[0], 10);
+      minutes = parseInt(parts[1], 10);
+    } else {
+        return { isLate: false, lateMinutes: 0, lateText: "" };
+    }
+
+    if (isNaN(hours) || isNaN(minutes)) return { isLate: false, lateMinutes: 0, lateText: "" };
+
+    const checkInMinutes = hours * 60 + minutes;
+    const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
+
+    if (checkInMinutes > thresholdMinutes) {
+      const lateMinutes = checkInMinutes - thresholdMinutes;
+      const lateHours = Math.floor(lateMinutes / 60);
+      const remainingMinutes = lateMinutes % 60;
+
+      let lateText = "";
+      if (lateHours > 0) {
+        lateText = `${lateHours} soat ${remainingMinutes} daq`;
+      } else {
+        lateText = `${lateMinutes} daqiqa`;
+      }
+
+      return { isLate: true, lateMinutes, lateText };
+    }
+
+    return { isLate: false, lateMinutes: 0, lateText: "" };
+  };
+
   // Mock data
   const mockwater_usageData = [
     {
@@ -605,54 +653,6 @@ const WaterUsagePage = () => {
     totalEmployeesCount > 0
       ? Math.round(((presentEmployeesCount + lateEmployeesCount) / totalEmployeesCount) * 100)
       : 0;
-
-  // 📊 Kechikish hisoblash funksiyasi (9:30 asosida)
-  const calculateLateInfo = (checkInTime) => {
-    if (!checkInTime) return { isLate: false, lateMinutes: 0, lateText: "" };
-
-    const LATE_THRESHOLD_HOUR = 9;
-    const LATE_THRESHOLD_MINUTE = 30;
-
-    let hours, minutes;
-
-    // ISO date string ni parse qilish ("2026-04-13T07:42:00.000Z" yoki "07:42" format)
-    if (checkInTime.includes && checkInTime.includes("T")) {
-      // ISO format - local vaqtga o'girish
-      const date = new Date(checkInTime);
-      if (isNaN(date.getTime())) return { isLate: false, lateMinutes: 0, lateText: "" };
-      hours = date.getHours();
-      minutes = date.getMinutes();
-    } else if (typeof checkInTime === 'string') {
-      // Oddiy "HH:MM" format
-      const parts = checkInTime.split(":");
-      hours = parseInt(parts[0], 10);
-      minutes = parseInt(parts[1], 10);
-    } else {
-        return { isLate: false, lateMinutes: 0, lateText: "" };
-    }
-
-    if (isNaN(hours) || isNaN(minutes)) return { isLate: false, lateMinutes: 0, lateText: "" };
-
-    const checkInMinutes = hours * 60 + minutes;
-    const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
-
-    if (checkInMinutes > thresholdMinutes) {
-      const lateMinutes = checkInMinutes - thresholdMinutes;
-      const lateHours = Math.floor(lateMinutes / 60);
-      const remainingMinutes = lateMinutes % 60;
-
-      let lateText = "";
-      if (lateHours > 0) {
-        lateText = `${lateHours} soat ${remainingMinutes} daq`;
-      } else {
-        lateText = `${lateMinutes} daqiqa`;
-      }
-
-      return { isLate: true, lateMinutes, lateText };
-    }
-
-    return { isLate: false, lateMinutes: 0, lateText: "" };
-  };
 
   // 📊 Excel hisobotini yaratish
   const generateExcelReport = async (reportType, data, filename) => {
