@@ -75,14 +75,27 @@ const DashboardPage = () => {
         (record) => record.date === today,
       );
 
-      const staff = employees.filter((emp) => emp.role === "staff");
+      const staff = employees.filter(
+        (emp) => emp.role === "staff" || emp.role === null || emp.role === undefined,
+      );
 
       const staffPresent = todayAttendance.filter((record) =>
-        staff.some((s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId),
+        staff.some((s) => (s.hikvisionEmployeeId || s.employeeId)?.toString() === (record.hikvisionEmployeeId || record.employeeId)?.toString()),
       ).length;
 
-      const lateCount = todayAttendance.filter((record) => {
-        const isStaff = staff.some((s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId);
+      // Deduplicate today's attendance by employee ID to count unique latecomers
+      const uniqueAttendance = [];
+      const seenIds = new Set();
+      todayAttendance.forEach(record => {
+        const id = (record.hikvisionEmployeeId || record.employeeId)?.toString();
+        if (id && !seenIds.has(id)) {
+          seenIds.add(id);
+          uniqueAttendance.push(record);
+        }
+      });
+
+      const lateCount = uniqueAttendance.filter((record) => {
+        const isStaff = staff.some((s) => (s.hikvisionEmployeeId || s.employeeId)?.toString() === (record.hikvisionEmployeeId || record.employeeId)?.toString());
         return isStaff && record.firstCheckIn && calculateLateInfo(record.firstCheckIn).isLate;
       }).length;
 
