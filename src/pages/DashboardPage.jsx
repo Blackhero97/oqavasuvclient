@@ -16,6 +16,7 @@ const DashboardPage = () => {
   const [stats, setStats] = useState({
     totalStaff: 0,
     staffPresent: 0,
+    lateCount: 0,
     dbStats: null,
   });
 
@@ -26,6 +27,27 @@ const DashboardPage = () => {
     const interval = setInterval(fetchDashboardData, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const calculateLateInfo = (checkInTime) => {
+    if (!checkInTime) return { isLate: false };
+    const LATE_THRESHOLD_HOUR = 9;
+    const LATE_THRESHOLD_MINUTE = 30;
+    let hours, minutes;
+    if (checkInTime.includes && checkInTime.includes("T")) {
+      const date = new Date(checkInTime);
+      if (isNaN(date.getTime())) return { isLate: false };
+      hours = date.getHours();
+      minutes = date.getMinutes();
+    } else if (typeof checkInTime === "string") {
+      const parts = checkInTime.split(":");
+      hours = parseInt(parts[0], 10);
+      minutes = parseInt(parts[1], 10);
+    } else return { isLate: false };
+    if (isNaN(hours) || isNaN(minutes)) return { isLate: false };
+    const checkInMinutes = hours * 60 + minutes;
+    const thresholdMinutes = LATE_THRESHOLD_HOUR * 60 + LATE_THRESHOLD_MINUTE;
+    return { isLate: checkInMinutes > thresholdMinutes };
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -59,9 +81,15 @@ const DashboardPage = () => {
         staff.some((s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId),
       ).length;
 
+      const lateCount = todayAttendance.filter((record) => {
+        const isStaff = staff.some((s) => s.hikvisionEmployeeId === record.hikvisionEmployeeId);
+        return isStaff && record.firstCheckIn && calculateLateInfo(record.firstCheckIn).isLate;
+      }).length;
+
       setStats({
         totalStaff: staff.length,
         staffPresent,
+        lateCount,
         dbStats: dbStatsData?.success ? dbStatsData.data : null,
       });
 
@@ -248,6 +276,35 @@ const DashboardPage = () => {
                 style={{ width: `${stats.dbStats?.percentUsed || 0}%` }}
               ></div>
             </div>
+          </div>
+        </div>
+
+        {/* Kechikkanlar */}
+        <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
+          <div className="flex items-center justify-between mb-4">
+            <div className="p-2.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+              <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            </div>
+            <span
+              className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+                stats.lateCount > 0
+                  ? "bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                  : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-slate-400"
+              }`}
+            >
+              {stats.staffPresent > 0
+                ? Math.round((stats.lateCount / stats.staffPresent) * 100)
+                : 0}
+              % ksh.
+            </span>
+          </div>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{stats.lateCount}</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Kech qolganlar</p>
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800">
+            <span className="text-xs text-gray-500 dark:text-slate-500">Bugun:</span>
+            <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">
+              {stats.lateCount} ta
+            </span>
           </div>
         </div>
       </div>
