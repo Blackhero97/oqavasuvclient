@@ -75,9 +75,18 @@ const DashboardPage = () => {
         (record) => record.date === today,
       );
 
-      const staff = employees.filter(
+      const rawStaff = employees.filter(
         (emp) => emp.role === "staff" || emp.role === null || emp.role === undefined,
       );
+
+      // Deduplicate staff by name (matching WaterUsagePage logic)
+      const seenStaffNames = new Set();
+      const staff = rawStaff.filter((emp) => {
+        const normalizedName = emp.name?.trim().toLowerCase();
+        if (!normalizedName || seenStaffNames.has(normalizedName)) return false;
+        seenStaffNames.add(normalizedName);
+        return true;
+      });
 
       const staffPresent = todayAttendance.filter((record) =>
         staff.some((s) => (s.hikvisionEmployeeId || s.employeeId)?.toString() === (record.hikvisionEmployeeId || record.employeeId)?.toString()),
