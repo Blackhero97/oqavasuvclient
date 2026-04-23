@@ -7,6 +7,7 @@ import DashboardPage from "./pages/DashboardPage";
 import AttendancePage from "./pages/WaterUsagePage";
 import NotificationsPage from "./pages/NotificationsPage";
 import LoginPage from "./pages/LoginPage";
+import BottomNav from "./components/BottomNav";
 import ErrorBoundary from "./components/ErrorBoundary";
 import axios from "axios";
 import "./App.css";
@@ -123,7 +124,7 @@ function App() {
               user={user}
               onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             />
-            <main className="flex-1 overflow-y-auto">
+            <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
               <Routes>
                 <Route
                   path="/"
@@ -138,6 +139,7 @@ function App() {
                 />
               </Routes>
             </main>
+            <BottomNav />
           </div>
         </div>
         <Toaster />
