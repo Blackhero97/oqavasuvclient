@@ -1395,7 +1395,7 @@ const WaterUsagePage = () => {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-slate-800 transition-colors">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 border-t border-gray-200 dark:border-slate-800 transition-colors">
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-700 dark:text-slate-400">Ko'rsatish:</span>
                 <select
@@ -1422,7 +1422,7 @@ const WaterUsagePage = () => {
                 <button
                   onClick={() => setCurrentPage(1)}
                   disabled={currentPage === 1}
-                  className="px-2 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="hidden xs:block px-2 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   ««
                 </button>
@@ -1470,7 +1470,7 @@ const WaterUsagePage = () => {
                 <button
                   onClick={() => setCurrentPage(totalPages)}
                   disabled={currentPage === totalPages}
-                  className="px-2 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="hidden xs:block px-2 py-1 text-sm border border-gray-300 dark:border-slate-700 rounded-md bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   »»
                 </button>
