@@ -90,6 +90,52 @@ const WaterUsagePage = () => {
     return { isLate: false, lateMinutes: 0, lateText: "" };
   };
 
+  // 📊 Erta ketganlikni hisoblash (18:00 asosida)
+  const calculateEarlyLeaveInfo = (checkOutTime) => {
+    if (!checkOutTime) return { isEarly: false, earlyMinutes: 0, earlyText: "" };
+
+    const EARLY_THRESHOLD_HOUR = 18;
+    const EARLY_THRESHOLD_MINUTE = 0;
+
+    let hours, minutes;
+
+    // ISO date string ni parse qilish
+    if (checkOutTime.includes && checkOutTime.includes("T")) {
+      const date = new Date(checkOutTime);
+      if (isNaN(date.getTime())) return { isEarly: false, earlyMinutes: 0, earlyText: "" };
+      hours = date.getHours();
+      minutes = date.getMinutes();
+    } else if (typeof checkOutTime === 'string') {
+      const parts = checkOutTime.split(":");
+      hours = parseInt(parts[0], 10);
+      minutes = parseInt(parts[1], 10);
+    } else {
+      return { isEarly: false, earlyMinutes: 0, earlyText: "" };
+    }
+
+    if (isNaN(hours) || isNaN(minutes)) return { isEarly: false, earlyMinutes: 0, earlyText: "" };
+
+    const checkOutMinutes = hours * 60 + minutes;
+    const thresholdMinutes = EARLY_THRESHOLD_HOUR * 60 + EARLY_THRESHOLD_MINUTE;
+
+    if (checkOutMinutes < thresholdMinutes) {
+      const earlyMinutes = thresholdMinutes - checkOutMinutes;
+      const earlyHours = Math.floor(earlyMinutes / 60);
+      const remainingMinutes = earlyMinutes % 60;
+
+      let earlyText = "";
+      if (earlyHours > 0) {
+        earlyText = `${earlyHours} soat ${remainingMinutes} daq`;
+      } else {
+        earlyText = `${earlyMinutes} daqiqa`;
+      }
+
+      return { isEarly: true, earlyMinutes, earlyText };
+    }
+
+    return { isEarly: false, earlyMinutes: 0, earlyText: "" };
+  };
+
   // Mock data
   const mockwater_usageData = [
     {
@@ -542,6 +588,8 @@ const WaterUsagePage = () => {
         matchesStatus = !!person.checkIn && calculateLateInfo(person.checkIn).isLate;
       } else if (selectedStatus === "present") {
         matchesStatus = !!person.checkIn && !calculateLateInfo(person.checkIn).isLate;
+      } else if (selectedStatus === "early") {
+        matchesStatus = !!person.checkOut && calculateEarlyLeaveInfo(person.checkOut).isEarly;
       } else if (selectedStatus === "absent") {
         matchesStatus = !person.checkIn;
       }
@@ -628,6 +676,8 @@ const WaterUsagePage = () => {
         return "Keldi";
       case "late":
         return "Kech keldi";
+      case "early":
+        return "Erta ketdi";
       case "absent":
         return "Kelmadi";
       default:
@@ -660,6 +710,9 @@ const WaterUsagePage = () => {
   const absentEmployeesCount = filteredwater_usage.filter(
     (s) => !s.checkIn
   ).length;
+  const earlyEmployeesCount = filteredwater_usage.filter(
+    (s) => s.checkOut && calculateEarlyLeaveInfo(s.checkOut).isEarly
+  ).length;
 
   // Calculate percentage
   const water_usagePercentage =
@@ -680,9 +733,11 @@ const WaterUsagePage = () => {
           "Ketgan vaqti": record.checkOut || "Ketmagan",
           Status: lateInfo.isLate
             ? "Kech keldi"
-            : record.status === "present"
-              ? "Keldi"
-              : "Kelmadi",
+            : calculateEarlyLeaveInfo(record.checkOut).isEarly
+              ? "Erta ketdi"
+              : record.status === "present"
+                ? "Keldi"
+                : "Kelmadi",
           Sana: selectedDate,
         };
       });
@@ -1012,8 +1067,31 @@ const WaterUsagePage = () => {
             </div>
           </div>
 
-          {/* Suv Istamoli % */}
+          {/* Erta ketgan */}
           <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-2.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl transition-colors">
+                <Clock className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <span className="text-xs font-medium px-2 py-1 rounded-full bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 transition-colors">
+                {totalEmployeesCount > 0
+                  ? Math.round((earlyEmployeesCount / totalEmployeesCount) * 100)
+                  : 0}
+                %
+              </span>
+            </div>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white transition-colors">{earlyEmployeesCount}</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mt-1">Erta ketgan</p>
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-slate-800 transition-colors">
+              <span className="text-xs text-gray-500 dark:text-slate-500">Vaqtliroq:</span>
+              <span className="text-sm font-semibold text-indigo-600 dark:text-indigo-400">
+                {earlyEmployeesCount} ta
+              </span>
+            </div>
+          </div>
+
+          {/* Davomat % */}
+          <div className="bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl p-5 shadow-sm transition-colors lg:col-span-1 xl:col-span-1">
             <div className="flex items-center justify-between mb-4">
               <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 rounded-xl transition-colors">
                 <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -1073,6 +1151,7 @@ const WaterUsagePage = () => {
                 <option value="">Barcha holatlar</option>
                 <option value="present">Kelganlar</option>
                 <option value="late">Kech qolganlar</option>
+                <option value="early">Erta ketganlar</option>
                 <option value="absent">Kelmaganlar</option>
               </select>
 
@@ -1143,12 +1222,15 @@ const WaterUsagePage = () => {
               <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                 {paginatedwater_usage.map((employee) => {
                   const lateInfo = calculateLateInfo(employee.checkIn);
+                  const earlyInfo = calculateEarlyLeaveInfo(employee.checkOut);
                   return (
                     <tr
                       key={employee.id}
                       className={`group transition-all duration-200 ${
                         lateInfo.isLate
                           ? "bg-amber-50/30 dark:bg-amber-900/10 hover:bg-amber-50/60 dark:hover:bg-amber-900/20"
+                          : earlyInfo.isEarly
+                          ? "bg-indigo-50/30 dark:bg-indigo-900/10 hover:bg-indigo-50/60 dark:hover:bg-indigo-900/20"
                           : "hover:bg-gray-50/80 dark:hover:bg-white/5"
                       }`}
                     >
@@ -1187,19 +1269,32 @@ const WaterUsagePage = () => {
                         <span className="text-sm font-bold text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-slate-800/50 px-2 py-1 rounded-md border border-gray-100 dark:border-slate-800">
                           {employee.checkOut || "—:—"}
                         </span>
+                        {earlyInfo.isEarly && (
+                          <div className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold mt-1">
+                            {earlyInfo.earlyText} erta
+                          </div>
+                        )}
                       </td>
                       <td className="text-center py-4 px-6">
                         <span
                           className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold shadow-sm ${
                             employee.status === "present"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                              : employee.status === "late"
-                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                              ? lateInfo.isLate
+                                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                                : earlyInfo.isEarly
+                                ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400"
+                                : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
                               : "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400"
                           }`}
                         >
-                          {getStatusIcon(employee.status)}
-                          <span>{getStatusText(employee.status)}</span>
+                          {employee.status === "present" ? (
+                            lateInfo.isLate ? getStatusIcon("late") : earlyInfo.isEarly ? <Clock className="w-3.5 h-3.5" /> : getStatusIcon("present")
+                          ) : getStatusIcon("absent")}
+                          <span>
+                            {employee.status === "present" 
+                              ? lateInfo.isLate ? "Kech qoldi" : earlyInfo.isEarly ? "Erta ketdi" : "Kelgan"
+                              : "Kelmagan"}
+                          </span>
                         </span>
                       </td>
                       <td className="text-right py-4 px-6">
@@ -1222,6 +1317,7 @@ const WaterUsagePage = () => {
           <div className="md:hidden divide-y divide-gray-100 dark:divide-slate-800">
             {paginatedwater_usage.map((employee) => {
               const lateInfo = calculateLateInfo(employee.checkIn);
+              const earlyInfo = calculateEarlyLeaveInfo(employee.checkOut);
               return (
                 <div key={employee.id} className="p-4 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
                   <div className="flex items-center justify-between mb-4">
@@ -1257,6 +1353,9 @@ const WaterUsagePage = () => {
                     <div className="bg-gray-50 dark:bg-slate-800/50 p-2.5 rounded-xl border border-gray-100 dark:border-slate-800">
                       <p className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1">Ketgan</p>
                       <p className="text-sm font-bold text-gray-900 dark:text-slate-200">{employee.checkOut || "—"}</p>
+                      {earlyInfo.isEarly && (
+                        <p className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">{earlyInfo.earlyText} erta</p>
+                      )}
                     </div>
                   </div>
 
@@ -1264,14 +1363,22 @@ const WaterUsagePage = () => {
                     <span
                       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm ${
                         employee.status === "present"
-                          ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
-                          : employee.status === "late"
-                          ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                          ? lateInfo.isLate
+                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"
+                            : earlyInfo.isEarly
+                            ? "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400"
+                            : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
                           : "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-400"
                       }`}
                     >
-                      {getStatusIcon(employee.status)}
-                      <span>{getStatusText(employee.status)}</span>
+                      {employee.status === "present" ? (
+                        lateInfo.isLate ? getStatusIcon("late") : earlyInfo.isEarly ? <Clock className="w-3.5 h-3.5" /> : getStatusIcon("present")
+                      ) : getStatusIcon("absent")}
+                      <span>
+                        {employee.status === "present" 
+                          ? lateInfo.isLate ? "Kech qoldi" : earlyInfo.isEarly ? "Erta ketdi" : "Kelgan"
+                          : "Kelmagan"}
+                      </span>
                     </span>
 
                     {lateInfo.isLate && (
