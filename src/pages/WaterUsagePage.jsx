@@ -13,6 +13,7 @@ import {
   Edit2,
   FileText,
   MoreVertical,
+  User,
 } from "lucide-react";
 import { io } from "socket.io-client";
 import RoleSelectionModal from "../components/RoleSelectionModal.jsx"; // ✅ YANGI CHIROYLI MODAL
@@ -1237,10 +1238,9 @@ const WaterUsagePage = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
                           <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm"
-                            style={{ backgroundColor: "#004A77" }}
+                            className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm border border-blue-100 dark:border-blue-900/30"
                           >
-                            {employee.avatar}
+                            <User className="w-5 h-5" />
                           </div>
                           <div>
                             <div className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -1323,10 +1323,9 @@ const WaterUsagePage = () => {
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-sm font-bold shadow-md"
-                        style={{ backgroundColor: "#004A77" }}
+                        className="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-md border border-blue-100 dark:border-blue-900/30"
                       >
-                        {employee.avatar}
+                        <User className="w-6 h-6" />
                       </div>
                       <div>
                         <h4 className="text-sm font-bold text-gray-900 dark:text-white transition-colors">{employee.name}</h4>
