@@ -115,12 +115,12 @@ function App() {
           <Sidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
+            onLogout={handleLogout}
           />
 
           <div className="flex-1 flex flex-col overflow-hidden w-full">
             <Header
               user={user}
-              onLogout={handleLogout}
               onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
             />
             <main className="flex-1 overflow-y-auto">

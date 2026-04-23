@@ -1,10 +1,45 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Calendar, Bell, Droplets, X } from "lucide-react";
+import { Home, Calendar, Bell, Droplets, X, LogOut } from "lucide-react";
+import { toast } from "react-hot-toast";
 
-const CleanSidebar = ({ isOpen, onClose }) => {
+const CleanSidebar = ({ isOpen, onClose, onLogout }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleLogoutClick = () => {
+    toast((t) => (
+      <div className="flex flex-col gap-3 p-1">
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 bg-red-100 rounded-lg">
+            <LogOut className="w-4 h-4 text-red-600" />
+          </div>
+          <p className="font-bold text-gray-900 text-sm">Tizimdan chiqmoqchimisiz?</p>
+        </div>
+        <div className="flex gap-2 ml-auto">
+          <button
+            onClick={() => {
+              toast.dismiss(t.id);
+              onLogout();
+            }}
+            className="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl hover:bg-red-700 transition-all shadow-sm"
+          >
+            Ha, chiqish
+          </button>
+          <button
+            onClick={() => toast.dismiss(t.id)}
+            className="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-bold rounded-xl hover:bg-gray-200 transition-all"
+          >
+            Bekor qilish
+          </button>
+        </div>
+      </div>
+    ), {
+      duration: 6000,
+      position: 'top-center',
+      className: 'border-2 border-red-50/50 shadow-2xl rounded-2xl',
+    });
+  };
 
   const menuItems = [
     { id: "dashboard", path: "/dashboard", icon: Home, label: "Dashboard" },
@@ -81,6 +116,19 @@ const CleanSidebar = ({ isOpen, onClose }) => {
           })}
         </div>
       </nav>
+
+      {/* Logout Button */}
+      <div className="p-4 border-t border-gray-200 dark:border-slate-800">
+        <button
+          onClick={handleLogoutClick}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all group"
+        >
+          <div className="p-1.5 bg-red-100 dark:bg-red-900/40 rounded-lg group-hover:bg-red-600 group-hover:text-white transition-all">
+            <LogOut className="w-5 h-5" />
+          </div>
+          <span>Tizimdan chiqish</span>
+        </button>
+      </div>
     </aside>
   );
 };

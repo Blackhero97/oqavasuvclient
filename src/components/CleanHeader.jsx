@@ -5,7 +5,7 @@ import { useTheme } from "../context/ThemeContext";
 import toast from "react-hot-toast";
 import ChangePasswordModal from "./ChangePasswordModal";
 
-const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
+const CleanHeader = ({ user, onToggleSidebar }) => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -49,39 +49,6 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleLogoutClick = () => {
-    toast((t) => (
-      <div className="flex flex-col gap-3 p-1">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-red-100 rounded-lg">
-            <LogOut className="w-4 h-4 text-red-600" />
-          </div>
-          <p className="font-bold text-gray-900 text-sm">Tizimdan chiqmoqchimisiz?</p>
-        </div>
-        <div className="flex gap-2 ml-auto">
-          <button
-            onClick={() => {
-              toast.dismiss(t.id);
-              onLogout();
-            }}
-            className="px-4 py-2 bg-red-600 text-white text-xs font-bold rounded-xl hover:bg-red-700 transition-all shadow-sm"
-          >
-            Ha, chiqish
-          </button>
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="px-4 py-2 bg-gray-100 text-gray-600 text-xs font-bold rounded-xl hover:bg-gray-200 transition-all"
-          >
-            Bekor qilish
-          </button>
-        </div>
-      </div>
-    ), {
-      duration: 6000,
-      position: 'top-center',
-      className: 'border-2 border-red-50/50 shadow-2xl rounded-2xl',
-    });
-  };
 
   const getPageTitle = () => {
     const titles = {
@@ -184,14 +151,6 @@ const CleanHeader = ({ user, onLogout, onToggleSidebar }) => {
                 <Key className="w-4 h-4" />
               </div>
             </div>
-
-            <button
-              onClick={handleLogoutClick}
-              className="p-2 md:p-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-600 hover:text-white dark:hover:bg-red-600 dark:hover:text-white transition-all shadow-sm hover:shadow-red-200 dark:hover:shadow-none"
-              title="Chiqish"
-            >
-              <LogOut className="w-4.5 h-4.5 md:w-5 md:h-5" />
-            </button>
           </div>
         </div>
       </div>
