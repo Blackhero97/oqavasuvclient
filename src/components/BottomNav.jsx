@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Home, Calendar, Bell } from "lucide-react";
+import { Home, Calendar, Bell, Settings } from "lucide-react";
 
 const BottomNav = () => {
   const location = useLocation();
@@ -19,6 +19,12 @@ const BottomNav = () => {
       path: "/notifications",
       icon: Bell,
       label: "Bildirishnomalar",
+    },
+    {
+      id: "settings",
+      path: "/settings",
+      icon: Settings,
+      label: "Sozlamalar",
     },
   ];
 

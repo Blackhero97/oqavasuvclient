@@ -217,13 +217,13 @@ const SettingsPage = () => {
   const renderScheduleSettings = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Dars jadvali
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors mb-4">
+          Ish jadvali
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Darslar boshlanish vaqti
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors mb-2">
+              Ish boshlanish vaqti
             </label>
             <input
               type="time"
@@ -233,8 +233,8 @@ const SettingsPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Darslar tugash vaqti
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors mb-2">
+              Ish tugash vaqti
             </label>
             <input
               type="time"
@@ -244,7 +244,7 @@ const SettingsPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors mb-2">
               Kech kelish chegarasi
             </label>
             <input
@@ -692,7 +692,7 @@ const SettingsPage = () => {
 
   return (
     <div className="px-4 py-8 bg-gray-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
