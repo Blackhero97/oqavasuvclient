@@ -18,17 +18,18 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { API_URL } from "../config";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+const API_BASE = API_URL;
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [settings, setSettings] = useState({
-    schoolName: "Boborahim Mashrab xususiy oqavai",
-    address: "Namangan viloyat, Chust tumani",
-    phone: "+998 69 555 12 34",
-    email: "info@boborahim-mashrab.uz",
-    website: "www.boborahim-mashrab.uz",
+    schoolName: "Oqava Suv tashkiloti",
+    address: "Toshkent shahri",
+    phone: "+998 71 200 00 00",
+    email: "info@oqavasuv.uz",
+    website: "www.oqavasuv.uz",
     startTime: "08:00",
     endTime: "14:00",
     lateThreshold: "09:30",
