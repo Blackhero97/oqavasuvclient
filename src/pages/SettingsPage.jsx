@@ -18,18 +18,17 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { API_URL } from "../config";
 
-const API_BASE = API_URL;
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("general");
   const [settings, setSettings] = useState({
-    schoolName: "Oqava Suv tashkiloti",
-    address: "Toshkent shahri",
-    phone: "+998 71 200 00 00",
-    email: "info@oqavasuv.uz",
-    website: "www.oqavasuv.uz",
+    schoolName: "Boborahim Mashrab xususiy oqavai",
+    address: "Namangan viloyat, Chust tumani",
+    phone: "+998 69 555 12 34",
+    email: "info@boborahim-mashrab.uz",
+    website: "www.boborahim-mashrab.uz",
     startTime: "08:00",
     endTime: "14:00",
     lateThreshold: "09:30",
@@ -218,13 +217,13 @@ const SettingsPage = () => {
   const renderScheduleSettings = () => (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors mb-4">
-          Ish jadvali
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Dars jadvali
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors mb-2">
-              Ish boshlanish vaqti
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Darslar boshlanish vaqti
             </label>
             <input
               type="time"
@@ -234,8 +233,8 @@ const SettingsPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors mb-2">
-              Ish tugash vaqti
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Darslar tugash vaqti
             </label>
             <input
               type="time"
@@ -245,7 +244,7 @@ const SettingsPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 transition-colors mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Kech kelish chegarasi
             </label>
             <input
@@ -693,7 +692,7 @@ const SettingsPage = () => {
 
   return (
     <div className="px-4 py-8 bg-gray-50 dark:bg-slate-950 min-h-screen transition-colors duration-300">
-      <div className="w-full">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
