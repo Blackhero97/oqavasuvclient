@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import BottomNav from "./components/BottomNav";
 import ErrorBoundary from "./components/ErrorBoundary";
 import axios from "axios";
+import { API_URL } from "./config";
 import "./App.css";
 
 // Set up axios interceptor for JWT authentication
@@ -70,7 +71,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+  const API_BASE = API_URL;
 
   useEffect(() => {
     // Check if user is already logged in

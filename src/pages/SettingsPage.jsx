@@ -18,8 +18,7 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:8000";
+import { API_URL as API_BASE } from "../config";
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("general");
