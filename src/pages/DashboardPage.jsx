@@ -10,6 +10,7 @@ import {
   Database,
   Server,
 } from "lucide-react";
+import axios from "axios";
 import { API_URL } from "../config";
 
 const DashboardPage = () => {
@@ -51,19 +52,19 @@ const DashboardPage = () => {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch data from multiple endpoints
+      // Fetch data from multiple endpoints using axios
       const endpoints = [
-        fetch(`${API_URL}/api/all-staff`).catch(e => ({ ok: false, error: e })),
-        fetch(`${API_URL}/api/attendance`).catch(e => ({ ok: false, error: e })),
-        fetch(`${API_URL}/api/system/db-stats`).catch(e => ({ ok: false, error: e })),
+        axios.get(`${API_URL}/api/all-staff`).catch(e => ({ data: { employees: [] } })),
+        axios.get(`${API_URL}/api/attendance`).catch(e => ({ data: { records: [] } })),
+        axios.get(`${API_URL}/api/system/db-stats`).catch(e => ({ data: null })),
       ];
 
       const [employeesRes, attendanceRes, dbRes] = await Promise.all(endpoints);
 
-      // Handle raw responses
-      const employeesData = employeesRes.ok ? await employeesRes.json() : { employees: [] };
-      const attendanceData = attendanceRes.ok ? await attendanceRes.json() : { records: [] };
-      const dbStatsData = dbRes.ok ? await dbRes.json() : null;
+      // Handle axios responses (data is inside .data)
+      const employeesData = employeesRes.data || { employees: [] };
+      const attendanceData = attendanceRes.data || { records: [] };
+      const dbStatsData = dbRes.data || null;
 
       const employees =
         employeesData.employees || employeesData.data || employeesData || [];
