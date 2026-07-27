@@ -19,9 +19,33 @@ const ROLES = [
   },
 ];
 
-const RoleSelectionModal = ({ employee, isOpen, onClose, onSave }) => {
+const RoleSelectionModal = ({ employee, isOpen, onClose, onSave, onDelete }) => {
   const [selectedRole, setSelectedRole] = useState(employee?.role || "");
   const [loading, setLoading] = useState(false);
+
+  const handleDelete = async () => {
+    if (!window.confirm(`Rostdan ham ${employee.name}ni o'chirmoqchimisiz?`)) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.delete(`${API_URL}/api/employee/${employee._id}`);
+      toast.success(`${employee.name} muvaffaqiyatli o'chirildi!`);
+      if (onDelete) {
+        onDelete(employee._id);
+      }
+      onClose();
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+      toast.error(
+        "❌ Xatolik yuz berdi: " +
+        (error.response?.data?.error || error.message)
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -120,6 +144,14 @@ const RoleSelectionModal = ({ employee, isOpen, onClose, onSave }) => {
 
           {/* Footer */}
           <div className="flex gap-2 mt-4">
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={loading}
+              className="px-3 py-1.5 text-xs text-white bg-red-600 rounded hover:bg-red-700 disabled:bg-gray-300"
+            >
+              O'chirish
+            </button>
             <button
               type="button"
               onClick={onClose}

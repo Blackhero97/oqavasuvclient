@@ -1662,6 +1662,10 @@ const AttendancePage = () => {
               setSelectedEmployee(null);
             }}
             onSave={handleSaveEmployee}
+            onDelete={(deletedId) => {
+              setAttendanceData((prev) => prev.filter((emp) => emp.id !== deletedId));
+              fetchEmployees();
+            }}
           />
         )}
       </div>
