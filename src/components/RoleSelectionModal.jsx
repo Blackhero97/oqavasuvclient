@@ -28,12 +28,13 @@ const RoleSelectionModal = ({ employee, isOpen, onClose, onSave, onDelete }) => 
       return;
     }
 
+    const employeeId = employee._id || employee.id;
     setLoading(true);
     try {
-      await axios.delete(`${API_URL}/api/employee/${employee._id}`);
+      await axios.delete(`${API_URL}/api/employee/${employeeId}`);
       toast.success(`${employee.name} muvaffaqiyatli o'chirildi!`);
       if (onDelete) {
-        onDelete(employee._id);
+        onDelete(employeeId);
       }
       onClose();
     } catch (error) {
