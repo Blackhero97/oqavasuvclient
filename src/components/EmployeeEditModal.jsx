@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
+import { API_URL } from "../config";
 
-const EmployeeEditModal = ({ employee, isOpen, onClose, onSave }) => {
+const EmployeeEditModal = ({ employee, isOpen, onClose, onSave, onDelete }) => {
     const [formData, setFormData] = useState({
         name: "",
         phone: "",
@@ -38,6 +41,27 @@ const EmployeeEditModal = ({ employee, isOpen, onClose, onSave }) => {
         e.preventDefault();
         await onSave({ ...employee, ...formData });
         onClose();
+    };
+
+    const handleDelete = async () => {
+        if (!window.confirm(`Rostdan ham ${employee.name}ni o'chirmoqchimisiz?`)) {
+            return;
+        }
+
+        try {
+            await axios.delete(`${API_URL}/api/employee/${employee._id}`);
+            toast.success(`${employee.name} muvaffaqiyatli o'chirildi!`);
+            if (onDelete) {
+                onDelete(employee._id);
+            }
+            onClose();
+        } catch (error) {
+            console.error("Error deleting employee:", error);
+            toast.error(
+                "❌ Xatolik yuz berdi: " +
+                (error.response?.data?.error || error.message)
+            );
+        }
     };
 
     if (!isOpen) return null;
@@ -106,6 +130,13 @@ const EmployeeEditModal = ({ employee, isOpen, onClose, onSave }) => {
 
                     {/* Buttons */}
                     <div className="flex gap-3 pt-4 border-t border-gray-100 mt-6">
+                        <button
+                            type="button"
+                            onClick={handleDelete}
+                            className="flex-1 px-4 py-2.5 text-sm bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                        >
+                            O'chirish
+                        </button>
                         <button
                             type="button"
                             onClick={onClose}

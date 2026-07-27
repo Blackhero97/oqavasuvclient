@@ -1501,6 +1501,10 @@ const WaterUsagePage = () => {
             setSelectedEmployee(null);
           }}
           onSave={handleSaveEmployee}
+          onDelete={(deletedId) => {
+            setwater_usageData((prev) => prev.filter((emp) => emp.id !== deletedId));
+            fetchEmployees();
+          }}
         />
       </div>
     </div>
